@@ -16,19 +16,24 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
-const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
-});
+const formSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    repeatPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.repeatPassword, {
+    message: "Passwords do not match",
+    path: ["repeatPassword"],
+  });
 
 export default function FormReset() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      newPassword: "",
+      repeatPassword: "",
     },
   });
 
@@ -44,17 +49,17 @@ export default function FormReset() {
           <h1 className="text-[1.5rem] font-bold">Password Reset</h1>
           <FormField
             control={form.control}
-            name="email"
+            name="newPassword"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Enter New Password</FormLabel>
                 <FormControl>
                   <Input
-                    type="email"
+                    type="password"
                     placeholder="********"
                     {...field}
                     className={
-                      form.formState.errors.email
+                      form.formState.errors.newPassword
                         ? "border-red-700"
                         : ""
                     }
@@ -66,7 +71,7 @@ export default function FormReset() {
           />
           <FormField
             control={form.control}
-            name="password"
+            name="repeatPassword"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Repeat New Password</FormLabel>
@@ -76,7 +81,7 @@ export default function FormReset() {
                     placeholder="********"
                     {...field}
                     className={
-                      form.formState.errors.password
+                      form.formState.errors.repeatPassword
                         ? "border-red-700"
                         : ""
                     }
