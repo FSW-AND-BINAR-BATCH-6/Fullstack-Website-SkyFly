@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
+import "../../globals.css";
 
 import {
   InputOTP,
@@ -11,6 +12,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function OtpPage() {
   const [timer, setTimer] = useState(60);
@@ -28,7 +30,13 @@ export default function OtpPage() {
     <section>
       <nav className="border-b border-black/20 p-5">
         <div className="flex items-center justify-between">
-          <span className="font-bold text-primary">Dashboard</span>
+          <Image
+            src="/assets/logo.svg"
+            alt="logo"
+            width={100}
+            height={100}
+            className="ml-14"
+          />
         </div>
       </nav>
 

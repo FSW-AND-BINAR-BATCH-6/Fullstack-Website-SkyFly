@@ -1,4 +1,4 @@
-import FormLogin from "./components/form-login";
+import FormLogin from "./form";
 
 export default function LoginPage() {
   return (

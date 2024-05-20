@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "../globals.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { LogInIcon, Search } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,17 +26,20 @@ export default function HomeLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} ${poppins.className}`}>
         <section>
           <nav className="border-b border-black/20 p-5 flex">
             <div className="flex bg-yellow-200s w-1/2">
               <div className="flex items-center justify-between ml-10">
-                <span className="font-bold text-primary">
-                  Dashboard
-                </span>
+                <Image
+                  src="/assets/logo.svg"
+                  alt="logo"
+                  width={100}
+                  height={100}
+                />
               </div>
 
-              <div className="flex items-center ml-[3rem]">
+              <div className="flex items-center ml-[3rem] mt-1">
                 <Input
                   className="bg-gray-200 py-5 w-[20rem] pe-[3rem] rounded-xl"
                   placeholder="Search here..."
@@ -41,7 +50,7 @@ export default function HomeLayout({
               </div>
             </div>
 
-            <div className="bg-red-200s w-1/2 flex justify-end mr-14">
+            <div className="bg-red-200s w-1/2 flex items-center justify-end mr-14">
               <Link href="/dashboard/login">
                 <Button className="">
                   <LogInIcon className="w-5 h-5 mr-2" />
