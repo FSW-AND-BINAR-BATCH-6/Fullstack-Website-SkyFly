@@ -40,6 +40,10 @@ const config = {
           DEFAULT: "hsl(var(--violet))",
           foreground: "hsl(var(--violet-foreground))",
         },
+        greens: {
+          DEFAULT: "hsl(var(--greens))",
+          foreground: "hsl(var(--greens-foreground))",
+        },
         primaryPurple: {
           DEFAULT: "hsl(var(--primary-purple))",
           foreground: "hsl(var(--primary-purple-foreground))",
