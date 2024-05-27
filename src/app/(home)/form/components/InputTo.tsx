@@ -19,10 +19,14 @@ export default function InputTo({
     <>
       <div className="flex pt-1">
         <PlaneLandingIcon size={24} />
-        <Label className="ml-3 pt-2">To</Label>
+        <Label htmlFor="to" className="ml-3 pt-2">
+          To
+        </Label>
       </div>
       <div>
         <Input
+          id="to"
+          name="to"
           type="text"
           readOnly
           placeholder="Melbourne (MLB)"

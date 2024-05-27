@@ -25,10 +25,14 @@ export default function DepartureDate({
   return (
     <>
       <div className="ml-3 flex flex-col">
-        <Label className="mb-1">Departure</Label>
+        <Label htmlFor="departureDate" className="mb-1">
+          Departure
+        </Label>
         <Popover>
           <PopoverTrigger>
             <Input
+              id="departureDate"
+              name="departureDate"
               type="date"
               readOnly
               value={departureDate?.toLocaleDateString("en-CA")}

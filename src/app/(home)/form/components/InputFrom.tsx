@@ -19,10 +19,14 @@ export default function InputFrom({
     <>
       <div className="flex pt-1">
         <PlaneTakeoffIcon size={24} />
-        <Label className="ml-3 pt-2">From</Label>
+        <Label htmlFor="from" className="ml-3 pt-2">
+          From
+        </Label>
       </div>
       <div>
         <Input
+          id="from"
+          name="from"
           type="text"
           readOnly
           placeholder="Jakarta (JKTA)"

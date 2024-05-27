@@ -6,7 +6,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Labels } from "@/components/ui/labels";
 import {
   CalendarDaysIcon,
   Ticket,
@@ -124,17 +124,17 @@ export default function FormFindFlights() {
 
     console.log("Form Data:", dataWithPassengers);
 
-    // window.location.href = "/findflights";
+    window.location.href = "/findflights";
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form id="form" name="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="mx-10 my-5">
-          <Label className="font-bold text-lg">
+          <Labels className="font-bold text-lg">
             Choose special flight schedules on
             <span className="text-violet ml-1">Tiketku!</span>
-          </Label>
+          </Labels>
         </div>
 
         <div className="mx-10">
@@ -178,7 +178,7 @@ export default function FormFindFlights() {
             <div className="flex w-1/2 justify-center">
               <div className="flex items-center">
                 <CalendarDaysIcon size={24} />
-                <Label className="ml-3">Date</Label>
+                <Labels className="ml-3">Date</Labels>
               </div>
               <div className="flex">
                 <DepartureDate
@@ -201,7 +201,7 @@ export default function FormFindFlights() {
             <div className="flex w-1/2 justify-center">
               <div className="flex items-center">
                 <Users size={24} />
-                <Label className="ml-3">For</Label>
+                <Labels className="ml-3">For</Labels>
                 <Passengers
                   register={register}
                   errors={errors}
@@ -231,6 +231,8 @@ export default function FormFindFlights() {
         </div>
 
         <Button
+          id="findFlights"
+          name="findFlights"
           type="submit"
           onSubmit={handleSubmit(onSubmit)}
           className="rounded-t-none w-full"

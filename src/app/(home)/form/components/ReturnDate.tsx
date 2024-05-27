@@ -25,10 +25,14 @@ export default function ReturnDate({
   return (
     <>
       <div className="ml-3 flex flex-col">
-        <Label className="mb-1">Return</Label>
+        <Label htmlFor="returnDate" className="mb-1">
+          Return
+        </Label>
         <Popover>
           <PopoverTrigger>
             <Input
+              id="returnDate"
+              name="returnDate"
               type="date"
               readOnly
               value={returnDate?.toLocaleDateString("en-CA")}

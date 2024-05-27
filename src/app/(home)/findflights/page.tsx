@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function FindFlightsPage() {
   return (
@@ -57,7 +58,9 @@ export default function FindFlightsPage() {
 
             <div className="ml-auto flex flex-col items-start">
               <Label className="font-bold">IDR 4.950.000</Label>
-              <Button className="mt-2">Book Now</Button>
+              <Link href={"/booking"}>
+                <Button className="mt-2">Book Now</Button>
+              </Link>
             </div>
           </div>
         </div>

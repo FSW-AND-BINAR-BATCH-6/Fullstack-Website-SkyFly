@@ -38,8 +38,12 @@ export default function Passengers({
 }: PassengersProps) {
   return (
     <div className="ml-3 flex flex-col">
-      <Label className="mb-1">Passengers</Label>
+      <Label htmlFor="passengers" className="mb-1">
+        Passengers
+      </Label>
       <Input
+        id="passengers"
+        name="passengers"
         type="text"
         readOnly
         placeholder="1 People"

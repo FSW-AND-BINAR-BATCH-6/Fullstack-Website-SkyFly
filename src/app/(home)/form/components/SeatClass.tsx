@@ -36,8 +36,12 @@ export default function SeatClass({
 }: SeatClassProps) {
   return (
     <div className="ml-3 flex flex-col">
-      <Label className="mb-1">Seat Class</Label>
+      <Label htmlFor="seatClass" className="mb-1">
+        Seat Class
+      </Label>
       <Input
+        id="seatClass"
+        name="seatClass"
         type="text"
         readOnly
         placeholder="Business"

@@ -52,6 +52,10 @@ const config = {
           DEFAULT: "hsl(var(--cream))",
           foreground: "hsl(var(--cream-foreground))",
         },
+        reds: {
+          DEFAULT: "hsl(var(--reds))",
+          foreground: "hsl(var(--reds-foreground))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
