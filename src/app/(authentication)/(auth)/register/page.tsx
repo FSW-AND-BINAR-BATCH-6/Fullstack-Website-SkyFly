@@ -1,4 +1,4 @@
-import FormRegister from "./components/form-register";
+import FormRegister from "./form";
 
 export default function RegisterPage() {
   return (
