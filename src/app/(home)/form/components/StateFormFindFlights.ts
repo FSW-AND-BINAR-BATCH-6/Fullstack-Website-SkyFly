@@ -26,7 +26,7 @@ export const StateFormFindFlights = ({
     Date | undefined
   >(undefined);
   const [adults, setAdults] = React.useState(1);
-  const [children, setChildren] = React.useState(0);
+  const [child, setChild] = React.useState(0);
   const [babies, setBabies] = React.useState(0);
 
   React.useEffect(() => {
@@ -64,8 +64,8 @@ export const StateFormFindFlights = ({
     setReturnDate,
     adults,
     setAdults,
-    children,
-    setChildren,
+    child,
+    setChild,
     babies,
     setBabies,
   };

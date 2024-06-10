@@ -9,7 +9,6 @@ import Country from "./Country";
 import ValidUntil from "./ValidUntil";
 
 export interface AllPassengersProps {
-  // index: number;
   register: any;
   departureDate: Date | undefined;
   setDepartureDate: any;
@@ -18,7 +17,6 @@ export interface AllPassengersProps {
 }
 
 export default function AllPassengers({
-  // index,
   register,
   departureDate,
   setDepartureDate,
@@ -29,7 +27,7 @@ export default function AllPassengers({
     <>
       <div className="bg-black rounded-t-xl mt-3 text-white p-3">
         <Labels className="font-bold">
-          Passenger's Details 1 - Adult
+          Passenger`s Details 1 - Adult
         </Labels>
       </div>
 

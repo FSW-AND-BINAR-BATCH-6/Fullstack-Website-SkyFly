@@ -113,7 +113,7 @@ export default function FormLogin() {
         </Button> */}
       </Form>
       <div className="text-center mt-7">
-        don't have an account?{" "}
+        don`t have an account?{" "}
         <Link href="/register" className="text-blue-700 font-bold">
           Register here
         </Link>

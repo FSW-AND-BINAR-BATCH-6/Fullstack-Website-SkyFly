@@ -103,7 +103,7 @@ export default function FormReset() {
         </form>
       </Form>
       <div className="text-center mt-7">
-        don't have an account?{" "}
+        don`t have an account?{" "}
         <Link href="/register" className="text-blue-700 font-bold">
           Register here
         </Link>

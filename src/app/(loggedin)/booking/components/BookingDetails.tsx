@@ -11,7 +11,7 @@ export default function BookingDetails() {
       </div>
 
       <div className="bg-black rounded-t-xl mt-3 text-white p-3">
-        <Labels className="font-bold">Customer's Details</Labels>
+        <Labels className="font-bold">Customer`s Details</Labels>
       </div>
 
       <div className="px-5 py-3 borders border-black">

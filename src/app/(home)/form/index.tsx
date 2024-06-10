@@ -55,8 +55,8 @@ export default function FormFindFlights() {
     setReturnDate,
     adults,
     setAdults,
-    children,
-    setChildren,
+    child,
+    setChild,
     babies,
     setBabies,
   } = StateFormFindFlights({ setValue, clearErrors });
@@ -104,7 +104,7 @@ export default function FormFindFlights() {
   };
 
   const handleSavePassengers = () => {
-    const totalPassengers = adults + children + babies;
+    const totalPassengers = adults + child + babies;
     setValue("passengers", `${totalPassengers} People`);
     clearErrors("passengers");
     setOpenPassengers(false);
@@ -113,7 +113,7 @@ export default function FormFindFlights() {
   const onSubmit = (data: FormData) => {
     const passengerDescriptions = [
       `${adults} adults`,
-      `${children} children`,
+      `${child} children`,
       `${babies} babies`,
     ].filter((desc) => !desc.startsWith("0"));
 
@@ -209,8 +209,8 @@ export default function FormFindFlights() {
                   openPassengers={openPassengers}
                   adults={adults}
                   setAdults={setAdults}
-                  children={children}
-                  setChildren={setChildren}
+                  child={child}
+                  setChild={setChild}
                   babies={babies}
                   setBabies={setBabies}
                   handleSavePassengers={handleSavePassengers}

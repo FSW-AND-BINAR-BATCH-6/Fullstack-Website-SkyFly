@@ -32,7 +32,7 @@ export default function PassengersDetails() {
   return (
     <>
       <div>
-        <Labels className="font-bold">Passenger's Details</Labels>
+        <Labels className="font-bold">Passenger`s Details</Labels>
       </div>
 
       {/* {user.map((users: any, index: number) => ( */}

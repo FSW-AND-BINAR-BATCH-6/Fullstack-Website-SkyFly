@@ -16,8 +16,8 @@ interface PassengersProps {
   openPassengers: boolean;
   adults: number;
   setAdults: (value: number) => void;
-  children: number;
-  setChildren: (value: number) => void;
+  child: number;
+  setChild: (value: number) => void;
   babies: number;
   setBabies: (value: number) => void;
   handleSavePassengers: () => void;
@@ -30,8 +30,8 @@ export default function Passengers({
   openPassengers,
   adults,
   setAdults,
-  children,
-  setChildren,
+  child,
+  setChild,
   babies,
   setBabies,
   handleSavePassengers,
@@ -72,8 +72,8 @@ export default function Passengers({
               icon={User}
               label="Children"
               description="(2 - 11 years)"
-              value={children}
-              onChange={setChildren}
+              value={child}
+              onChange={setChild}
             />
             <PassengerType
               icon={Baby}
