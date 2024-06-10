@@ -1,9 +1,9 @@
 "use client";
 
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
+import { formSchema } from "./validation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,33 +16,31 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Labels } from "@/components/ui/labels";
-
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "Name must be at least 3 characters" }),
-  email: z.string().email({ message: "Invalid email address" }),
-  phone: z
-    .string()
-    .min(10, { message: "Invalid phone number" })
-    .max(12, { message: "Invalid phone number" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
-});
+import { useRouter } from "next/navigation";
+import { setCookie } from "cookies-next";
+import { registerUser } from "./actions";
 
 export default function FormRegister() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
-      phone: "",
+      phoneNumber: "",
       password: "",
     },
   });
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      const response = await registerUser(data);
+      setCookie("token", response._token, { maxAge: 60 * 60 * 24 }); // expires 1 day
+      router.push("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   return (
     <div className="w-[48%]">
@@ -102,19 +100,21 @@ export default function FormRegister() {
           />
           <FormField
             control={form.control}
-            name="phone"
+            name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="phone">Phone Number</FormLabel>
+                <FormLabel htmlFor="phoneNumber">
+                  Phone Number
+                </FormLabel>
                 <FormControl>
                   <Input
-                    id="phone"
+                    id="phoneNumber"
                     type="number"
                     placeholder="0875 7436 1473"
                     autoComplete="off"
                     {...field}
                     className={
-                      form.formState.errors.phone
+                      form.formState.errors.phoneNumber
                         ? "border-red-700"
                         : ""
                     }
@@ -160,9 +160,6 @@ export default function FormRegister() {
             Submit
           </Button>
         </form>
-        {/* <Button type="submit" className="w-full mt-2">
-          Register With Gmail
-        </Button> */}
       </Form>
       <div className="text-center mt-7">
         already have an account?{" "}

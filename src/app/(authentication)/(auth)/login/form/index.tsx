@@ -17,8 +17,11 @@ import { Input } from "@/components/ui/input";
 import { loginUser } from "./actions";
 import Link from "next/link";
 import { Labels } from "@/components/ui/labels";
+import { useRouter } from "next/navigation";
+import { setCookie } from "cookies-next";
 
 export default function FormLogin() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -28,14 +31,12 @@ export default function FormLogin() {
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log("Form data:", data);
     try {
       const response = await loginUser(data);
-      console.log("Login successful:", response);
-      // Handle successful login (e.g., redirect to dashboard)
+      setCookie("token", response._token, { maxAge: 60 * 60 * 24 }); // expires 1 day
+      router.push("/");
     } catch (error) {
       console.error("Login failed:", error);
-      // Handle login error (e.g., show error message)
     }
   };
 
@@ -108,9 +109,6 @@ export default function FormLogin() {
             Submit
           </Button>
         </form>
-        {/* <Button type="submit" className="w-full mt-2">
-          Login With Gmail
-        </Button> */}
       </Form>
       <div className="text-center mt-7">
         don`t have an account?{" "}
