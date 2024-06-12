@@ -1,4 +1,4 @@
-import FormReset from "./components/form-reset";
+import FormReset from "./form";
 
 export default function PasswordResetPage() {
   return (
