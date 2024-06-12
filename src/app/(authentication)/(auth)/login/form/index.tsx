@@ -21,7 +21,7 @@ import { Labels } from "@/components/ui/labels";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
 import { ToastProvider } from "@/context/ToastContext";
-import useAction from "@/hooks/useAction";
+import { UseAction } from "@/hooks/useAction";
 
 export default function FormLogin() {
   const router = useRouter();
@@ -34,7 +34,7 @@ export default function FormLogin() {
   });
 
   const { isLoading: loginLoading, handleAction: handleLogin } =
-    useAction(() => loginUser(form.getValues()), {
+    UseAction(() => loginUser(form.getValues()), {
       loadingMessage: "Logging in...",
       duration: 10000,
       onSuccess: (response: any) => {
@@ -51,7 +51,7 @@ export default function FormLogin() {
       },
     });
 
-  const { handleAction: handleForgotPassword } = useAction(
+  const { handleAction: handleForgotPassword } = UseAction(
     () => forgotPassword({ email: form.getValues().email }),
     {
       loadingMessage: "Sending email...",

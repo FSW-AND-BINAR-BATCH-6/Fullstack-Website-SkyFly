@@ -7,7 +7,7 @@ interface ActionOptions {
   onSuccess?: any;
 }
 
-const useAction = (
+export const UseAction = (
   actionFunction: () => Promise<any>,
   options: ActionOptions
 ) => {
@@ -56,5 +56,3 @@ const useAction = (
 
   return { isLoading, handleAction };
 };
-
-export default useAction;
