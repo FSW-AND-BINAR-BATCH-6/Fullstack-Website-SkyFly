@@ -9,7 +9,7 @@ interface ApiResponse<T> {
   _token?: string;
 }
 
-const useApi = async <T>(
+export const UseApi = async <T>(
   method: "get" | "post" | "put" | "delete",
   url: string,
   data?: any
@@ -36,5 +36,3 @@ const useApi = async <T>(
     }
   }
 };
-
-export default useApi;
