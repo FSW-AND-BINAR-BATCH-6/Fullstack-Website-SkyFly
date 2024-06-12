@@ -5,6 +5,7 @@ import { Labels } from "@/components/ui/labels";
 import { ArrowLeftIcon, ArrowUpDown, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import Logout from "./integration/Logout";
 
 export default function AccountPage() {
   return (
@@ -67,20 +68,7 @@ export default function AccountPage() {
 
           <hr className="my-3 border border-black/20" />
 
-          <div className="flex">
-            <div>
-              <Image
-                src="/assets/fi_log-out.svg"
-                width={100}
-                height={100}
-                alt="settings"
-                className="cursor-pointer h-5 w-5 bg-cover"
-              />
-            </div>
-            <div>
-              <Labels className="ml-3">Logout</Labels>
-            </div>
-          </div>
+          <Logout />
         </div>
         <div className="w-3/5 p-5 rounded-sm shadow-xl border border-black/20">
           <div className="flex flex-col">

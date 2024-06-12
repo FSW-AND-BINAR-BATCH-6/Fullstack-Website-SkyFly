@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { LogInIcon, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import IsLogin from "./IsLogin";
+import { ToastProvider } from "@/context/ToastContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -49,17 +50,12 @@ export default function HomeLayout({
               </div>
             </div>
 
-            <div className="bg-red-200s w-1/2 flex items-center justify-end mr-14">
-              <Link href="/login">
-                <Button className="">
-                  <LogInIcon className="w-5 h-5 mr-2" />
-                  Login
-                </Button>
-              </Link>
-            </div>
+            <IsLogin />
           </nav>
 
-          <section>{children}</section>
+          <section>
+            <ToastProvider>{children}</ToastProvider>
+          </section>
         </section>
       </body>
     </html>

@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -19,9 +20,11 @@ import { Labels } from "@/components/ui/labels";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
 import { registerUser } from "./actions";
+import { toast, Toaster } from "react-hot-toast";
 
 export default function FormRegister() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -33,17 +36,40 @@ export default function FormRegister() {
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    try {
-      const response = await registerUser(data);
-      setCookie("token", response._token, { maxAge: 60 * 60 * 24 }); // expires 1 day
-      router.push("/");
-    } catch (error) {
-      console.error("Login failed:", error);
-    }
+    setIsLoading(true);
+    toast
+      .promise(
+        registerUser(data),
+        {
+          loading: "Sending Otp...",
+          success: (response) => {
+            setCookie("token", response._token, {
+              maxAge: 60 * 60 * 24,
+            }); // expires 1 day
+            router.push("/otp");
+            return <b>{response.message}</b>;
+          },
+          error: (error) => {
+            console.error("Register failed:", error);
+            return (
+              <b>
+                {error.response?.data?.message || "Register failed!"}
+              </b>
+            );
+          },
+        },
+        {
+          duration: 10000, // Set duration to 10 seconds
+        }
+      )
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
     <div className="w-[48%]">
+      <Toaster position="top-right" reverseOrder={false} />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
@@ -156,8 +182,12 @@ export default function FormRegister() {
             )}
           />
 
-          <Button type="submit" className="w-full">
-            Submit
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {isLoading ? "Loading..." : "Submit"}
           </Button>
         </form>
       </Form>
