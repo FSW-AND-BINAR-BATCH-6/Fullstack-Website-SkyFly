@@ -7,7 +7,7 @@ interface ActionOptions {
   onSuccess?: any;
 }
 
-export const UseAction = (
+export const CostumeAction = (
   actionFunction: () => Promise<any>,
   options: ActionOptions
 ) => {

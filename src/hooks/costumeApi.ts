@@ -9,7 +9,7 @@ interface ApiResponse<T> {
   _token?: string;
 }
 
-export const UseApi = async <T>(
+export const CostumeApi = async <T>(
   method: "get" | "post" | "put" | "delete",
   url: string,
   data?: any

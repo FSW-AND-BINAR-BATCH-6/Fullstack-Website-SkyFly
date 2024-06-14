@@ -1,6 +1,6 @@
 "use server";
 
-import { UseApi } from "@/hooks/UseApi";
+import { CostumeApi } from "@/hooks/costumeApi";
 
 interface LoginData {
   email: string;
@@ -12,7 +12,7 @@ interface ForgotPassword {
 }
 
 export const loginUser = async (data: LoginData) => {
-  return await UseApi<LoginData>(
+  return await CostumeApi<LoginData>(
     "post",
     "https://backend-skyfly-c1.vercel.app/api/v1/auth/login",
     data
@@ -20,7 +20,7 @@ export const loginUser = async (data: LoginData) => {
 };
 
 export const forgotPassword = async (data: ForgotPassword) => {
-  return await UseApi<ForgotPassword>(
+  return await CostumeApi<ForgotPassword>(
     "post",
     "https://backend-skyfly-c1.vercel.app/api/v1/auth/forgetPassword",
     data
