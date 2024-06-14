@@ -13,7 +13,7 @@ import React, { FC, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface FlightBookingProps {
-  flightId: string;
+  flightId: string | null;
 }
 
 const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
@@ -24,14 +24,18 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
 
   useEffect(() => {
     const fetchFlightsById = async () => {
-      try {
-        const data = await getFlightById(flightId);
-        setFlightsById([data]);
-      } catch (err) {
-        console.error("Failed to fetch flight details:", err);
-        setError("Failed to fetch flight details");
-      } finally {
-        setLoading(false);
+      if (flightId) {
+        try {
+          const data = await getFlightById(flightId);
+          setFlightsById([data]);
+        } catch (err) {
+          console.error("Failed to fetch flight details:", err);
+          setError("Failed to fetch flight details");
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(true);
       }
     };
 
