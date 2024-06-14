@@ -45,7 +45,7 @@ export default function FormRegister() {
           success: (response) => {
             setCookie("token", response._token, {
               maxAge: 60 * 60 * 24,
-            }); // expires 1 day
+            });
             router.push("/otp");
             return <b>{response.message}</b>;
           },
@@ -59,7 +59,7 @@ export default function FormRegister() {
           },
         },
         {
-          duration: 10000, // Set duration to 10 seconds
+          duration: 10000,
         }
       )
       .finally(() => {

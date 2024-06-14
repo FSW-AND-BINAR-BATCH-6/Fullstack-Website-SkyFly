@@ -5,13 +5,12 @@ import axios from "axios";
 interface PasswordReset {
   password: string;
   confirmPassword: string;
-  token: string;
 }
 
 export const passwordReset = async (data: PasswordReset) => {
   try {
     const response = await axios.put(
-      `https://backend-skyfly-c1.vercel.app/api/v1/auth/resetPassword?token=${data.token}`,
+      `https://backend-skyfly-c1.vercel.app/api/v1/auth/resetPassword?token=`,
       data
     );
     return response.data;

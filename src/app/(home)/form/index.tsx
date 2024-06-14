@@ -24,10 +24,12 @@ import Passengers from "./components/Passengers";
 import SeatClass from "./components/SeatClass";
 import { StateFormFindFlights } from "./components/StateFormFindFlights";
 import CommandDialogComponents from "./components/CommandDialogComponents";
+import { useRouter } from "next/navigation";
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function FormFindFlights() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -124,7 +126,7 @@ export default function FormFindFlights() {
 
     console.log("Form Data:", dataWithPassengers);
 
-    window.location.href = "/findflights";
+    router.push("/findflights");
   };
 
   return (

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Labels } from "@/components/ui/labels";
 import Image from "next/image";
 
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/accordion";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import ButtonCheckout from "./ButtonCheckout";
 
 export default function PaymentPage() {
   return (
@@ -171,7 +171,7 @@ export default function PaymentPage() {
               </div>
             </div>
 
-            <Button className="mt-5">Checkout</Button>
+            <ButtonCheckout />
           </div>
         </div>
 

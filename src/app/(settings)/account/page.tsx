@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Labels } from "@/components/ui/labels";
 import { ArrowLeftIcon, ArrowUpDown, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Logout from "./integration/Logout";
+import FormAccount from "./form";
 
 export default function AccountPage() {
   return (
@@ -71,98 +70,7 @@ export default function AccountPage() {
           <Logout />
         </div>
         <div className="w-3/5 p-5 rounded-sm shadow-xl border border-black/20">
-          <div className="flex flex-col">
-            <div>
-              <Labels className="font-bold">Edit Profile Data</Labels>
-            </div>
-            <div className="bg-black rounded-t-xl mt-3 text-white p-3">
-              <Labels className="font-bold">Personal Data</Labels>
-            </div>
-            <div className="px-5 py-3">
-              <div>
-                <Label className="font-bold">Full Name</Label>
-              </div>
-
-              <div>
-                <Input
-                  id="from"
-                  name="from"
-                  type="text"
-                  // readOnly
-                  placeholder="Harry"
-                  className="my-1"
-                  // {...register("from")}
-                  // onClick={() => setOpenField("from")}
-                  // className={`ml-3 ${
-                  //   errors.from ? "border-red-700" : ""
-                  // }`}
-                />
-                {/* {errors.from && ( */}
-                <p className="text-red-500 text-xs ml-1">
-                  {/* {errors.from.message} */}
-                  Fullname is required
-                </p>
-                {/* )} */}
-              </div>
-
-              <div className="mt-3">
-                <div>
-                  <Label className="font-bold">Phone Number</Label>
-                </div>
-
-                <div>
-                  <Input
-                    id="from"
-                    name="from"
-                    type="number"
-                    // readOnly
-                    placeholder="0875 7436 1473"
-                    className="my-1"
-                    // {...register("from")}
-                    // onClick={() => setOpenField("from")}
-                    // className={`ml-3 ${
-                    //   errors.from ? "border-red-700" : ""
-                    // }`}
-                  />
-                  {/* {errors.from && ( */}
-                  <p className="text-red-500 text-xs ml-1">
-                    {/* {errors.from.message} */}
-                    Phone Number is required
-                  </p>
-                  {/* )} */}
-                </div>
-              </div>
-
-              <div className="mt-3">
-                <div>
-                  <Label className="font-bold">Email</Label>
-                </div>
-
-                <div>
-                  <Input
-                    id="from"
-                    name="from"
-                    type="email"
-                    // readOnly
-                    placeholder="jhondoe@gmail.com"
-                    className="my-1"
-                    // {...register("from")}
-                    // onClick={() => setOpenField("from")}
-                    // className={`ml-3 ${
-                    //   errors.from ? "border-red-700" : ""
-                    // }`}
-                  />
-                  {/* {errors.from && ( */}
-                  <p className="text-red-500 text-xs ml-1">
-                    {/* {errors.from.message} */}
-                    Email is required
-                  </p>
-                  {/* )} */}
-                </div>
-              </div>
-              <Button className="mt-5 w-full">Save Changes</Button>
-            </div>
-          </div>
+          <FormAccount />
         </div>
       </div>
     </>
