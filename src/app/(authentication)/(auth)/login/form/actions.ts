@@ -1,6 +1,6 @@
 "use server";
 
-import { UseApi } from "@/hooks/useApi";
+import { UseApi } from "@/hooks/UseApi";
 
 interface LoginData {
   email: string;

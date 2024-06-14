@@ -1,9 +1,11 @@
 "use client";
 
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Labels } from "@/components/ui/labels";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { accountSchema } from "./validation";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -13,19 +15,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { getUserName } from "./actions";
 import { getCookie } from "cookies-next";
-import { Switch } from "@/components/ui/switch";
-import { accountSchema } from "@/app/(settings)/account/form/validation";
-import { getUserName } from "@/app/(settings)/account/form/actions";
 
-export default function BookingDetails() {
-  const [showFamilyName, setShowFamilyName] = useState(false);
+export default function FormAccount() {
   const form = useForm<z.infer<typeof accountSchema>>({
     resolver: zodResolver(accountSchema),
     defaultValues: {
       fullname: "",
-      familyName: "",
       phoneNumber: "",
       email: "",
     },
@@ -49,22 +47,20 @@ export default function BookingDetails() {
     };
 
     getName();
-  }, [form]);
+  }, []);
 
   const onSubmit = async (data: z.infer<typeof accountSchema>) => {
     console.log(data);
   };
 
   return (
-    <>
+    <div className="flex flex-col">
       <div>
-        <Labels className="font-bold">Booking Details</Labels>
+        <Labels className="font-bold">Edit Profile Data</Labels>
       </div>
-
       <div className="bg-black rounded-t-xl mt-3 text-white p-3">
-        <Labels className="font-bold">Customer`s Details</Labels>
+        <Labels className="font-bold">Personal Data</Labels>
       </div>
-
       <div className="px-5 py-3">
         <Form {...form}>
           <form
@@ -76,9 +72,7 @@ export default function BookingDetails() {
               name="fullname"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold" htmlFor="fullname">
-                    Full Name
-                  </FormLabel>
+                  <FormLabel htmlFor="fullname">Full Name</FormLabel>
                   <FormControl>
                     <Input
                       id="fullname"
@@ -97,58 +91,12 @@ export default function BookingDetails() {
                 </FormItem>
               )}
             />
-            <div className="py-3">
-              <div className="flex flex-row">
-                <div>
-                  <Labels>Have a Family Name?</Labels>
-                </div>
-                <div className="ml-auto">
-                  <Switch
-                    onClick={() => setShowFamilyName(!showFamilyName)}
-                  />
-                </div>
-              </div>
-            </div>
-            {showFamilyName && (
-              <FormField
-                control={form.control}
-                name="familyName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel
-                      className="font-bold"
-                      htmlFor="familyName"
-                    >
-                      Family Name
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="familyName"
-                        type="text"
-                        placeholder="Harry"
-                        autoComplete="off"
-                        {...field}
-                        className={
-                          form.formState.errors.familyName
-                            ? "border-red-700"
-                            : ""
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
             <FormField
               control={form.control}
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel
-                    className="font-bold"
-                    htmlFor="phoneNumber"
-                  >
+                  <FormLabel htmlFor="phoneNumber">
                     Phone Number
                   </FormLabel>
                   <FormControl>
@@ -174,9 +122,7 @@ export default function BookingDetails() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold" htmlFor="email">
-                    Email
-                  </FormLabel>
+                  <FormLabel htmlFor="email">Email</FormLabel>
                   <FormControl>
                     <Input
                       id="email"
@@ -189,15 +135,21 @@ export default function BookingDetails() {
                           ? "border-red-700"
                           : ""
                       }
+                      style={{ marginBottom: "7px" }}
                     />
                   </FormControl>
-                  <FormMessage style={{ marginTop: "1px" }} />
+                  <FormMessage
+                    style={{ marginBottom: "7px", marginTop: "1px" }}
+                  />
                 </FormItem>
               )}
             />
+            <Button type="submit" className="w-full">
+              Save Changes
+            </Button>
           </form>
         </Form>
       </div>
-    </>
+    </div>
   );
 }

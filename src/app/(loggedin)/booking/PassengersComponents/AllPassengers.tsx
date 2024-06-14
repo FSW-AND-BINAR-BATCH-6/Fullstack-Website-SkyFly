@@ -25,12 +25,6 @@ export default function AllPassengers({
 }: AllPassengersProps) {
   return (
     <>
-      <div className="bg-black rounded-t-xl mt-3 text-white p-3">
-        <Labels className="font-bold">
-          Passenger`s Details 1 - Adult
-        </Labels>
-      </div>
-
       <div className="px-5 py-3 borders border-black">
         <SelectTitle />
         <InputFullname />

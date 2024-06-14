@@ -21,7 +21,7 @@ import { Labels } from "@/components/ui/labels";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
 import { ToastProvider } from "@/context/ToastContext";
-import { UseAction } from "@/hooks/useAction";
+import { UseAction } from "@/hooks/UseAction";
 
 export default function FormLogin() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function FormLogin() {
   const { isLoading: loginLoading, handleAction: handleLogin } =
     UseAction(() => loginUser(form.getValues()), {
       loadingMessage: "Logging in...",
-      duration: 10000,
+      duration: 5000,
       onSuccess: (response: any) => {
         ["isLogin", "token"].forEach((key, i) =>
           setCookie(

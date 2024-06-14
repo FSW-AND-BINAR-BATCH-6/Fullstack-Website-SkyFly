@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import { Input } from "@/components/ui/input";
-import { Bell, List, LogInIcon, Search, User } from "lucide-react";
+import { Bell, List, Search, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -13,7 +13,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Labels } from "@/components/ui/labels";
 import Timer from "./booking/components/Timer";
 
 export const metadata: Metadata = {
@@ -107,11 +106,7 @@ export default function LoggedinLayout({
             </div>
           </section>
 
-          <section>
-            <div className="w-4/5 mx-auto bg-reds text-white flex items-center justify-center rounded-2xl mb-5 py-4 px-5">
-              <Timer />
-            </div>
-          </section>
+          <Timer />
 
           <section>
             <div className="w-full mx-auto border-b mt-5 border-black/20"></div>
