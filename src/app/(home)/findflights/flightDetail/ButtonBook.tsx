@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import React, { FC, useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 interface ButtonBookProps {
   flightId: string;
@@ -10,7 +9,6 @@ interface ButtonBookProps {
 
 const ButtonBook: FC<ButtonBookProps> = ({ flightId }) => {
   const [token, setToken] = useState<string | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const tokenFromCookie = getCookie("token");
@@ -23,7 +21,7 @@ const ButtonBook: FC<ButtonBookProps> = ({ flightId }) => {
         "You must to login first, before booking a flights!"
       );
     } else {
-      router.push(`/booking/${flightId}`);
+      window.location.href = `/booking/${flightId}`;
     }
   };
 
