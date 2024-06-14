@@ -1,5 +1,5 @@
-import BookingDetailings from "./[flightId]/page";
+import BookingDetailings from "./BookingDetailings";
 
 export default function bookingPage() {
-  return <BookingDetailings params={{ flightId: "1" }} />;
+  return <BookingDetailings />;
 }

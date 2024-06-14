@@ -3,21 +3,27 @@
 import * as React from "react";
 import { Labels } from "@/components/ui/labels";
 import { Button } from "@/components/ui/button";
-import BookingDetails from "../components/BookingDetails";
-import PassengersDetails from "../components/passengersDetails/PassengersDetails";
-import FlightBooking from "../components/FlightBooking";
 import Link from "next/link";
-import { SeatSelector } from "../components/SeatSelector";
-import { generateSeats } from "../components/generateSeats";
+import { getCookie } from "cookies-next";
+import { generateSeats } from "./components/generateSeats";
+import BookingDetails from "./components/BookingDetails";
+import PassengersDetails from "./components/passengersDetails/PassengersDetails";
+import { SeatSelector } from "./components/SeatSelector";
+import FlightBooking from "./components/FlightBooking";
 
-export default function BookingDetailings({
-  params,
-}: {
-  params: { flightId: string };
-}) {
+export default function BookingDetailings() {
+  const [flightId, setFlightId] = React.useState<string | null>(null);
   const [selectedSeats, setSelectedSeats] = React.useState<number[]>(
     []
   );
+
+  React.useEffect(() => {
+    const bookingDetails = getCookie("bookingDetails");
+    console.log(bookingDetails);
+    setFlightId(
+      bookingDetails !== undefined ? (bookingDetails as string) : null
+    );
+  }, []);
 
   const handleSeatChange = (seatId: number) => {
     setSelectedSeats((prevSelectedSeats) =>
@@ -60,7 +66,7 @@ export default function BookingDetailings({
             </Link>
           </div>
         </div>
-        <FlightBooking flightId={params.flightId} />
+        <FlightBooking flightId={flightId} />
       </div>
     </div>
   );

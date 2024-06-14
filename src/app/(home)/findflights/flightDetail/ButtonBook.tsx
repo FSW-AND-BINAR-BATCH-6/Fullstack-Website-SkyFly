@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import React, { FC, useEffect, useState } from "react";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { toast } from "react-hot-toast";
 
 interface ButtonBookProps {
@@ -21,7 +21,8 @@ const ButtonBook: FC<ButtonBookProps> = ({ flightId }) => {
         "You must to login first, before booking a flights!"
       );
     } else {
-      window.location.href = `/booking/${flightId}`;
+      setCookie("bookingDetails", flightId.toString());
+      window.location.href = `/booking`;
     }
   };
 
