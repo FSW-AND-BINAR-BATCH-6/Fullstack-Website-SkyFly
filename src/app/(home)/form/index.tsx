@@ -124,9 +124,24 @@ export default function FormFindFlights() {
       passengerDescriptions,
     };
 
+    const totalPassengers = adults + child + babies; 
+    const queryParams = {
+      totalPassengers: totalPassengers.toString(),
+      departureDate: data.departureDate,
+      returnDate: data.returnDate || "",
+      from: data.from,
+      to: data.to,
+      seatClass: data.seatClass,
+      passengers: data.passengers,
+    };
+
+    const filteredQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([_, value]) => value !== "")
+    );
+    const searchParams = new URLSearchParams(filteredQueryParams).toString();
     console.log("Form Data:", dataWithPassengers);
 
-    router.push("/findflights");
+    router.push(`/findflights?${searchParams}`);
   };
 
   return (

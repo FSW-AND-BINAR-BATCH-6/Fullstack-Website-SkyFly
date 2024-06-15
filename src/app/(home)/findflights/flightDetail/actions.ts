@@ -53,7 +53,6 @@ export const getFlights = async (): Promise<Flight[]> => {
     );
 
     const flights = response.data.data;
-
     return flights;
   } catch (err) {
     console.log(err);
@@ -85,7 +84,6 @@ export const getAirlines = async (): Promise<Airline[]> => {
     );
 
     const airlines = response.data.data;
-
     return airlines;
   } catch (err) {
     console.log(err);
