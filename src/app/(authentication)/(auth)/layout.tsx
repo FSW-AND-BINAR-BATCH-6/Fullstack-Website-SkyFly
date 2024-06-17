@@ -27,7 +27,7 @@ export default function AuthLayout({
             />
           </Link>
         </section>
-        <section className="grow mr-5 min-h-screen pt-8 overflow-y-auto">
+        <section className="grow sm:mr-5 min-h-screen pt-8 overflow-y-auto">
           {children}
         </section>
       </section>

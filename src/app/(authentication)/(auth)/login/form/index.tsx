@@ -191,7 +191,7 @@ export default function FormLogin() {
                 <FormLabel htmlFor="password">Password</FormLabel>
                 <Labels
                   onClick={handleForgotPassword}
-                  className="float-end text-blue-700 cursor-pointer"
+                  className="float-right text-blue-700 cursor-pointer"
                 >
                   Forgot Password?
                 </Labels>
