@@ -290,7 +290,7 @@ export default function FormOtp() {
                 control={form.control}
                 name="otp"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex justify-center">
                     <FormControl>
                       <InputOTP maxLength={6} {...field}>
                         <InputOTPGroup>
