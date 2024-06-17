@@ -3,12 +3,12 @@
 import axios from "axios";
 
 export interface SeatById {
-  flightId: string; //"clxelwz45001khwic2yt2z501"
-  id: string; //"clxelx0zb00hxhwicr5376ts1"
-  price: number; //1200000
-  seatNumber: string; //"1A"
-  status: string; //"available"
-  type: string; //"ECONOMY"
+  flightId: string;
+  id: string;
+  price: number;
+  seatNumber: string;
+  status: string;
+  type: string;
 }
 
 export const seatByFlightId = async (
@@ -16,7 +16,7 @@ export const seatByFlightId = async (
 ): Promise<SeatById> => {
   try {
     const response = await axios.get(
-      `https://backend-skyfly-c1.vercel.app/api/v1/flightSeats/flight/${id}`
+      `https://backend-skyfly-c1.vercel.app/api/v1/flightSeats/flight/${id}?limit=72`
     );
 
     const seat = response.data.data;

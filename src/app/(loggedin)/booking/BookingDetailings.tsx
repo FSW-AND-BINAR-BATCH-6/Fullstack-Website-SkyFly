@@ -5,7 +5,6 @@ import { Labels } from "@/components/ui/labels";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getCookie } from "cookies-next";
-import { generateSeats } from "./components/generateSeats";
 import BookingDetails from "./components/BookingDetails";
 import PassengersDetails from "./components/passengersDetails/PassengersDetails";
 import { SeatSelector } from "./components/SeatSelector";
@@ -13,7 +12,7 @@ import FlightBooking from "./components/FlightBooking";
 
 export default function BookingDetailings() {
   const [flightId, setFlightId] = React.useState<string | null>(null);
-  const [selectedSeats, setSelectedSeats] = React.useState<number[]>(
+  const [selectedSeats, setSelectedSeats] = React.useState<string[]>(
     []
   );
 
@@ -25,15 +24,13 @@ export default function BookingDetailings() {
     );
   }, []);
 
-  const handleSeatChange = (seatId: number) => {
+  const handleSeatChange = (seatId: string) => {
     setSelectedSeats((prevSelectedSeats) =>
       prevSelectedSeats.includes(seatId)
         ? prevSelectedSeats.filter((id) => id !== seatId)
         : [...prevSelectedSeats, seatId]
     );
   };
-
-  const seats = React.useMemo(() => generateSeats(), []);
 
   return (
     <div className="w-4/5 mx-auto mt-3 pb-20">
@@ -56,7 +53,6 @@ export default function BookingDetailings() {
                 </Labels>
               </div>
               <SeatSelector
-                seats={seats}
                 selectedSeats={selectedSeats}
                 handleSeatChange={handleSeatChange}
               />

@@ -132,16 +132,16 @@ export default function FormFindFlights() {
   return (
     <>
       <form id="form" name="form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="mx-10 my-5">
+        <div className="mx-4 my-5 sm:mx-10">
           <Labels className="font-bold text-lg">
             Choose special flight schedules on
             <span className="text-violet ml-1">Tiketku!</span>
           </Labels>
         </div>
 
-        <div className="mx-10">
-          <div className="flex">
-            <div className="flex w-1/2 justify-center">
+        <div className="mx-4 sm:mx-10">
+          <div className="flex flex-col sm:flex-row">
+            <div className="flex w-full sm:w-1/2 justify-center mb-4 sm:mb-0">
               <InputFrom
                 register={register}
                 errors={errors}
@@ -157,7 +157,7 @@ export default function FormFindFlights() {
               />
             </div>
 
-            <div className="flex w-1/2 justify-center">
+            <div className="flex w-full sm:w-1/2 justify-center">
               <InputTo
                 register={register}
                 errors={errors}
@@ -175,14 +175,14 @@ export default function FormFindFlights() {
           </div>
         </div>
 
-        <div className="mx-10 mt-10 mb-10">
-          <div className="flex">
-            <div className="flex w-1/2 justify-center">
-              <div className="flex items-center">
+        <div className="mx-4 mt-6 mb-6 sm:mx-10 sm:mt-10 sm:mb-10">
+          <div className="flex flex-col sm:flex-row">
+            <div className="flex flex-col sm:flex-row w-full sm:w-1/2 justify-center mb-4 sm:mb-0">
+              <div className="flex items-center justify-center w-full sm:w-auto">
                 <CalendarDaysIcon size={24} />
                 <Labels className="ml-3">Date</Labels>
               </div>
-              <div className="flex">
+              <div className="flex flex-col sm:flex-row">
                 <DepartureDate
                   register={register}
                   errors={errors}
@@ -200,10 +200,12 @@ export default function FormFindFlights() {
               </div>
             </div>
 
-            <div className="flex w-1/2 justify-center">
-              <div className="flex items-center">
+            <div className="flex flex-col sm:flex-row w-full sm:w-1/2 justify-center">
+              <div className="flex items-center justify-center w-full sm:w-auto sm:mb-0">
                 <Users size={24} />
                 <Labels className="ml-3">For</Labels>
+              </div>
+              <div className="flex flex-col sm:flex-row">
                 <Passengers
                   register={register}
                   errors={errors}

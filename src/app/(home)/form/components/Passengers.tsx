@@ -49,7 +49,7 @@ export default function Passengers({
         placeholder="1 People"
         onClick={() => setOpenPassengers(true)}
         {...register("passengers")}
-        className={`w-32 ${
+        className={`w-full sm:w-32 ${
           errors.passengers ? "border border-red-700" : ""
         }`}
       />
