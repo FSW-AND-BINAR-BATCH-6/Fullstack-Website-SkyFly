@@ -95,7 +95,7 @@ export default function FormReset() {
   };
 
   return (
-    <div className="w-[48%]">
+    <div className="w-[90%] sm:w-[48%]">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
