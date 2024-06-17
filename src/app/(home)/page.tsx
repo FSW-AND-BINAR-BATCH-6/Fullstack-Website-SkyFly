@@ -40,7 +40,7 @@ export default function Home() {
       </section>
 
       <section className="w-[90%] md:w-3/4 mx-auto mt-5">
-        <div className="flex flex-wrap gap-2 items-center sm:gap-4">
+        <div className="flex flex-wrap gap-1 items-center sm:gap-4">
           <Button>
             <Search className="w-4 h-4 mr-1" />
             View All
