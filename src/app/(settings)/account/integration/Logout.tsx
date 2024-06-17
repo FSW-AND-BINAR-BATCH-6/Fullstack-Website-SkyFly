@@ -2,21 +2,18 @@
 
 import { ToastProvider, useToast } from "@/context/ToastContext";
 import { Labels } from "@/components/ui/labels";
-import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { deleteCookie } from "@/hooks/deleteCookie";
 
 export default function Logout() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const deleteCookie = (name: any) => {
-    setCookie(name, "", { maxAge: -1 });
-  };
-
   const handleLogout = () => {
     deleteCookie("token");
-    deleteCookie("isLogin");
+    deleteCookie("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9");
+    deleteCookie("bookingDetails");
     toast.success("Logout Successfully");
     router.push("/");
   };

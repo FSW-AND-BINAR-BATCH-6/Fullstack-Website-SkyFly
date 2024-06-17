@@ -11,7 +11,9 @@ const ButtonBook: FC<ButtonBookProps> = ({ flightId }) => {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const tokenFromCookie = getCookie("token");
+    const tokenFromCookie = getCookie(
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    );
     setToken(tokenFromCookie ? tokenFromCookie.toString() : null);
   }, []);
 

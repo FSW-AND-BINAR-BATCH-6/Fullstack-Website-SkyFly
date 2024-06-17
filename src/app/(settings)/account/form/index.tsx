@@ -18,6 +18,7 @@ import {
 import { useEffect } from "react";
 import { getUserName } from "./actions";
 import { getCookie } from "cookies-next";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 export default function FormAccount() {
   const form = useForm<z.infer<typeof accountSchema>>({
@@ -47,7 +48,7 @@ export default function FormAccount() {
     };
 
     getName();
-  }, []);
+  }, [form]);
 
   const onSubmit = async (data: z.infer<typeof accountSchema>) => {
     console.log(data);
@@ -100,11 +101,10 @@ export default function FormAccount() {
                     Phone Number
                   </FormLabel>
                   <FormControl>
-                    <Input
+                    <PhoneInput
                       id="phoneNumber"
-                      type="number"
-                      placeholder="0875 7436 1473"
                       autoComplete="off"
+                      placeholder="875 7436 1473"
                       {...field}
                       className={
                         form.formState.errors.phoneNumber

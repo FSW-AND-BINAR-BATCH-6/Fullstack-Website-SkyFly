@@ -17,6 +17,16 @@ export const registerUser = async (data: RegisterData) => {
     );
     return response.data;
   } catch (error) {
-    console.log(error);
+    if (axios.isAxiosError(error)) {
+      return {
+        status: false,
+        message: error.response?.data?.message || error.message,
+      };
+    } else {
+      return {
+        status: false,
+        message: "An unexpected error occurred",
+      };
+    }
   }
 };

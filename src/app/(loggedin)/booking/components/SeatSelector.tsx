@@ -1,10 +1,32 @@
+import { useEffect } from "react";
 import { Seat } from "./generateSeats";
+import { seatByFlightId } from "./actionsSeat";
+import { getCookie } from "cookies-next";
+import toast from "react-hot-toast";
 
 export const SeatSelector: React.FC<{
   seats: Seat[];
   selectedSeats: number[];
   handleSeatChange: (seatId: number) => void;
 }> = ({ seats, selectedSeats, handleSeatChange }) => {
+  useEffect(() => {
+    const fetchSeats = async () => {
+      const seats = getCookie("bookingDetails");
+      if (typeof seats !== "string") {
+        toast.error("Seats is missing or invalid.");
+        return;
+      }
+      try {
+        const data = await seatByFlightId(seats);
+        console.log(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchSeats();
+  }, []);
+
   const renderSeats = (seatGroup: Seat[]) => (
     <>
       {seatGroup.map((seat) => (

@@ -18,6 +18,7 @@ import { getCookie } from "cookies-next";
 import { Switch } from "@/components/ui/switch";
 import { accountSchema } from "@/app/(settings)/account/form/validation";
 import { getUserName } from "@/app/(settings)/account/form/actions";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 export default function BookingDetails() {
   const [showFamilyName, setShowFamilyName] = useState(false);
@@ -152,11 +153,10 @@ export default function BookingDetails() {
                     Phone Number
                   </FormLabel>
                   <FormControl>
-                    <Input
+                    <PhoneInput
                       id="phoneNumber"
-                      type="number"
-                      placeholder="0875 7436 1473"
                       autoComplete="off"
+                      placeholder="875 7436 1473"
                       {...field}
                       className={
                         form.formState.errors.phoneNumber

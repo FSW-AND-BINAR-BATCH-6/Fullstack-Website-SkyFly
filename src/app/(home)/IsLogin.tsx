@@ -10,7 +10,7 @@ export default function IsLogin() {
   const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
-    const isLogin = getCookie("isLogin");
+    const isLogin = getCookie("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9");
     if (isLogin) {
       setLoggedIn(true);
     } else {
