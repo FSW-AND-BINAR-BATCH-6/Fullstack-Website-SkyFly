@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,14 +25,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
-import { toast, Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { getCookie, setCookie } from "cookies-next";
-import { ResendOtp, OtpData as sendOtpData } from "./actions";
 import { Labels } from "@/components/ui/labels";
+import {
+  getUserEmail,
+  OtpData,
+  OtpWithSms,
+  ResendOtp,
+} from "./actions";
+import { deleteCookie } from "@/hooks/deleteCookie";
 
 export default function FormOtp() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [emailUser, setEmailUser] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(60);
 
   useEffect(() => {
@@ -52,94 +59,192 @@ export default function FormOtp() {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof FormOtpSchema>) => {
-    setIsLoading(true);
+  useEffect(() => {
+    const getName = async () => {
+      try {
+        const token = getCookie("token") as string | undefined;
+        if (token) {
+          const data = await getUserEmail(token);
+          console.log(data.email);
+          setEmailUser(data.email);
+        } else {
+          console.error("Token not found");
+        }
+        const phone = getCookie("phoneNumber") as string | undefined;
+        if (phone) {
+          console.log(phone);
+          setPhoneNumber(phone);
+        }
+      } catch (err) {
+        console.error("Error fetching user name:", err);
+      }
+    };
+
+    getName();
+  }, []);
+
+  const handleSubmit = async (
+    data: z.infer<typeof FormOtpSchema>
+  ) => {
     const token = getCookie("token");
     if (typeof token !== "string") {
       toast.error("Token is missing or invalid.");
-      setIsLoading(false);
       return;
     }
 
     const requestData = { ...data, token };
-    toast
-      .promise(
-        sendOtpData(requestData),
+
+    try {
+      const promise = OtpData(requestData);
+
+      await toast.promise(
+        promise.then((response) => {
+          if (!response.status) {
+            throw new Error(response.message);
+          }
+          return response;
+        }),
         {
-          loading: "Verifying Otp...",
+          loading: "Sending Otp...",
           success: (response) => {
-            setCookie("isLogin", response.status, {
-              maxAge: 60 * 60 * 24,
-            });
             if (response.status) {
-              router.push("/");
+              deleteCookie("phoneNumber");
+              router.push("/login");
             }
-            return <b>{response.message}</b>;
+            return response.message;
           },
-          error: (error) => {
-            console.error("Verifying Otp failed:", error);
-            return (
-              <b>
-                {error.response?.data?.message ||
-                  "Verifying Otp failed!"}
-              </b>
-            );
-          },
+          error: (err) => err.message,
         },
         {
-          duration: 5000, // Set duration to 5 seconds
+          success: {
+            duration: 10000,
+            style: {
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              fontWeight: "bold",
+            },
+          },
         }
-      )
-      .finally(() => {
-        setIsLoading(false);
-      });
+      );
+
+      const response = await promise;
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleResendOtp = async () => {
-    setTimer(60);
-    setIsLoading(true);
     const token = getCookie("token");
     if (typeof token !== "string") {
       toast.error("Token is missing or invalid.");
-      setIsLoading(false);
       return;
     }
+
     const requestData = { token };
-    toast
-      .promise(
-        ResendOtp(requestData),
+
+    try {
+      const promise = ResendOtp(requestData);
+
+      await toast.promise(
+        promise.then((response) => {
+          if (!response.status) {
+            throw new Error(response.message);
+          }
+          return response;
+        }),
         {
-          loading: "Resending Otp...",
+          loading: "Sending Otp...",
           success: (response) => {
-            if (response.status === false) {
-              setCookie("isLogin", response._token, {
-                maxAge: 60 * 60 * 24,
-              });
+            if (response.status) {
+              setTimer(60);
+              setCookie("token", response._token);
             }
-            return <b>{response.message}</b>;
+            return response.message;
           },
-          error: (error) => {
-            console.error("Resending Otp failed:", error);
-            return (
-              <b>
-                {error.response?.data?.message ||
-                  "Verifying Otp failed!"}
-              </b>
-            );
-          },
+          error: (err) => err.message,
         },
         {
-          duration: 5000, // Set duration to 5 seconds
+          success: {
+            duration: 10000,
+            style: {
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              fontWeight: "bold",
+            },
+          },
         }
-      )
-      .finally(() => {
-        setIsLoading(false);
-      });
+      );
+
+      const response = await promise;
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleResendOtpWithSms = async () => {
+    setLoading(true);
+    const token = getCookie("token");
+    if (typeof token !== "string") {
+      toast.error("Token is missing or invalid.");
+      setLoading(false);
+      return;
+    }
+
+    const requestData = { phoneNumber, token };
+
+    try {
+      const promise = OtpWithSms(requestData);
+
+      await toast.promise(
+        promise.then((response) => {
+          if (!response.status) {
+            throw new Error(response.message);
+          }
+          return response;
+        }),
+        {
+          loading: "Sending Otp...",
+          success: (response) => {
+            if (response.status) {
+              setCookie("token", response._token);
+            }
+            return response.message;
+          },
+          error: (err) => err.message,
+        },
+        {
+          success: {
+            style: {
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              fontWeight: "bold",
+            },
+          },
+        }
+      );
+
+      const response = await promise;
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section>
-      <Toaster position="top-right" reverseOrder={false} />
       <nav className="border-b border-black/20 p-5">
         <div className="flex items-center justify-between">
           <Image
@@ -169,13 +274,16 @@ export default function FormOtp() {
               Input OTP Code
             </h1>
             <p className="text-gray text-sm">
-              Type in the 6-digit code sent to J*****@gmail.com
+              Type in the 6-digit code sent to{" "}
+              <span className="font-bold">
+                {emailUser.length === 0 ? "Loading......" : emailUser}
+              </span>
             </p>
           </div>
 
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-6"
             >
               <FormField
@@ -221,13 +329,22 @@ export default function FormOtp() {
 
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={form.formState.isSubmitting}
                 className="mt-8 w-[20rem] disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Loading..." : "Verify"}
+                {form.formState.isSubmitting
+                  ? "Loading..."
+                  : "Submit"}
               </Button>
             </form>
           </Form>
+          <Button
+            onClick={handleResendOtpWithSms}
+            disabled={loading}
+            className="mt-3 w-[20rem] disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {loading ? "Loading..." : "Resend OTP with SMS"}
+          </Button>
         </section>
       </section>
     </section>

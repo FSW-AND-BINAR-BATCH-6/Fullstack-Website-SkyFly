@@ -8,7 +8,7 @@ export const formSchema = z.object({
   phoneNumber: z
     .string()
     .min(10, { message: "Invalid phone number" })
-    .max(13, { message: "Invalid phone number" }),
+    .max(15, { message: "Invalid phone number" }),
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters" }),
