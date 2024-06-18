@@ -24,7 +24,19 @@ export const formatDate = (dateString: string) => {
   });
 };
 
-export const FlightDetail = () => {
+// get query data [Rizki]
+interface FlightDetailProps {
+  searchParams: {
+    totalPassengers?: string;
+    departureDate?: string;
+    from?: string;
+    to?: string;
+    seatClass?: string;
+  };
+}
+// -------------
+
+export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
   const [openStates, setOpenStates] = React.useState<{
     [key: string]: boolean;
   }>({});
@@ -33,10 +45,23 @@ export const FlightDetail = () => {
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
 
+  const query = {
+    departureAirport: searchParams.from,
+    arrivalAirport: searchParams.to,
+  };
+
+  const filteredQueryParams = Object.fromEntries(
+    Object.entries(query).filter(
+      ([_, value]) => value !== undefined && value !== ""
+    ) as [string, string][]
+  );
+
+  const filterQuery = new URLSearchParams(filteredQueryParams).toString();
+
   React.useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const data = await getFlights();
+        const data = await getFlights(filterQuery);
         setFlights(data);
       } catch (err) {
         setError("Failed to fetch flights");
@@ -62,9 +87,7 @@ export const FlightDetail = () => {
   }, []);
 
   const getAirlineName = (planeId: string) => {
-    const airline = airlines.find(
-      (airline) => airline.id === planeId
-    );
+    const airline = airlines.find((airline) => airline.id === planeId);
     return airline ? airline.name : "Jet Air";
   };
 
@@ -124,9 +147,7 @@ export const FlightDetail = () => {
     return (
       <div>
         {Array.from({ length: 3 }).map((_, index) => (
-          <React.Fragment key={index}>
-            {renderSkeleton()}
-          </React.Fragment>
+          <React.Fragment key={index}>{renderSkeleton()}</React.Fragment>
         ))}
       </div>
     );
@@ -175,16 +196,12 @@ export const FlightDetail = () => {
               <div className="flex">
                 <div className="flex mt-3 flex-col items-center">
                   <Label className="font-bold">
-                    {new Date(
-                      flight.departureDate
-                    ).toLocaleTimeString([], {
+                    {new Date(flight.departureDate).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
                   </Label>
-                  <Label className="mt-2">
-                    {flight.departureAirport.code}
-                  </Label>
+                  <Label className="mt-2">{flight.departureAirport.code}</Label>
                 </div>
 
                 <div className="mx-10 w-40">
@@ -205,18 +222,16 @@ export const FlightDetail = () => {
                       m
                     </Label>
                     <div className="border-t border-gray-500 w-full"></div>
-                    <Label>
-                      {flight.transit ? "Transit" : "Direct"}
-                    </Label>
+                    <Label>{flight.transit ? "Transit" : "Direct"}</Label>
                   </div>
                 </div>
 
                 <div className="flex mt-3 flex-col items-center">
                   <Label className="font-bold">
-                    {new Date(flight.arrivalDate).toLocaleTimeString(
-                      [],
-                      { hour: "2-digit", minute: "2-digit" }
-                    )}
+                    {new Date(flight.arrivalDate).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </Label>
                   <Label className="mt-2">
                     {flight.destinationAirport.code}
@@ -245,15 +260,11 @@ export const FlightDetail = () => {
               <hr className="mt-10  border border-black/20" />
               <div className="flex flex-col px-5">
                 <div className="mt-3">
-                  <Labels className="font-bold">
-                    Flight Details
-                  </Labels>
+                  <Labels className="font-bold">Flight Details</Labels>
                 </div>
                 <div className="flex mt-3">
                   <Labels className="font-bold">
-                    {new Date(
-                      flight.departureDate
-                    ).toLocaleTimeString([], {
+                    {new Date(flight.departureDate).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
@@ -291,12 +302,8 @@ export const FlightDetail = () => {
                       </Labels>
                     </div>
                     <div className="mt-5">
-                      <Labels className="font-bold">
-                        Information:
-                      </Labels>
-                      <Labels className="flex flex-col">
-                        Baggage 20 kg
-                      </Labels>
+                      <Labels className="font-bold">Information:</Labels>
+                      <Labels className="flex flex-col">Baggage 20 kg</Labels>
                       <Labels>Cabin baggage 7 kg</Labels>
                       <Labels className="flex flex-col">
                         In Flight Entertainment
@@ -310,9 +317,7 @@ export const FlightDetail = () => {
                 <div className="py-2">
                   <div className="flex mt-3">
                     <Labels className="font-bold">
-                      {new Date(
-                        flight.arrivalDate
-                      ).toLocaleTimeString([], {
+                      {new Date(flight.arrivalDate).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}

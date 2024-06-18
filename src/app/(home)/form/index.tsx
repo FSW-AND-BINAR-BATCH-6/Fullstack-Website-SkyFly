@@ -131,9 +131,8 @@ export default function FormFindFlights() {
       returnDate: data.returnDate || "",
       from: data.from,
       to: data.to,
-      seatClass: data.seatClass,
-      passengers: data.passengers,
-    };
+      seatClass: data.seatClass
+      };
 
     const filteredQueryParams = Object.fromEntries(
       Object.entries(queryParams).filter(([_, value]) => value !== "")

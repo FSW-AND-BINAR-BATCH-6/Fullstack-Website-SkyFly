@@ -46,13 +46,15 @@ export interface FlightById {
   facilities: null | string;
 }
 
-export const getFlights = async (): Promise<Flight[]> => {
+export const getFlights = async (query: string): Promise<Flight[]> => {
   try {
     const response = await axios.get(
-      "https://backend-skyfly-c1.vercel.app/api/v1/flights"
+      `https://backend-skyfly-c1.vercel.app/api/v1/flights?${query}`
     );
 
     const flights = response.data.data;
+    console.log(flights)
+    console.log(query)
     return flights;
   } catch (err) {
     console.log(err);
