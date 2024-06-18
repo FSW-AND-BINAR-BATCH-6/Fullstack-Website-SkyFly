@@ -33,17 +33,17 @@ export default function BookingDetailings() {
   };
 
   return (
-    <div className="w-4/5 mx-auto mt-3 pb-20">
-      <div className="flex flex-row items-start flex-nowrap">
-        <div className="grow-0 w-3/5 p-3 borders border-black">
+    <div className="w-full lg:w-4/5 mx-auto mt-3 pb-20">
+      <div className="flex flex-col lg:flex-row items-start lg:flex-nowrap">
+        <div className="w-full lg:w-3/5 p-3 mb-5 lg:mb-0">
           <div className="flex flex-col">
-            <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20">
+            <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20 mb-5">
               <BookingDetails />
             </div>
-            <div className="flex flex-col p-5 mt-5 rounded-sm shadow-xl border border-black/20">
+            <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20 mb-5">
               <PassengersDetails />
             </div>
-            <div className="flex flex-col p-5 mt-5 rounded-sm shadow-xl border border-black/20">
+            <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20 mb-5">
               <div>
                 <Labels className="font-bold">Choose a Seat</Labels>
               </div>
