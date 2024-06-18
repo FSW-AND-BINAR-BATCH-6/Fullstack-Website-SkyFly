@@ -21,9 +21,9 @@ export default function HomeLayout({
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <section>
-          <nav className="border-b border-black/20 p-5 flex">
-            <div className="flex bg-yellow-200s w-1/2">
-              <div className="flex items-center justify-between ml-10">
+          <nav className="border-b border-black/20 p-5 flex flex-col md:flex-row items-center justify-between">
+            <div className="flex flex-col md:flex-row items-center w-full md:w-auto">
+              <div className="flex items-center justify-center md:justify-between mb-4 md:mb-0">
                 <Link href={"/"}>
                   <Image
                     src={"/assets/logo.svg"}
@@ -35,22 +35,22 @@ export default function HomeLayout({
                   />
                 </Link>
               </div>
-
-              <div className="flex items-center ml-[3rem] mt-1">
+              <div className="flex items-center w-full md:w-auto justify-center ml-[1.5rem] md:ml-[3rem]">
                 <Input
                   id="search"
                   name="search"
                   type="text"
-                  className="bg-gray-200 py-5 w-[20rem] pe-[3rem] rounded-xl"
+                  className="bg-gray-200 py-2 md:py-5 w-full md:w-[20rem] pe-[3rem] rounded-xl"
                   placeholder="Search here..."
                 />
-                <span>
-                  <Search className="w-5 h-5 ml-[-35px] text-gray-500" />
+                <span className="relative right-8">
+                  <Search className="w-5 h-5 text-gray-500" />
                 </span>
               </div>
             </div>
-
-            <IsLogin />
+            <div className="mt-4 md:mt-0 md:ml-auto flex justify-center">
+              <IsLogin />
+            </div>
           </nav>
 
           <section>

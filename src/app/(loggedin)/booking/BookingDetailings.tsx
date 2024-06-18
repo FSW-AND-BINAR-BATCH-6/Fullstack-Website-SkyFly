@@ -5,7 +5,6 @@ import { Labels } from "@/components/ui/labels";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getCookie } from "cookies-next";
-import { generateSeats } from "./components/generateSeats";
 import BookingDetails from "./components/BookingDetails";
 import PassengersDetails from "./components/passengersDetails/PassengersDetails";
 import { SeatSelector } from "./components/SeatSelector";
@@ -13,7 +12,7 @@ import FlightBooking from "./components/FlightBooking";
 
 export default function BookingDetailings() {
   const [flightId, setFlightId] = React.useState<string | null>(null);
-  const [selectedSeats, setSelectedSeats] = React.useState<number[]>(
+  const [selectedSeats, setSelectedSeats] = React.useState<string[]>(
     []
   );
 
@@ -25,7 +24,7 @@ export default function BookingDetailings() {
     );
   }, []);
 
-  const handleSeatChange = (seatId: number) => {
+  const handleSeatChange = (seatId: string) => {
     setSelectedSeats((prevSelectedSeats) =>
       prevSelectedSeats.includes(seatId)
         ? prevSelectedSeats.filter((id) => id !== seatId)
@@ -33,20 +32,18 @@ export default function BookingDetailings() {
     );
   };
 
-  const seats = React.useMemo(() => generateSeats(), []);
-
   return (
-    <div className="w-4/5 mx-auto mt-3 pb-20">
-      <div className="flex flex-row items-start flex-nowrap">
-        <div className="grow-0 w-3/5 p-3 borders border-black">
+    <div className="w-full lg:w-4/5 mx-auto mt-3 pb-20">
+      <div className="flex flex-col lg:flex-row items-start lg:flex-nowrap">
+        <div className="w-full lg:w-3/5 p-3 mb-5 lg:mb-0">
           <div className="flex flex-col">
-            <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20">
+            <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20 mb-5">
               <BookingDetails />
             </div>
-            <div className="flex flex-col p-5 mt-5 rounded-sm shadow-xl border border-black/20">
+            <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20 mb-5">
               <PassengersDetails />
             </div>
-            <div className="flex flex-col p-5 mt-5 rounded-sm shadow-xl border border-black/20">
+            <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20 mb-5">
               <div>
                 <Labels className="font-bold">Choose a Seat</Labels>
               </div>
@@ -56,7 +53,6 @@ export default function BookingDetailings() {
                 </Labels>
               </div>
               <SeatSelector
-                seats={seats}
                 selectedSeats={selectedSeats}
                 handleSeatChange={handleSeatChange}
               />

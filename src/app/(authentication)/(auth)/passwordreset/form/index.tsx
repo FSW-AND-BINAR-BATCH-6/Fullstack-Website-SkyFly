@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { toast, Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,10 +21,16 @@ import { newPasswordSchema } from "./validation";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { passwordReset } from "./actions";
+import { Box } from "@/components/ui/box";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
 
 export default function FormReset() {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [passwordVisibility, setPasswordVisibility] =
+    React.useState(false);
+  const [confirmPasswordVisibility, setConfirmPasswordVisibility] =
+    React.useState(false);
   const form = useForm<z.infer<typeof newPasswordSchema>>({
     resolver: zodResolver(newPasswordSchema),
     defaultValues: {
@@ -40,45 +46,56 @@ export default function FormReset() {
     const token = getCookie("token");
     if (typeof token !== "string") {
       toast.error("Token is missing or invalid.");
-      setIsLoading(false);
       return;
     }
+
     const requestData = { ...data, token };
 
-    toast
-      .promise(
-        passwordReset(requestData),
+    try {
+      const promise = passwordReset(requestData);
+
+      await toast.promise(
+        promise.then((response) => {
+          if (!response.status) {
+            throw new Error(response.message);
+          }
+          return response;
+        }),
         {
-          loading: "Sending new password...",
+          loading: "Logging in...",
           success: (response) => {
-            return (
-              <b>
-                {response?.message || "Password Reset Successfully!"}
-              </b>
-            );
+            if (response.status) {
+              router.push("/login");
+            }
+            return response.message;
           },
-          error: (error) => {
-            console.error("Reset Password failed:", error);
-            return (
-              <b>
-                {error.response?.data?.message ||
-                  "Reset Password failed!"}
-              </b>
-            );
-          },
+          error: (err) => err.message,
         },
         {
-          duration: 10000, // Set duration to 10 seconds
+          success: {
+            style: {
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              fontWeight: "bold",
+            },
+          },
         }
-      )
-      .finally(() => {
-        setIsLoading(false);
-      });
+      );
+
+      const response = await promise;
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="w-[48%]">
-      <Toaster position="top-right" reverseOrder={false} />
+    <div className="w-[90%] sm:w-[48%]">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
@@ -94,17 +111,32 @@ export default function FormReset() {
                   Enter New Password
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="********"
-                    {...field}
-                    className={
-                      form.formState.errors.password
-                        ? "border-red-700"
-                        : ""
-                    }
-                  />
+                  <Box className="relative">
+                    <Input
+                      id="password"
+                      {...field}
+                      type={passwordVisibility ? "text" : "password"}
+                      autoComplete="on"
+                      placeholder="********"
+                      className={`pr-12 ${
+                        form.formState.errors.password &&
+                        "border-red-700"
+                      }`}
+                    />
+                    <Box
+                      className="absolute inset-y-0 right-0 flex cursor-pointer items-center p-3 text-muted-foreground"
+                      onClick={() =>
+                        setPasswordVisibility(!passwordVisibility)
+                      }
+                    >
+                      {React.createElement(
+                        passwordVisibility ? EyeOffIcon : EyeIcon,
+                        {
+                          className: "h-6 w-6",
+                        }
+                      )}
+                    </Box>
+                  </Box>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -119,17 +151,40 @@ export default function FormReset() {
                   Repeat New Password
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="********"
-                    {...field}
-                    className={
-                      form.formState.errors.confirmPassword
-                        ? "border-red-700"
-                        : ""
-                    }
-                  />
+                  <Box className="relative">
+                    <Input
+                      id="confirmPassword"
+                      {...field}
+                      type={
+                        confirmPasswordVisibility
+                          ? "text"
+                          : "password"
+                      }
+                      autoComplete="on"
+                      placeholder="********"
+                      className={`pr-12 ${
+                        form.formState.errors.confirmPassword &&
+                        "border-red-700"
+                      }`}
+                    />
+                    <Box
+                      className="absolute inset-y-0 right-0 flex cursor-pointer items-center p-3 text-muted-foreground"
+                      onClick={() =>
+                        setConfirmPasswordVisibility(
+                          !confirmPasswordVisibility
+                        )
+                      }
+                    >
+                      {React.createElement(
+                        confirmPasswordVisibility
+                          ? EyeOffIcon
+                          : EyeIcon,
+                        {
+                          className: "h-6 w-6",
+                        }
+                      )}
+                    </Box>
+                  </Box>
                 </FormControl>
                 <FormMessage />
               </FormItem>

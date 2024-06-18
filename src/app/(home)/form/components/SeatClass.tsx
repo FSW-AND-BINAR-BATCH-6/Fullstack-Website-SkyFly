@@ -47,7 +47,7 @@ export default function SeatClass({
         placeholder="Business"
         onClick={() => setOpenSeatClass(true)}
         {...register("seatClass")}
-        className={`w-32 ${
+        className={`w-full sm:w-32 ${
           errors.seatClass ? "border border-red-700" : ""
         }`}
       />

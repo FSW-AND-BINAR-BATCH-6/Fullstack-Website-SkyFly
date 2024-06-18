@@ -15,7 +15,7 @@ export default function AuthLayout({
   return (
     <body suppressHydrationWarning={true}>
       <section className="flex flex-row items-start flex-nowrap">
-        <section className="grow-0 h-screen shadow">
+        <section className="grow-0 hidden xl:block h-screen shadow">
           <Link href={"/"}>
             <Image
               src={"/assets/bg-auth.svg"}
@@ -27,7 +27,7 @@ export default function AuthLayout({
             />
           </Link>
         </section>
-        <section className="grow mr-5 min-h-screen pt-8 overflow-y-auto">
+        <section className="grow sm:mr-5 min-h-screen pt-8 overflow-hidden">
           {children}
         </section>
       </section>

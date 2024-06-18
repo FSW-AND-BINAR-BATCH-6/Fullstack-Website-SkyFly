@@ -10,7 +10,7 @@ export default function IsLogin() {
   const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
-    const isLogin = getCookie("isLogin");
+    const isLogin = getCookie("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9");
     if (isLogin) {
       setLoggedIn(true);
     } else {
@@ -19,7 +19,7 @@ export default function IsLogin() {
   }, []);
 
   return loggedIn ? (
-    <div className="bg-red-200s w-1/2 flex items-center justify-end mr-14">
+    <div className="w-full md:w-1/2 flex items-center justify-center md:justify-end md:mr-14 sm:mr-0">
       <div className="flex items-center">
         <div>
           <Link href={"/history"}>
@@ -39,7 +39,7 @@ export default function IsLogin() {
       </div>
     </div>
   ) : (
-    <div className="bg-red-200s w-1/2 flex items-center justify-end mr-14">
+    <div className="w-full md:w-1/2 flex items-center justify-center md:justify-end md:mr-14">
       <Link href="/login">
         <Button className="">
           <LogInIcon className="w-5 h-5 mr-2" />
