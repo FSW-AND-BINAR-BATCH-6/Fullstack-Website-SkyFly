@@ -71,75 +71,77 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
   };
 
   const renderSkeleton = () => (
-    <div className="grow-0 w-2/5 p-5 mt-3 rounded-sm shadow-xl border border-black/20">
-      <div>
-        <Labels className="font-bold">Flight Details</Labels>
-      </div>
-      <div className="flex mt-3">
-        <Skeleton className="h-5 w-20" />
-        <Labels className="font-bold ml-auto text-violet">
-          Departure
-        </Labels>
-      </div>
-      <Skeleton className="h-5 w-24" />
-      <Skeleton className="h-5 w-60" />
-
-      <hr className="mt-3 border border-black/20" />
-
-      <div className="flex my-2">
-        <div className="flex items-center justify-center">
-          <Skeleton className="h-7 w-7" />
+    <div className="w-full lg:w-2/5 px-3">
+      <div className="w-full p-5 mt-3 rounded-sm shadow-xl border border-black/20">
+        <div>
+          <Labels className="font-bold">Flight Details</Labels>
         </div>
-        <div className="flex flex-col ps-2">
-          <div>
-            <Skeleton className="h-5 w-48" />
-            <Skeleton className="h-5 w-24" />
-          </div>
-          <div className="mt-5">
-            <Skeleton className="h-5 w-24" />
-            <Skeleton className="h-5 w-28" />
-            <Skeleton className="h-5 w-32" />
-            <Skeleton className="h-5 w-36" />
-          </div>
-        </div>
-      </div>
-
-      <hr className="mt-3 border border-black/20" />
-
-      <div className="py-2">
         <div className="flex mt-3">
           <Skeleton className="h-5 w-20" />
           <Labels className="font-bold ml-auto text-violet">
-            Arrivals
+            Departure
           </Labels>
         </div>
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-full" />
-      </div>
+        <Skeleton className="h-5 w-24" />
+        <Skeleton className="h-5 w-60" />
 
-      <hr className="mt-3 border border-black/20" />
+        <hr className="mt-3 border border-black/20" />
 
-      <div className="py-2">
-        <Skeleton className="h-5 w-full" />
-        <div className="flex mt-2">
-          <Skeleton className="h-5 w-full" />
-          <Skeleton className="h-5 w-full ml-auto" />
+        <div className="flex my-2">
+          <div className="flex items-center justify-center">
+            <Skeleton className="h-7 w-7" />
+          </div>
+          <div className="flex flex-col ps-2">
+            <div>
+              <Skeleton className="h-5 w-48" />
+              <Skeleton className="h-5 w-24" />
+            </div>
+            <div className="mt-5">
+              <Skeleton className="h-5 w-24" />
+              <Skeleton className="h-5 w-28" />
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-5 w-36" />
+            </div>
+          </div>
         </div>
-        <div className="flex mt-2">
-          <Skeleton className="h-5 w-full" />
-          <Skeleton className="h-5 w-full ml-auto" />
-        </div>
-        <div className="flex mt-2">
-          <Skeleton className="h-5 w-full" />
-          <Skeleton className="h-5 w-full ml-auto" />
-        </div>
-      </div>
 
-      <hr className="mt-3 border border-black/20" />
+        <hr className="mt-3 border border-black/20" />
 
-      <div className="flex mt-3">
-        <Skeleton className="h-6 w-20" />
-        <Skeleton className="h-6 w-20 ml-auto" />
+        <div className="py-2">
+          <div className="flex mt-3">
+            <Skeleton className="h-5 w-20" />
+            <Labels className="font-bold ml-auto text-violet">
+              Arrivals
+            </Labels>
+          </div>
+          <Skeleton className="h-5 w-full" />
+          <Skeleton className="h-5 w-full" />
+        </div>
+
+        <hr className="mt-3 border border-black/20" />
+
+        <div className="py-2">
+          <Skeleton className="h-5 w-full" />
+          <div className="flex mt-2">
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-full ml-auto" />
+          </div>
+          <div className="flex mt-2">
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-full ml-auto" />
+          </div>
+          <div className="flex mt-2">
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-full ml-auto" />
+          </div>
+        </div>
+
+        <hr className="mt-3 border border-black/20" />
+
+        <div className="flex mt-3">
+          <Skeleton className="h-6 w-20" />
+          <Skeleton className="h-6 w-20 ml-auto" />
+        </div>
       </div>
     </div>
   );
@@ -153,112 +155,120 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
   }
 
   return (
-    <div className="grow-0 w-2/5 p-5 mt-3 rounded-sm shadow-xl border border-black/20">
-      {flightsById.map((flight) => (
-        <div key={flight.id}>
-          <div>
-            <Labels className="font-bold">Flight Details</Labels>
-          </div>
-          <div className="flex mt-3">
-            <Labels className="font-bold">
-              {new Date(flight.departureDate).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </Labels>
-            <Labels className="font-bold ml-auto text-violet">
-              Departure
-            </Labels>
-          </div>
-          <Labels>{formatDate(flight.departureDate)}</Labels>
-          <Labels className="flex flex-col">
-            {flight.departureAirport.name}
-          </Labels>
-
-          <hr className="mt-3 border border-black/20" />
-
-          <div className="flex my-2">
-            <div className="flex items-center justify-center">
-              <Image
-                src="/assets/leaf.svg"
-                alt="logo"
-                width={50}
-                height={50}
-                className="w-7 h-7"
-              />
+    <div className="w-full lg:w-2/5 px-3">
+      <div className="w-full p-5 mt-3 rounded-sm shadow-xl border border-black/20">
+        {flightsById.map((flight) => (
+          <div key={flight.id}>
+            <div>
+              <Labels className="font-bold">Flight Details</Labels>
             </div>
-            <div className="flex flex-col ps-2">
-              <div>
-                <Labels className="mt-3 font-bold">
-                  {getAirlineName(flight.planeId)} - Economy
-                </Labels>
-                <Labels className="flex flex-col font-bold">
-                  {getAirlineCode(flight.planeId)} - 203
-                </Labels>
-              </div>
-              <div className="mt-5">
-                <Labels className="font-bold">Information:</Labels>
-                <Labels className="flex flex-col">
-                  Baggage 20 kg
-                </Labels>
-                <Labels>Cabin baggage 7 kg</Labels>
-                <Labels className="flex flex-col">
-                  In Flight Entertainment
-                </Labels>
-              </div>
-            </div>
-          </div>
-
-          <hr className="mt-3 border border-black/20" />
-
-          <div className="py-2">
             <div className="flex mt-3">
               <Labels className="font-bold">
-                {new Date(flight.arrivalDate).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+                {new Date(flight.departureDate).toLocaleTimeString(
+                  [],
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
+                )}
               </Labels>
               <Labels className="font-bold ml-auto text-violet">
-                Arrivals
+                Departure
               </Labels>
             </div>
-            <div>
-              <Labels>{formatDate(flight.arrivalDate)}</Labels>
-              <Labels className="flex flex-col">
-                {flight.destinationAirport.name}
-              </Labels>
-            </div>
-          </div>
-
-          <hr className="mt-3 border border-black/20" />
-
-          <div className="py-2">
-            <Labels className="font-bold">Total Price</Labels>
-            <div className="flex mt-2">
-              <Labels>2 Adults</Labels>
-              <Labels className="ml-auto">IDR 9.550.000</Labels>
-            </div>
-            <div className="flex mt-2">
-              <Labels>1 Baby</Labels>
-              <Labels className="ml-auto">IDR 0</Labels>
-            </div>
-            <div className="flex mt-2">
-              <Labels>Tax</Labels>
-              <Labels className="ml-auto">IDR 300.000</Labels>
-            </div>
-          </div>
-
-          <hr className="mt-3 border border-black/20" />
-
-          <div className="flex mt-3">
-            <Labels className="font-bold text-lg">Total</Labels>
-            <Labels className="ml-auto text-lg font-bold text-violet">
-              IDR 9.850.000
+            <Labels>{formatDate(flight.departureDate)}</Labels>
+            <Labels className="flex flex-col">
+              {flight.departureAirport.name}
             </Labels>
+
+            <hr className="mt-3 border border-black/20" />
+
+            <div className="flex my-2">
+              <div className="flex items-center justify-center">
+                <Image
+                  src="/assets/leaf.svg"
+                  alt="logo"
+                  width={50}
+                  height={50}
+                  className="w-7 h-7"
+                />
+              </div>
+              <div className="flex flex-col ps-2">
+                <div>
+                  <Labels className="mt-3 font-bold">
+                    {getAirlineName(flight.planeId)} - Economy
+                  </Labels>
+                  <Labels className="flex flex-col font-bold">
+                    {getAirlineCode(flight.planeId)} - 203
+                  </Labels>
+                </div>
+                <div className="mt-5">
+                  <Labels className="font-bold">Information:</Labels>
+                  <Labels className="flex flex-col">
+                    Baggage 20 kg
+                  </Labels>
+                  <Labels>Cabin baggage 7 kg</Labels>
+                  <Labels className="flex flex-col">
+                    In Flight Entertainment
+                  </Labels>
+                </div>
+              </div>
+            </div>
+
+            <hr className="mt-3 border border-black/20" />
+
+            <div className="py-2">
+              <div className="flex mt-3">
+                <Labels className="font-bold">
+                  {new Date(flight.arrivalDate).toLocaleTimeString(
+                    [],
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  )}
+                </Labels>
+                <Labels className="font-bold ml-auto text-violet">
+                  Arrivals
+                </Labels>
+              </div>
+              <div>
+                <Labels>{formatDate(flight.arrivalDate)}</Labels>
+                <Labels className="flex flex-col">
+                  {flight.destinationAirport.name}
+                </Labels>
+              </div>
+            </div>
+
+            <hr className="mt-3 border border-black/20" />
+
+            <div className="py-2">
+              <Labels className="font-bold">Total Price</Labels>
+              <div className="flex mt-2">
+                <Labels>2 Adults</Labels>
+                <Labels className="ml-auto">IDR 9.550.000</Labels>
+              </div>
+              <div className="flex mt-2">
+                <Labels>1 Baby</Labels>
+                <Labels className="ml-auto">IDR 0</Labels>
+              </div>
+              <div className="flex mt-2">
+                <Labels>Tax</Labels>
+                <Labels className="ml-auto">IDR 300.000</Labels>
+              </div>
+            </div>
+
+            <hr className="mt-3 border border-black/20" />
+
+            <div className="flex mt-3">
+              <Labels className="font-bold text-lg">Total</Labels>
+              <Labels className="ml-auto text-lg font-bold text-violet">
+                IDR 9.850.000
+              </Labels>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

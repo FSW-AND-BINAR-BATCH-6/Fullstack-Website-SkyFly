@@ -77,28 +77,28 @@ export const FlightDetail = () => {
 
   const renderSkeleton = () => (
     <div className="border border-gray-300 shadow-xl rounded-xl mb-5 pt-7 pb-9 px-5">
-      <div className="flex items-center">
+      <div className="flex flex-col sm:flex-row items-center">
         <Skeleton className="w-[25px] h-[25px] bg-cover" />
-        <div className="ml-3">
+        <div className="ml-3 mt-3 sm:mt-0">
           <Skeleton className="h-5 w-32" />
         </div>
-        <div className="ml-auto mr-2 border border-gray-500 rounded-full">
+        <div className="ml-auto mr-2 border border-gray-500 rounded-full mt-3 sm:mt-0">
           <Skeleton className="w-5 h-5" />
         </div>
       </div>
 
-      <div className="mt-9 ps-7">
-        <div className="flex">
+      <div className="mt-9 px-0 sm:px-7">
+        <div className="flex flex-col sm:flex-row">
           <div className="flex mt-3 flex-col items-center">
             <Skeleton className="h-5 w-16" />
             <Skeleton className="mt-2 h-5 w-10" />
           </div>
 
-          <div className="mx-10 w-40">
-            <div className="flex mt-3 flex-col items-center gap-1">
+          <div className="mx-0 sm:mx-10 w-full sm:w-40 mt-3 sm:mt-0">
+            <div className="flex flex-col items-center gap-1">
               <Skeleton className="h-5 w-20" />
-              <div className="border-t border-gray-500 w-full"></div>
-              <Skeleton className="h-5 w-16" />
+              <div className="border-t border-gray-500 w-full mt-3 sm:mt-0"></div>
+              <Skeleton className="h-5 w-16 mt-3 sm:mt-0" />
             </div>
           </div>
 
@@ -107,11 +107,11 @@ export const FlightDetail = () => {
             <Skeleton className="mt-2 h-5 w-10" />
           </div>
 
-          <div className="ml-5 flex items-start">
-            <Skeleton className="w-[25px] h-[25px] mt-5 bg-cover" />
+          <div className="ml-0 sm:ml-5 flex items-start mt-3 sm:mt-0">
+            <Skeleton className="w-[25px] h-[25px] bg-cover" />
           </div>
 
-          <div className="ml-auto flex flex-col items-start">
+          <div className="ml-auto flex flex-col items-start mt-3 sm:mt-0">
             <Skeleton className="h-5 w-24" />
             <Skeleton className="h-10 w-20 mt-2" />
           </div>
@@ -171,8 +171,8 @@ export const FlightDetail = () => {
               </CollapsibleTrigger>
             </div>
 
-            <div className="mt-9 ps-7">
-              <div className="flex">
+            <div className="mt-9 sm:ps-7">
+              <div className="flex flex-col gap-2 items-center sm:flex-row">
                 <div className="flex mt-3 flex-col items-center">
                   <Label className="font-bold">
                     {new Date(
@@ -187,28 +187,26 @@ export const FlightDetail = () => {
                   </Label>
                 </div>
 
-                <div className="mx-10 w-40">
-                  <div className="flex mt-3 flex-col items-center gap-1">
-                    <Label>
-                      {Math.ceil(
-                        (new Date(flight.arrivalDate).getTime() -
-                          new Date(flight.departureDate).getTime()) /
-                          (1000 * 60 * 60)
-                      )}
-                      h{" "}
-                      {Math.ceil(
-                        ((new Date(flight.arrivalDate).getTime() -
-                          new Date(flight.departureDate).getTime()) /
-                          (1000 * 60)) %
-                          60
-                      )}
-                      m
-                    </Label>
-                    <div className="border-t border-gray-500 w-full"></div>
-                    <Label>
-                      {flight.transit ? "Transit" : "Direct"}
-                    </Label>
-                  </div>
+                <div className="sm:mx-10 w-40 flex flex-col items-center sm:gap-1">
+                  <Label>
+                    {Math.ceil(
+                      (new Date(flight.arrivalDate).getTime() -
+                        new Date(flight.departureDate).getTime()) /
+                        (1000 * 60 * 60)
+                    )}
+                    h{" "}
+                    {Math.ceil(
+                      ((new Date(flight.arrivalDate).getTime() -
+                        new Date(flight.departureDate).getTime()) /
+                        (1000 * 60)) %
+                        60
+                    )}
+                    m
+                  </Label>
+                  <div className="border-t border-gray-500 w-full"></div>
+                  <Label>
+                    {flight.transit ? "Transit" : "Direct"}
+                  </Label>
                 </div>
 
                 <div className="flex mt-3 flex-col items-center">
@@ -223,7 +221,7 @@ export const FlightDetail = () => {
                   </Label>
                 </div>
 
-                <div className="ml-5 flex items-start">
+                <div className="sm:ml-5 flex items-start">
                   <Image
                     src="/assets/baggage.svg"
                     alt="logo"
@@ -269,7 +267,7 @@ export const FlightDetail = () => {
                   {flight.departureAirport.name}
                 </Labels>
 
-                <hr className="mt-3 w-[36rem] mx-auto border border-black/20" />
+                <hr className="mt-3 w-full mx-auto border border-black/20" />
 
                 <div className="flex my-2">
                   <div className="flex items-center justify-center">
@@ -305,7 +303,7 @@ export const FlightDetail = () => {
                   </div>
                 </div>
 
-                <hr className="mt-3 w-[36rem] mx-auto border border-black/20" />
+                <hr className="mt-3 w-full mx-auto border border-black/20" />
 
                 <div className="py-2">
                   <div className="flex mt-3">

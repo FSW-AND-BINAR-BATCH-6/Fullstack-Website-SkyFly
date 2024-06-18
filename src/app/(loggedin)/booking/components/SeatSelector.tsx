@@ -60,21 +60,27 @@ export const SeatSelector: React.FC<{
 
   if (loading) {
     return (
-      <div className="gap-[4.5rem] mt-3 mx-auto flex">
-        <div className="grid grid-cols-3 gap-4 w-[10rem]">
+      <div className="gap-8 mt-3 mx-auto flex flex-col lg:flex-row">
+        <div className="grid grid-cols-3 gap-4 w-full lg:w-auto">
           <span className="text-center">A</span>
           <span className="text-center">B</span>
           <span className="text-center">C</span>
           {[...Array(30)].map((_, idx) => (
-            <Skeleton key={`A-${idx}`} className="h-10 w-full" />
+            <Skeleton
+              key={`A-${idx}`}
+              className="h-10 w-10 mx-auto"
+            />
           ))}
         </div>
-        <div className="grid grid-cols-3 gap-4 w-[10rem]">
+        <div className="grid grid-cols-3 gap-4 w-full lg:w-auto">
           <span className="text-center">D</span>
           <span className="text-center">E</span>
           <span className="text-center">F</span>
           {[...Array(30)].map((_, idx) => (
-            <Skeleton key={`D-${idx}`} className="h-10 w-full" />
+            <Skeleton
+              key={`D-${idx}`}
+              className="h-10 w-10 mx-auto"
+            />
           ))}
         </div>
       </div>
@@ -82,8 +88,8 @@ export const SeatSelector: React.FC<{
   }
 
   return (
-    <div className="gap-[4.5rem] mt-3 mx-auto flex">
-      <div className="grid grid-cols-3 gap-4 w-[10rem]">
+    <div className="gap-8 mt-3 mx-auto flex flex-col lg:flex-row">
+      <div className="grid grid-cols-3 gap-4 w-full lg:w-[10rem]">
         <span className="text-center">A</span>
         <span className="text-center">B</span>
         <span className="text-center">C</span>
@@ -96,7 +102,7 @@ export const SeatSelector: React.FC<{
           )
         )}
       </div>
-      <div className="grid grid-cols-3 gap-4 w-[10rem]">
+      <div className="grid grid-cols-3 gap-4 w-full lg:w-[10rem]">
         <span className="text-center">D</span>
         <span className="text-center">E</span>
         <span className="text-center">F</span>

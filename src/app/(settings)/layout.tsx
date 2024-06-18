@@ -19,7 +19,7 @@ export default function SettingsLayout({
       <section>
         <nav className="border-b border-black/20 p-5 flex">
           <div className="flex bg-yellow-200s w-1/2">
-            <div className="flex items-center justify-between ml-10">
+            <div className="flex items-center justify-between sm:ml-10">
               <Link href={"/"}>
                 <Image
                   src={"/assets/logo.svg"}
@@ -33,7 +33,7 @@ export default function SettingsLayout({
             </div>
           </div>
 
-          <div className="bg-red-200s w-1/2 flex items-center justify-end mr-14">
+          <div className="bg-red-200s w-1/2 flex items-center justify-end sm:mr-14">
             <div className="flex items-center">
               <div>
                 <Link href={"/history"}>
