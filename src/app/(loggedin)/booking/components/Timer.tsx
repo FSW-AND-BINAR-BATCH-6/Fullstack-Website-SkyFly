@@ -5,8 +5,11 @@ import { Labels } from "@/components/ui/labels";
 
 export default function Timer() {
   const [timer, setTimer] = useState<number>(() => {
-    const savedTimer = localStorage.getItem("timer");
-    return savedTimer ? Number(savedTimer) : 900; // Set to 900 seconds (15 minutes) if not found
+    if (typeof window !== "undefined") {
+      const savedTimer = localStorage.getItem("timer");
+      return savedTimer ? Number(savedTimer) : 900; // Set to 900 seconds (15 minutes) if not found
+    }
+    return 900; // Default value if window is not defined
   });
   const [pathname, setPathname] = useState<string | null>(null); // Initialize as string | null
 
@@ -15,7 +18,9 @@ export default function Timer() {
       const intervalId = setInterval(() => {
         setTimer((prevTimer) => {
           const newTimer = prevTimer - 1;
-          localStorage.setItem("timer", newTimer.toString());
+          if (typeof window !== "undefined") {
+            localStorage.setItem("timer", newTimer.toString());
+          }
           return newTimer;
         });
       }, 1000);
