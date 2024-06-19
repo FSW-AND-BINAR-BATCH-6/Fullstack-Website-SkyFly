@@ -6,6 +6,7 @@ export interface Airline {
   id: string;
   name: string;
   code: string;
+  terminal: string;
 }
 
 export interface Airport {
@@ -18,6 +19,7 @@ export interface Airport {
 
 export interface Flight {
   id: string;
+  plane: string;
   planeId: string;
   departureDate: string;
   code: string;
@@ -29,6 +31,9 @@ export interface Flight {
   discount: null | number;
   price: number;
   facilities: null | string;
+  departureTime: null | string;
+  duration: null | string;
+  arrivalTime: null | string
 }
 
 export interface FlightById {
@@ -53,8 +58,6 @@ export const getFlights = async (query: string): Promise<Flight[]> => {
     );
 
     const flights = response.data.data;
-    console.log(flights)
-    console.log(query)
     return flights;
   } catch (err) {
     console.log(err);

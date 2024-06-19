@@ -14,6 +14,7 @@ import { Labels } from "@/components/ui/labels";
 import { getFlights, Flight, Airline, getAirlines } from "./actions";
 import ButtonBook from "./ButtonBook";
 import { Skeleton } from "@/components/ui/skeleton";
+import { string } from "zod";
 
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -48,6 +49,8 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
   const query = {
     departureAirport: searchParams.from,
     arrivalAirport: searchParams.to,
+    departureDate: searchParams.departureDate,
+    // seatClass: searchParams.seatClass
   };
 
   const filteredQueryParams = Object.fromEntries(
@@ -90,6 +93,11 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
     const airline = airlines.find((airline) => airline.id === planeId);
     return airline ? airline.name : "Jet Air";
   };
+
+  const getAirlineTerminal = (planeId: string) => {
+    const airline = airlines.find((airline) => airline.id === planeId);
+    return airline ? airline.terminal : "Terminal 1"
+  }
 
   const handleToggle = (flightId: string) => {
     setOpenStates((prev) => ({
@@ -177,7 +185,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
 
               <div className="ml-3">
                 <Label className="font-bold">
-                  {getAirlineName(flight.planeId)} - Economy
+                  {getAirlineName(flight.planeId)} - {searchParams.seatClass}
                 </Label>
               </div>
 
@@ -195,44 +203,18 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
             <div className="mt-9 sm:ps-7">
               <div className="flex flex-col gap-2 items-center sm:flex-row">
                 <div className="flex mt-3 flex-col items-center">
-                  <Label className="font-bold">
-                    {new Date(flight.departureDate).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </Label>
+                  <Label className="font-bold">{flight.departureTime}</Label>
                   <Label className="mt-2">{flight.departureAirport.code}</Label>
                 </div>
 
                 <div className="sm:mx-10 w-40 flex flex-col items-center sm:gap-1">
-                  <Label>
-                    {Math.ceil(
-                      (new Date(flight.arrivalDate).getTime() -
-                        new Date(flight.departureDate).getTime()) /
-                        (1000 * 60 * 60)
-                    )}
-                    h{" "}
-                    {Math.ceil(
-                      ((new Date(flight.arrivalDate).getTime() -
-                        new Date(flight.departureDate).getTime()) /
-                        (1000 * 60)) %
-                        60
-                    )}
-                    m
-                  </Label>
+                  <Label>{flight.duration}</Label>
                   <div className="border-t border-gray-500 w-full"></div>
-                  <Label>
-                    {flight.transit ? "Transit" : "Direct"}
-                  </Label>
+                  <Label>{flight.transit.status ? "Transit" : "Direct"}</Label>
                 </div>
 
                 <div className="flex mt-3 flex-col items-center">
-                  <Label className="font-bold">
-                    {new Date(flight.arrivalDate).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </Label>
+                  <Label className="font-bold">{flight.arrivalTime}</Label>
                   <Label className="mt-2">
                     {flight.destinationAirport.code}
                   </Label>
@@ -277,7 +259,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
                   {formatDate(flight.departureDate)}
                 </Labels>
                 <Labels className="flex flex-col mt-1">
-                  {flight.departureAirport.name}
+                  {flight.departureAirport.name} - {flight.plane.terminal}
                 </Labels>
 
                 <hr className="mt-3 w-full mx-auto border border-black/20" />
@@ -295,7 +277,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
                   <div className="flex flex-col ps-2">
                     <div>
                       <Labels className="mt-3 font-bold">
-                        Jet Air - Economy
+                      {getAirlineName(flight.planeId)} - {searchParams.seatClass}
                       </Labels>
                       <Labels className="flex flex-col font-bold">
                         JT - 203
