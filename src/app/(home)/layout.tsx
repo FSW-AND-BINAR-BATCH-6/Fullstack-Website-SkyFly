@@ -6,6 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import IsLogin from "./IsLogin";
 import { ToastProvider } from "@/context/ToastContext";
+import { Toaster } from "react-hot-toast";
+import ToastListener from "@/components/ui/ToastListener";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -54,7 +56,9 @@ export default function HomeLayout({
           </nav>
 
           <section>
-            <ToastProvider>{children}</ToastProvider>
+            <Toaster position="top-right" reverseOrder={false} />
+            <ToastListener />
+            {children}
           </section>
         </section>
       </body>
