@@ -11,7 +11,14 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Labels } from "@/components/ui/labels";
-import { getFlights, Flight, Airline, getAirlines } from "./actions";
+import {
+  getFlights,
+  getRoundTrip,
+  Flight,
+  Airline,
+  getAirlines,
+  FlightData
+} from "./actions";
 import ButtonBook from "./ButtonBook";
 import { Skeleton } from "@/components/ui/skeleton";
 import { string } from "zod";
@@ -30,6 +37,7 @@ interface FlightDetailProps {
   searchParams: {
     totalPassengers?: string;
     departureDate?: string;
+    returnDate?: string;
     from?: string;
     to?: string;
     seatClass?: string;
@@ -42,6 +50,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
     [key: string]: boolean;
   }>({});
   const [flights, setFlights] = React.useState<Flight[]>([]);
+  const [returnFlights, setReturnFlights] = React.useState<Flight[]>([]);
   const [airlines, setAirlines] = React.useState<Airline[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
@@ -50,6 +59,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
     departureAirport: searchParams.from,
     arrivalAirport: searchParams.to,
     departureDate: searchParams.departureDate,
+    returnDate: searchParams.returnDate,
     // seatClass: searchParams.seatClass
   };
 
@@ -60,12 +70,18 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
   );
 
   const filterQuery = new URLSearchParams(filteredQueryParams).toString();
-
   React.useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const data = await getFlights(filterQuery);
-        setFlights(data);
+        if (!searchParams.returnDate) {
+          const flightData = await getFlights(filterQuery);
+          setFlights(flightData);
+        } else {
+          const {flights, returnFlights} = await getRoundTrip(filterQuery);
+          console.log(returnFlights)
+          setFlights(flights)
+          setReturnFlights(returnFlights);
+        }
       } catch (err) {
         setError("Failed to fetch flights");
       } finally {
@@ -96,8 +112,8 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
 
   const getAirlineTerminal = (planeId: string) => {
     const airline = airlines.find((airline) => airline.id === planeId);
-    return airline ? airline.terminal : "Terminal 1"
-  }
+    return airline ? airline.terminal : "Terminal 1";
+  };
 
   const handleToggle = (flightId: string) => {
     setOpenStates((prev) => ({
@@ -185,7 +201,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
 
               <div className="ml-3">
                 <Label className="font-bold">
-                  {getAirlineName(flight.planeId)} - {searchParams.seatClass}
+                  {flight.plane.name} - {searchParams.seatClass}
                 </Label>
               </div>
 
@@ -210,7 +226,15 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
                 <div className="sm:mx-10 w-40 flex flex-col items-center sm:gap-1">
                   <Label>{flight.duration}</Label>
                   <div className="border-t border-gray-500 w-full"></div>
-                  <Label>{flight.transit.status ? "Transit" : "Direct"}</Label>
+                  <Label>
+                    {flight.transit &&
+                    typeof flight.transit === "object" &&
+                    "status" in flight.transit
+                      ? flight.transit.status
+                        ? "Transit"
+                        : "Direct"
+                      : "Direct"}
+                  </Label>
                 </div>
 
                 <div className="flex mt-3 flex-col items-center">
@@ -277,7 +301,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
                   <div className="flex flex-col ps-2">
                     <div>
                       <Labels className="mt-3 font-bold">
-                      {getAirlineName(flight.planeId)} - {searchParams.seatClass}
+                        {flight.plane.name} - {searchParams.seatClass}
                       </Labels>
                       <Labels className="flex flex-col font-bold">
                         JT - 203
