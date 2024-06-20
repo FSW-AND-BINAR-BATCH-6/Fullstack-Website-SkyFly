@@ -14,7 +14,11 @@ export default function Logout() {
     deleteCookie("token");
     deleteCookie("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9");
     deleteCookie("bookingDetails");
-    toast.success("Logout Successfully");
+    toast.success("Logout Successfully", {
+      style: {
+        fontWeight: "bold",
+      },
+    });
     router.push("/");
   };
 

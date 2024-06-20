@@ -1,10 +1,11 @@
+import * as React from "react";
 import { useEffect, useState } from "react";
 import { seatByFlightId, SeatById } from "./actionsSeat";
 import { getCookie } from "cookies-next";
 import toast from "react-hot-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export const SeatSelector: React.FC<{
+const SeatSelector: React.FC<{
   selectedSeats: string[];
   handleSeatChange: (seatId: string) => void;
 }> = ({ selectedSeats, handleSeatChange }) => {
@@ -41,12 +42,12 @@ export const SeatSelector: React.FC<{
             id={`seat-${seat.id}`}
             checked={selectedSeats.includes(seat.id)}
             onChange={() => handleSeatChange(seat.id)}
-            disabled={seat.status === "booked"}
+            disabled={seat.status === "settlement"}
           />
           <label
             htmlFor={`seat-${seat.id}`}
             className={`block w-full text-center text-sm font-bold leading-6 py-1 rounded text-black hover:cursor-pointer hover:shadow-[0_0_0_2px_green] peer-checked:bg-violet peer-checked:text-white ${
-              seat.status === "booked"
+              seat.status === "settlement"
                 ? "bg-gray-400 text-gray-500 cursor-not-allowed"
                 : "bg-green-400"
             }`}
@@ -118,3 +119,5 @@ export const SeatSelector: React.FC<{
     </div>
   );
 };
+
+export default SeatSelector;

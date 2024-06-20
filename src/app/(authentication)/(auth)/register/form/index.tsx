@@ -23,9 +23,11 @@ import toast from "react-hot-toast";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { Box } from "@/components/ui/box";
 import { EyeOffIcon, EyeIcon } from "lucide-react";
+import useToastStore from "@/stores/toastStore";
 
 export default function FormRegister() {
   const router = useRouter();
+  const showToast = useToastStore((state) => state.showToast);
   const [passwordVisibility, setPasswordVisibility] =
     React.useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,51 +41,32 @@ export default function FormRegister() {
   });
 
   const handleRegister = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    toast.loading("Registering...");
 
     try {
-      const promise = registerUser(data);
-
-      await toast.promise(
-        promise.then((response) => {
-          if (!response.status) {
-            throw new Error(response.message);
-          }
-          return response;
-        }),
-        {
-          loading: "Sending Otp...",
-          success: (response) => {
-            if (response.status) {
-              setCookie("token", response._token, {
-                maxAge: 60 * 60 * 24,
-              });
-              setCookie("phoneNumber", data.phoneNumber, {
-                maxAge: 60 * 60,
-              });
-              router.push("/otp");
-            }
-            return response.message;
+      const response = await registerUser(data);
+      if (response.status) {
+        setCookie("token", response._token, {
+          maxAge: 60 * 60 * 24,
+        });
+        setCookie("phoneNumber", data.phoneNumber, {
+          maxAge: 60 * 60,
+        });
+        toast.dismiss();
+        toast.success(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: (err) => err.message,
-        },
-        {
-          success: {
-            duration: 10000,
-            style: {
-              fontWeight: "bold",
-            },
+        });
+        router.push("/otp");
+      } else {
+        toast.dismiss();
+        toast.error(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: {
-            style: {
-              fontWeight: "bold",
-            },
-          },
-        }
-      );
-
-      const response = await promise;
-      console.log(response);
+        });
+      }
     } catch (err) {
       console.error(err);
     }
