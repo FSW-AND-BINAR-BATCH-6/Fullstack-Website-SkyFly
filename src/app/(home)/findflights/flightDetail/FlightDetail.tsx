@@ -17,11 +17,10 @@ import {
   Flight,
   Airline,
   getAirlines,
-  FlightData
+  FlightData,
 } from "./actions";
 import ButtonBook from "./ButtonBook";
 import { Skeleton } from "@/components/ui/skeleton";
-import { string } from "zod";
 
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -43,7 +42,6 @@ interface FlightDetailProps {
     seatClass?: string;
   };
 }
-// -------------
 
 export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
   const [openStates, setOpenStates] = React.useState<{
@@ -60,7 +58,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
     arrivalAirport: searchParams.to,
     departureDate: searchParams.departureDate,
     returnDate: searchParams.returnDate,
-    // seatClass: searchParams.seatClass
+    seatClass: searchParams.seatClass
   };
 
   const filteredQueryParams = Object.fromEntries(
@@ -70,6 +68,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
   );
 
   const filterQuery = new URLSearchParams(filteredQueryParams).toString();
+
   React.useEffect(() => {
     const fetchFlights = async () => {
       try {
@@ -77,9 +76,10 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
           const flightData = await getFlights(filterQuery);
           setFlights(flightData);
         } else {
-          const {flights, returnFlights} = await getRoundTrip(filterQuery);
+          const { derpartureFlights, returnFlights } = await getRoundTrip(filterQuery);
+          console.log(derpartureFlights)
           console.log(returnFlights)
-          setFlights(flights)
+          setFlights(derpartureFlights);
           setReturnFlights(returnFlights);
         }
       } catch (err) {
@@ -90,7 +90,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
     };
 
     fetchFlights();
-  }, []);
+  }, [filterQuery, searchParams.returnDate]);
 
   React.useEffect(() => {
     const fetchAirlinesData = async () => {
@@ -181,169 +181,216 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({ searchParams }) => {
     return <div>Error: {error}</div>;
   }
 
+  const returnFlightCard = (flight: Flight) => (
+    <div className="mt-9 sm:ps-7">
+      <div className="flex flex-col gap-2 items-center sm:flex-row">
+        <div className="flex mt-3 flex-col items-center">
+          <Label className="font-bold">{flight.departureTime}</Label>
+          <Label className="mt-2">{flight.departureAirport.code}</Label>
+        </div>
+
+        <div className="sm:mx-10 w-40 flex flex-col items-center sm:gap-1">
+          <Label>{flight.duration}</Label>
+          <div className="border-t border-gray-500 w-full"></div>
+          <Label>
+            {flight.transit &&
+            typeof flight.transit === "object" &&
+            "status" in flight.transit
+              ? flight.transit.status
+                ? "Transit"
+                : "Direct"
+              : "Direct"}
+          </Label>
+        </div>
+
+        <div className="flex mt-3 flex-col items-center">
+          <Label className="font-bold">{flight.arrivalTime}</Label>
+          <Label className="mt-2">{flight.destinationAirport.code}</Label>
+        </div>
+
+        <div className="sm:ml-5 flex items-start">
+          <Image
+            src="/assets/baggage.svg"
+            alt="logo"
+            width={50}
+            height={50}
+            className="w-[25px] mt-5 bg-cover"
+          />
+        </div>
+
+        <div className="ml-auto flex flex-col items-start">
+          <Label className="font-bold">
+            IDR {flight.price.toLocaleString("id-ID")}
+          </Label>
+          <ButtonBook flightId={flight.id} />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div>
-      {flights.map((flight) => (
-        <Collapsible
-          key={flight.id}
-          open={openStates[flight.id] || false}
-          onOpenChange={() => handleToggle(flight.id)}
-        >
-          <div className="border border-gray-300 shadow-xl rounded-xl mb-5 pt-7 pb-9 px-5">
-            <div className="flex items-center">
-              <Image
-                src="/assets/leaf.svg"
-                alt="logo"
-                width={150}
-                height={150}
-                className="w-[25px] bg-cover"
-              />
-
-              <div className="ml-3">
-                <Label className="font-bold">
-                  {flight.plane.name} - {searchParams.seatClass}
-                </Label>
-              </div>
-
-              <CollapsibleTrigger asChild>
-                <div className="ml-auto mr-2 border border-gray-500 rounded-full">
-                  <ChevronDown
-                    className={`w-5 h-5 cursor-pointer text-gray-500 transition-transform duration-300 ${
-                      openStates[flight.id] ? "rotate-180" : ""
-                    }`}
-                  />
-                </div>
-              </CollapsibleTrigger>
-            </div>
-
-            <div className="mt-9 sm:ps-7">
-              <div className="flex flex-col gap-2 items-center sm:flex-row">
-                <div className="flex mt-3 flex-col items-center">
-                  <Label className="font-bold">{flight.departureTime}</Label>
-                  <Label className="mt-2">{flight.departureAirport.code}</Label>
-                </div>
-
-                <div className="sm:mx-10 w-40 flex flex-col items-center sm:gap-1">
-                  <Label>{flight.duration}</Label>
-                  <div className="border-t border-gray-500 w-full"></div>
-                  <Label>
-                    {flight.transit &&
-                    typeof flight.transit === "object" &&
-                    "status" in flight.transit
-                      ? flight.transit.status
-                        ? "Transit"
-                        : "Direct"
-                      : "Direct"}
-                  </Label>
-                </div>
-
-                <div className="flex mt-3 flex-col items-center">
-                  <Label className="font-bold">{flight.arrivalTime}</Label>
-                  <Label className="mt-2">
-                    {flight.destinationAirport.code}
-                  </Label>
-                </div>
-
-                <div className="sm:ml-5 flex items-start">
-                  <Image
-                    src="/assets/baggage.svg"
-                    alt="logo"
-                    width={50}
-                    height={50}
-                    className="w-[25px] mt-5 bg-cover"
-                  />
-                </div>
-
-                <div className="ml-auto flex flex-col items-start">
+      {Array.isArray(flights) && flights.length > 0 ? (
+        flights.map((flight) => (
+          <Collapsible
+            key={flight.id}
+            open={openStates[flight.id] || false}
+            onOpenChange={() => handleToggle(flight.id)}
+          >
+            <div className="border border-gray-300 shadow-xl rounded-xl mb-5 pt-7 pb-9 px-5">
+              <div className="flex items-center">
+                <Image
+                  src="/assets/leaf.svg"
+                  alt="logo"
+                  width={150}
+                  height={150}
+                  className="w-[25px] bg-cover"
+                />
+                <div className="ml-3">
                   <Label className="font-bold">
-                    IDR {flight.price.toLocaleString("id-ID")}
+                    {flight.plane.name} - {flight.classInfo.seatClass}
                   </Label>
-                  <ButtonBook flightId={flight.id} />
                 </div>
+                <CollapsibleTrigger asChild>
+                  <div className="ml-auto mr-2 border border-gray-500 rounded-full">
+                    <ChevronDown
+                      className={`w-5 h-5 cursor-pointer text-gray-500 transition-transform duration-300 ${
+                        openStates[flight.id] ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </CollapsibleTrigger>
               </div>
-            </div>
-            <CollapsibleContent className="transition-all duration-500 ease-in-out transform origin-top">
-              <hr className="mt-10  border border-black/20" />
-              <div className="flex flex-col px-5">
-                <div className="mt-3">
-                  <Labels className="font-bold">Flight Details</Labels>
-                </div>
-                <div className="flex mt-3">
-                  <Labels className="font-bold">
-                    {new Date(flight.departureDate).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </Labels>
-                  <Labels className="font-bold ml-auto text-violet">
-                    Departure
-                  </Labels>
-                </div>
-                <Labels className="mt-1">
-                  {formatDate(flight.departureDate)}
-                </Labels>
-                <Labels className="flex flex-col mt-1">
-                  {flight.departureAirport.name} - {flight.plane.terminal}
-                </Labels>
-
-                <hr className="mt-3 w-full mx-auto border border-black/20" />
-
-                <div className="flex my-2">
-                  <div className="flex items-center justify-center">
+              <div className="mt-9 sm:ps-7">
+                <div className="flex flex-col gap-2 items-center sm:flex-row">
+                  <div className="flex mt-3 flex-col items-center">
+                    <Label className="font-bold">{flight.departureTime}</Label>
+                    <Label className="mt-2">
+                      {flight.departureAirport.code}
+                    </Label>
+                  </div>
+                  <div className="sm:mx-10 w-40 flex flex-col items-center sm:gap-1">
+                    <Label>{flight.duration}</Label>
+                    <div className="border-t border-gray-500 w-full"></div>
+                    <Label>
+                      {flight.transit &&
+                      typeof flight.transit === "object" &&
+                      "status" in flight.transit
+                        ? flight.transit.status
+                          ? "Transit"
+                          : "Direct"
+                        : "Direct"}
+                    </Label>
+                  </div>
+                  <div className="flex mt-3 flex-col items-center">
+                    <Label className="font-bold">{flight.arrivalTime}</Label>
+                    <Label className="mt-2">
+                      {flight.destinationAirport.code}
+                    </Label>
+                  </div>
+                  <div className="sm:ml-5 flex items-start">
                     <Image
-                      src="/assets/leaf.svg"
+                      src="/assets/baggage.svg"
                       alt="logo"
                       width={50}
                       height={50}
-                      className="w-7 h-7"
+                      className="w-[25px] mt-5 bg-cover"
                     />
                   </div>
-                  <div className="flex flex-col ps-2">
-                    <div>
-                      <Labels className="mt-3 font-bold">
-                        {flight.plane.name} - {searchParams.seatClass}
-                      </Labels>
-                      <Labels className="flex flex-col font-bold">
-                        JT - 203
-                      </Labels>
-                    </div>
-                    <div className="mt-5">
-                      <Labels className="font-bold">Information:</Labels>
-                      <Labels className="flex flex-col">Baggage 20 kg</Labels>
-                      <Labels>Cabin baggage 7 kg</Labels>
-                      <Labels className="flex flex-col">
-                        In Flight Entertainment
-                      </Labels>
-                    </div>
+                  <div className="ml-auto flex flex-col items-start">
+                    {returnFlights.length === 0 ? (
+                      <>
+                        <Label className="font-bold">
+                          IDR {flight.price.toLocaleString("id-ID")}
+                        </Label>
+                        <ButtonBook flightId={flight.id} />
+                      </>
+                    ) : null}
                   </div>
                 </div>
-
-                <hr className="mt-3 w-full mx-auto border border-black/20" />
-
-                <div className="py-2">
+              </div>
+              {returnFlights.length > 0 && returnFlightCard(flight)}
+              <CollapsibleContent className="transition-all duration-500 ease-in-out transform origin-top">
+                <hr className="mt-10 border border-black/20" />
+                <div className="flex flex-col px-5">
+                  <div className="mt-3">
+                    <Labels className="font-bold">Flight Details</Labels>
+                  </div>
                   <div className="flex mt-3">
                     <Labels className="font-bold">
-                      {new Date(flight.arrivalDate).toLocaleTimeString([], {
+                      {new Date(flight.departureDate).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
                     </Labels>
                     <Labels className="font-bold ml-auto text-violet">
-                      Arrivals
+                      Departure
                     </Labels>
                   </div>
-                  <div>
-                    <Labels>{formatDate(flight.arrivalDate)}</Labels>
-                    <Labels className="flex flex-col">
-                      {flight.destinationAirport.name}
-                    </Labels>
+                  <Labels className="mt-1">
+                    {formatDate(flight.departureDate)}
+                  </Labels>
+                  <Labels className="flex flex-col mt-1">
+                    {flight.departureAirport.name} - {flight.plane.terminal}
+                  </Labels>
+                  <hr className="mt-3 w-full mx-auto border border-black/20" />
+                  <div className="flex my-2">
+                    <div className="flex items-center justify-center">
+                      <Image
+                        src="/assets/leaf.svg"
+                        alt="logo"
+                        width={50}
+                        height={50}
+                        className="w-7 h-7"
+                      />
+                    </div>
+                    <div className="flex flex-col ps-2">
+                      <div>
+                        <Labels className="mt-3 font-bold">
+                          {flight.plane.name} - {searchParams.seatClass}
+                        </Labels>
+                        <Labels className="flex flex-col font-bold">
+                          JT - 203
+                        </Labels>
+                      </div>
+                      <div className="mt-5">
+                        <Labels className="font-bold">Information:</Labels>
+                        <Labels className="flex flex-col">Baggage 20 kg</Labels>
+                        <Labels>Cabin baggage 7 kg</Labels>
+                        <Labels className="flex flex-col">
+                          In Flight Entertainment
+                        </Labels>
+                      </div>
+                    </div>
+                  </div>
+                  <hr className="mt-3 w-full mx-auto border border-black/20" />
+                  <div className="py-2">
+                    <div className="flex mt-3">
+                      <Labels className="font-bold">
+                        {new Date(flight.arrivalDate).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </Labels>
+                      <Labels className="font-bold ml-auto text-violet">
+                        Arrivals
+                      </Labels>
+                    </div>
+                    <div>
+                      <Labels>{formatDate(flight.arrivalDate)}</Labels>
+                      <Labels className="flex flex-col">
+                        {flight.destinationAirport.name}
+                      </Labels>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CollapsibleContent>
-          </div>
-        </Collapsible>
-      ))}
+              </CollapsibleContent>
+            </div>
+          </Collapsible>
+        ))
+      ) : (
+        <div className="text-center font-bold text-xl">404 Not Found 😌</div>
+      )}
     </div>
   );
 };

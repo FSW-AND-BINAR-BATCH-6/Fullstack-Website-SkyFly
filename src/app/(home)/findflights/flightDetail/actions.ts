@@ -34,7 +34,7 @@ export interface Flight {
   departureTime: null | string;
   duration: null | string;
   arrivalTime: null | string;
-  class: [{ seatClass: string; seatPrice: string | number }];
+  classInfo: [{ seatClass: string | null; seatPrice: string | number }];
 }
 
 export interface Transit {
@@ -59,7 +59,7 @@ export interface FlightById {
 }
 
 export interface FlightData {
-  flights: Flight[];
+  derpartureFlights: Flight[];
   returnFlights: Flight[];
 }
 
@@ -83,21 +83,26 @@ export const getRoundTrip = async (query: string): Promise<Flight[]> => {
       `http://localhost:2000/api/v1/flights?${query}`
     );
 
-    const flights = response.data.data;
-    const returnFlights = response.data.returnFlights;
+    let derpartureFlights;
+    let returnFlights;
 
     for (const flightData of response.data.data) {
       for (const returnData of response.data.returnFlights) {
         if (
           returnData.planeId == flightData.planeId &&
-          returnData.departureAirport == flightData.destinationAirport
+          returnData.departureAirport == flightData.destinationAirport &&
+          returnData.destinationAirport == flightData.departureAirport
         ) {
-          console.log(returnData);
+          console.log("test")
+          derpartureFlights = response.data.data;
+          returnFlights = response.data.returnFlights;
         }
+        // derpartureFlights = response.data.data;
+        // returnFlights = response.data.returnFlights;
       }
     }
-    
-    return { flights, returnFlights };
+
+    return { derpartureFlights, returnFlights };
   } catch (err) {
     console.log(err);
     throw err;
