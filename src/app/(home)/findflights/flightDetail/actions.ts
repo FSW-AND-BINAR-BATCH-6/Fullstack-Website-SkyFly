@@ -66,7 +66,7 @@ export interface FlightData {
 export const getFlights = async (query: string): Promise<Flight[]> => {
   try {
     const response = await axios.get(
-      `http://localhost:2000/api/v1/flights?${query}`
+      `https://backend-skyfly-c1.vercel.app/api/v1/flights?${query}`
     );
 
     const flights = response.data.data;
@@ -80,7 +80,7 @@ export const getFlights = async (query: string): Promise<Flight[]> => {
 export const getRoundTrip = async (query: string): Promise<Flight[]> => {
   try {
     const response = await axios.get(
-      `http://localhost:2000/api/v1/flights?${query}`
+      `https://backend-skyfly-c1.vercel.app/api/v1/flights?${query}`
     );
 
     let derpartureFlights;
@@ -93,12 +93,12 @@ export const getRoundTrip = async (query: string): Promise<Flight[]> => {
           returnData.departureAirport == flightData.destinationAirport &&
           returnData.destinationAirport == flightData.departureAirport
         ) {
-          console.log("test")
-          derpartureFlights = response.data.data;
-          returnFlights = response.data.returnFlights;
+          // console.log("test")
+          // derpartureFlights = response.data.data;
+          // returnFlights = response.data.returnFlights;
         }
-        // derpartureFlights = response.data.data;
-        // returnFlights = response.data.returnFlights;
+        derpartureFlights = response.data.data;
+        returnFlights = response.data.returnFlights;
       }
     }
 
