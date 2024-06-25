@@ -6,7 +6,7 @@ import { Labels } from "@/components/ui/labels";
 export default function Timer() {
   const [timer, setTimer] = useState<number>(() => {
     if (typeof window !== "undefined") {
-      const savedTimer = localStorage.getItem("timer");
+      const savedTimer = window.localStorage.getItem("timer");
       return savedTimer ? Number(savedTimer) : 900; // Set to 900 seconds (15 minutes) if not found
     }
     return 900; // Default value if window is not defined
@@ -19,7 +19,7 @@ export default function Timer() {
         setTimer((prevTimer) => {
           const newTimer = prevTimer - 1;
           if (typeof window !== "undefined") {
-            localStorage.setItem("timer", newTimer.toString());
+            window.localStorage.setItem("timer", newTimer.toString());
           }
           return newTimer;
         });

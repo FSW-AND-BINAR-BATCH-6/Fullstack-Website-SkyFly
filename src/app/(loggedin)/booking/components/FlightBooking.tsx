@@ -80,7 +80,7 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
   }, []);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("bayik");
+    const storedData = window.localStorage.getItem("bayik");
     if (storedData) {
       const parsedData: PriceDetails = JSON.parse(storedData);
       setData(parsedData);
