@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Labels } from "@/components/ui/labels";
 import Image from "next/image";
+import ShowTicket from "./showTickets";
 
 export default function CompletePage() {
   return (
@@ -22,7 +23,7 @@ export default function CompletePage() {
           </Labels>
         </div>
         <div className="mt-5 flex flex-col items-center">
-          <Button className="w-40 sm:w-60">Show Tickets</Button>
+          <ShowTicket />
           <Button className="mt-3 w-40 sm:w-60 bg-violet-400">
             Find Other Flights
           </Button>

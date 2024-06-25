@@ -141,6 +141,7 @@ export default function FormOtp() {
         setCookie("token", response._token);
         setTimer(60);
         toast.success(response.message, {
+          duration: 10000,
           style: {
             fontWeight: "bold",
           },
