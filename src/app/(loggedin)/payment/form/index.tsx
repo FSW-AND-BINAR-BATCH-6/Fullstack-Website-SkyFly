@@ -115,7 +115,7 @@ const PaymentPage = () => {
   });
 
   useEffect(() => {
-    const data = localStorage.getItem("DataUsers");
+    const data = window.localStorage.getItem("DataUsers");
     if (data) {
       try {
         const parsedData = JSON.parse(data);

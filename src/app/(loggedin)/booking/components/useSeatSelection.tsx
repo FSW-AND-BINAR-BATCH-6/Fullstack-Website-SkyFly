@@ -23,6 +23,7 @@ export type Seat = {
 export const useSeatSelection = () => {
   const [seats, setSeats] = useState<Seat[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
+  const [seatClass, setSeatClass] = useState<string | null>(null);
   const [flightId, setFlightId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
@@ -58,7 +59,7 @@ export const useSeatSelection = () => {
   }, []);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("bayik");
+    const storedData = window.localStorage.getItem("bayik");
     if (storedData) {
       try {
         const parsedData = JSON.parse(storedData) as PassengerCounts;
@@ -104,7 +105,13 @@ export const useSeatSelection = () => {
     (seat) => seat.status === "AVAILABLE"
   );
 
-  const seatClass = localStorage.getItem("seatClass");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedSeatClass =
+        window.localStorage.getItem("seatClass");
+      setSeatClass(storedSeatClass);
+    }
+  }, []);
 
   return {
     seats,
