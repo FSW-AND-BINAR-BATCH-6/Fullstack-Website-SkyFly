@@ -1,5 +1,5 @@
-import BookingDetailings from "./BookingDetailings";
+import BookingDetail from "./components/BookingDetail";
 
 export default function bookingPage() {
-  return <BookingDetailings />;
+  return <BookingDetail />;
 }

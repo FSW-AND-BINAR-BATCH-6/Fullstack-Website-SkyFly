@@ -220,7 +220,7 @@ export default function FormLogin() {
         Login with Google
       </Button>
       <div className="text-center mt-5">
-        don`t have an account?{" "}
+        don&apos;t have an account?{" "}
         <Link href="/register" className="text-blue-700 font-bold">
           Register here
         </Link>

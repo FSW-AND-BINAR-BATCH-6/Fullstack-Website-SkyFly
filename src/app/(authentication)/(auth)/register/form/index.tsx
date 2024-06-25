@@ -54,6 +54,7 @@ export default function FormRegister() {
         });
         toast.dismiss();
         toast.success(response.message, {
+          duration: 10000,
           style: {
             fontWeight: "bold",
           },

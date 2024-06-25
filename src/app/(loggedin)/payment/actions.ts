@@ -2,32 +2,30 @@
 
 import axios from "axios";
 
-interface BookingData {
-  bookingDetails: string;
+export interface PaymentData {
   token: string;
   orderer: {
-    fullName: string;
-    familyName?: string;
+    familyName: string;
     phoneNumber: string;
+    fullName: string;
     email: string;
   };
   passengers: {
     title: string;
     fullName: string;
-    familyName?: string;
     dob: string;
+    validityPeriod: string;
+    familyName: string;
     citizenship: string;
     passport: string;
     issuingCountry: string;
-    validityPeriod: string;
-  };
-  selectedSeats: string[];
+  }[];
 }
 
-export const bookingUser = async (data: BookingData) => {
+export const paymentGopay = async (data: PaymentData) => {
   try {
     const response = await axios.post(
-      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/payment?flightId=${data.bookingDetails}`,
+      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/gopay?flightId=clxkt98yw000njnepyaschw9t&adult=1&child=0&baby=0`,
       data,
       {
         headers: {

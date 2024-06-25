@@ -2,16 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 
-const ButtonCheckout = () => {
-  const handleCheckout = () => {
-    window.location.href = "/complete";
-  };
+interface ButtonCheckoutProps {
+  showCheckout: boolean;
+}
 
-  return (
-    <Button onClick={handleCheckout} className="mt-5 w-full">
-      Checkout
-    </Button>
-  );
+const ButtonCheckout: React.FC<ButtonCheckoutProps> = ({
+  showCheckout,
+}) => {
+  return <Button className="mt-5 w-full">Checkout</Button>;
 };
 
 export default ButtonCheckout;
