@@ -75,7 +75,7 @@ export default function FormFindFlights() {
       icon: <TicketSlash className="w-5 h-5 mr-4" />,
     },
     {
-      label: "First Class",
+      label: "First",
       price: "IDR 87.620.000",
       icon: <TicketPercent className="w-5 h-5 mr-4" />,
     },
@@ -128,20 +128,22 @@ export default function FormFindFlights() {
       passengerDescriptions,
     };
 
-    const totalPassengers = adults + child + babies; 
+    const totalPassengers = adults + child + babies;
     const queryParams = {
       totalPassengers: totalPassengers.toString(),
       departureDate: data.departureDate,
       returnDate: data.returnDate || "",
       from: data.from,
       to: data.to,
-      seatClass: data.seatClass
-      };
+      seatClass: data.seatClass,
+    };
 
     const filteredQueryParams = Object.fromEntries(
       Object.entries(queryParams).filter(([_, value]) => value !== "")
     );
-    const searchParams = new URLSearchParams(filteredQueryParams).toString();
+    const searchParams = new URLSearchParams(
+      filteredQueryParams
+    ).toString();
     console.log("Form Data:", dataWithPassengers);
 
     router.push(`/findflights?${searchParams}`);
