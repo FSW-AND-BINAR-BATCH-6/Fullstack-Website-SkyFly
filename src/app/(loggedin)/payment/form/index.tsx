@@ -39,7 +39,9 @@ import {
   paymentBank,
   paymentCreditCard,
   paymentGopay,
+  statusTransaction,
 } from "./actions";
+import FlightBooking from "./FlightBooking";
 
 const creditCardSchema = z.object({
   card_number: z
@@ -89,6 +91,10 @@ const PaymentPage = () => {
   const [vaNumber, setVaNumber] = useState("");
   const [urlBarcode, setUrlBarcode] = useState("");
   const [urlCreditCard, setUrlCreditCard] = useState("");
+  const [transactionId, setTransactionId] = useState("");
+  const [transactionStatus, setTransactionStatus] = useState("");
+  const [isPolling, setIsPolling] = useState(true);
+  const [checkoutDisabled, setCheckoutDisabled] = useState(false);
   const [isGopayDisabled, setGopayDisabled] = useState(false);
   const [isBankDisabled, setBankDisabled] = useState(false);
   const [isCreditCardDisabled, setCreditCardDisabled] =
@@ -126,6 +132,58 @@ const PaymentPage = () => {
       }
     }
   }, []);
+
+  const fetchStatus = async () => {
+    const token = getCookie("token");
+    if (typeof token !== "string") {
+      toast.error("Token is missing or invalid.", {
+        style: {
+          fontWeight: "bold",
+        },
+      });
+      return;
+    }
+
+    try {
+      const requestData = { token, transactionId };
+      const response = await statusTransaction(requestData);
+      if (response.status) {
+        const status = response.data.transaction_status;
+        setTransactionStatus(status);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (isPolling) {
+        fetchStatus();
+      }
+    }, 8000);
+
+    const timeoutId = setTimeout(() => {
+      setIsPolling(false);
+      clearInterval(intervalId);
+    }, 30000);
+
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    };
+  }, [transactionId, isPolling]);
+
+  useEffect(() => {
+    if (transactionStatus === "settlement") {
+      toast.success("Transaction is settled!", {
+        style: {
+          fontWeight: "bold",
+        },
+      });
+      window.location.href = "/complete";
+    }
+  }, [transactionStatus]);
 
   const handleSelectChange = (value: string) => {
     setBank(value);
@@ -174,10 +232,13 @@ const PaymentPage = () => {
     }
   };
 
-  if (urlBarcode) {
-    window.open(urlBarcode, "_blank");
-    return;
-  }
+  useEffect(() => {
+    if (urlBarcode) {
+      window.open(urlBarcode, "_blank");
+    } else {
+      return;
+    }
+  }, [urlBarcode]);
 
   const handleBank = async () => {
     const token = getCookie("token");
@@ -203,6 +264,8 @@ const PaymentPage = () => {
             },
           });
           setVaNumber(response.data.va_numbers[0].va_number);
+          setTransactionId(response.data.transaction_id);
+          setCheckoutDisabled(true);
         } else {
           toast.error(response.message, {
             style: {
@@ -216,12 +279,16 @@ const PaymentPage = () => {
     }
   };
 
-  if (vaNumber) {
-    window.open(
-      `https://simulator.sandbox.midtrans.com/bca/va/index`,
-      "_blank"
-    );
-  }
+  useEffect(() => {
+    if (vaNumber) {
+      window.open(
+        `https://simulator.sandbox.midtrans.com/bca/va/index`,
+        "_blank"
+      );
+    } else {
+      return;
+    }
+  }, [vaNumber]);
 
   const handleCreditCard = async () => {
     const token = getCookie("token");
@@ -261,9 +328,13 @@ const PaymentPage = () => {
     }
   };
 
-  if (urlCreditCard) {
-    window.open(urlCreditCard, "_blank");
-  }
+  useEffect(() => {
+    if (urlCreditCard) {
+      window.open(urlCreditCard, "_blank");
+    } else {
+      return;
+    }
+  }, [urlCreditCard]);
 
   return (
     <div className="w-full sm:w-4/5 mx-auto mt-3 pb-20">
@@ -557,7 +628,11 @@ const PaymentPage = () => {
               </Button>
             )}
             {selectedPaymentMethod === "bank" && (
-              <Button className="w-full mt-5" onClick={handleBank}>
+              <Button
+                className="w-full mt-5"
+                disabled={checkoutDisabled}
+                onClick={handleBank}
+              >
                 Checkout With Virtual Account
               </Button>
             )}
@@ -577,101 +652,7 @@ const PaymentPage = () => {
           </div>
         </div>
 
-        <div className="w-full lg:w-2/5 px-3">
-          <div className="w-full p-5 mt-3 rounded-sm shadow-xl border border-black/20">
-            <div>
-              <Labels className="font-bold">Flight Details</Labels>
-            </div>
-            <div className="flex mt-3">
-              <Labels className="font-bold">07:00</Labels>
-              <Labels className="font-bold ml-auto text-violet">
-                Departure
-              </Labels>
-            </div>
-            <Labels>3 March 2024</Labels>
-            <Labels className="flex flex-col">
-              Soekarno Hatta - Terminal 1A Domestik
-            </Labels>
-
-            <hr className="mt-3 border border-black/20" />
-
-            <div className="flex my-2">
-              <div className="flex items-center justify-center">
-                <Image
-                  src="/assets/leaf.svg"
-                  alt="logo"
-                  width={50}
-                  height={50}
-                  className="w-7 h-7"
-                />
-              </div>
-              <div className="flex flex-col ps-2">
-                <div>
-                  <Labels className="mt-3 font-bold">
-                    Jet Air - Economy
-                  </Labels>
-                  <Labels className="flex flex-col font-bold">
-                    JT - 203
-                  </Labels>
-                </div>
-                <div className="mt-5">
-                  <Labels className="font-bold">Information:</Labels>
-                  <Labels className="flex flex-col">
-                    Baggage 20 kg
-                  </Labels>
-                  <Labels>Cabin baggage 7 kg</Labels>
-                  <Labels className="flex flex-col">
-                    In Flight Entertainment
-                  </Labels>
-                </div>
-              </div>
-            </div>
-
-            <hr className="mt-3 border border-black/20" />
-
-            <div className="py-2">
-              <div className="flex mt-3">
-                <Labels className="font-bold">11:00</Labels>
-                <Labels className="font-bold ml-auto text-violet">
-                  Arrivals
-                </Labels>
-              </div>
-              <div>
-                <Labels>3 March 2024</Labels>
-                <Labels className="flex flex-col">
-                  Melbourne International Airport
-                </Labels>
-              </div>
-            </div>
-
-            <hr className="mt-3 border border-black/20" />
-
-            <div className="py-2">
-              <Labels className="font-bold">Total Price</Labels>
-              <div className="flex mt-2">
-                <Labels>2 Adults</Labels>
-                <Labels className="ml-auto">IDR 9.550.000</Labels>
-              </div>
-              <div className="flex mt-2">
-                <Labels>1 Baby</Labels>
-                <Labels className="ml-auto">IDR 0</Labels>
-              </div>
-              <div className="flex mt-2">
-                <Labels>Tax</Labels>
-                <Labels className="ml-auto">IDR 300.000</Labels>
-              </div>
-            </div>
-
-            <hr className="mt-3 border border-black/20" />
-
-            <div className="flex mt-3">
-              <Labels className="font-bold text-lg">Total</Labels>
-              <Labels className="ml-auto text-lg font-bold text-violet">
-                IDR 9.850.000
-              </Labels>
-            </div>
-          </div>
-        </div>
+        <FlightBooking />
       </div>
     </div>
   );

@@ -87,6 +87,10 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
     }
   }, []);
 
+  const handleNextPayment = () => {
+    window.location.href = "/payment";
+  };
+
   const getAirlineName = (planeId: string) => {
     const airline = airlines.find(
       (airline) => airline.id === planeId
@@ -315,7 +319,10 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
         ))}
       </div>
       {showButton && (
-        <Button className="mt-4 bg-red-700 hover:bg-red-500 w-full">
+        <Button
+          onClick={handleNextPayment}
+          className="mt-4 bg-red-700 hover:bg-red-500 w-full"
+        >
           proceed with payment
         </Button>
       )}

@@ -22,6 +22,11 @@ export interface PaymentData {
   }[];
 }
 
+export interface statusTransaction {
+  transactionId: string;
+  token: string;
+}
+
 export const paymentGopay = async (data: PaymentData) => {
   try {
     const response = await axios.post(
@@ -100,5 +105,21 @@ export const paymentCreditCard = async (data: PaymentData) => {
         message: "An unexpected error occurred",
       };
     }
+  }
+};
+
+export const statusTransaction = async (data: statusTransaction) => {
+  try {
+    const response = await axios.get(
+      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/status/${data.transactionId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
   }
 };
