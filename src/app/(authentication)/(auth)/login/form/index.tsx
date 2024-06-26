@@ -24,10 +24,12 @@ import Image from "next/image";
 import { Box } from "@/components/ui/box";
 import { EyeOffIcon, EyeIcon } from "lucide-react";
 import { createElement, useState } from "react";
+import useToastStore from "@/stores/toastStore";
 
 export default function FormLogin() {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const router = useRouter();
+  const showToast = useToastStore((state) => state.showToast);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,52 +39,36 @@ export default function FormLogin() {
   });
 
   const handleLogin = async (data: z.infer<typeof formSchema>) => {
+    toast.loading("Logging in...");
+
     try {
-      const promise = loginUser(data);
-
-      await toast.promise(
-        promise.then((response) => {
-          if (!response.status) {
-            throw new Error(response.message);
+      const response = await loginUser(data);
+      if (response.status) {
+        setCookie("token", response._token, {
+          maxAge: 60 * 60 * 24,
+        });
+        setCookie(
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+          "eyJpZCI6ImNseGVsd3lpMDAwMHVod2ljZWRocGluZ3MiLCJuYW1lIjoiRmFyaXMiL",
+          {
+            maxAge: 60 * 60 * 24,
           }
-          return response;
-        }),
-        {
-          loading: "Logging in...",
-          success: (response) => {
-            if (response.status) {
-              setCookie("token", response._token, {
-                maxAge: 60 * 60 * 24,
-              });
-              setCookie(
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-                "eyJpZCI6ImNseGVsd3lpMDAwMHVod2ljZWRocGluZ3MiLCJuYW1lIjoiRmFyaXMiL",
-                {
-                  maxAge: 60 * 60 * 24,
-                }
-              );
-              router.push("/");
-            }
-            return response.message;
+        );
+        toast.dismiss();
+        toast.success(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: (err) => err.message,
-        },
-        {
-          success: {
-            style: {
-              fontWeight: "bold",
-            },
+        });
+        router.push("/");
+      } else {
+        toast.dismiss();
+        toast.error(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: {
-            style: {
-              fontWeight: "bold",
-            },
-          },
-        }
-      );
-
-      const response = await promise;
-      console.log(response);
+        });
+      }
     } catch (err) {
       console.error(err);
     }
@@ -100,44 +86,28 @@ export default function FormLogin() {
         return;
       }
 
-      const promise = forgotPassword({ email });
+      toast.loading("Sending email...");
 
-      await toast.promise(
-        promise.then((response) => {
-          if (!response.status) {
-            throw new Error(response.message);
-          }
-          return response;
-        }),
-        {
-          loading: "Sending email...",
-          success: (response) => {
-            if (response.status) {
-              setCookie("token", response._token, {
-                maxAge: 60 * 60 * 24,
-              });
-              router.push("/passwordreset");
-            }
-            return response.message;
+      const response = await forgotPassword({ email });
+      if (response.status) {
+        setCookie("token", response._token, {
+          maxAge: 60 * 60 * 24,
+        });
+        toast.dismiss();
+        toast.success(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: (err) => err.message,
-        },
-        {
-          success: {
-            style: {
-              fontWeight: "bold",
-            },
+        });
+        router.push("/passwordreset");
+      } else {
+        toast.dismiss();
+        toast.error(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: {
-            style: {
-              fontWeight: "bold",
-            },
-          },
-        }
-      );
-
-      const response = await promise;
-      console.log(response);
+        });
+      }
     } catch (err) {
       console.error(err);
     }
@@ -250,7 +220,7 @@ export default function FormLogin() {
         Login with Google
       </Button>
       <div className="text-center mt-5">
-        don`t have an account?{" "}
+        don&apos;t have an account?{" "}
         <Link href="/register" className="text-blue-700 font-bold">
           Register here
         </Link>

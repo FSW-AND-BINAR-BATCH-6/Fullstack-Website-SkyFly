@@ -99,6 +99,8 @@ export default function FormFindFlights() {
   const handleSaveSeatClass = () => {
     if (selectedIndex !== null) {
       const selectedSeat = seats[selectedIndex];
+      console.log("Selected Seat:", selectedSeat.label);
+      localStorage.setItem("seatClass", selectedSeat.label);
       setValue("seatClass", selectedSeat.label);
       clearErrors("seatClass");
       setOpenSeatClass(false);
@@ -107,8 +109,10 @@ export default function FormFindFlights() {
 
   const handleSavePassengers = () => {
     const totalPassengers = adults + child + babies;
-    setValue("passengers", `${totalPassengers} People`);
+    const data = { adults, child, babies };
+    setValue("passengers", `${totalPassengers}`);
     clearErrors("passengers");
+    localStorage.setItem("bayik", JSON.stringify(data));
     setOpenPassengers(false);
   };
 

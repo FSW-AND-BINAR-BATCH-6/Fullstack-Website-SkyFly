@@ -42,51 +42,40 @@ export default function FormReset() {
   const handleSubmit = async (
     data: z.infer<typeof newPasswordSchema>
   ) => {
+    toast.loading("Sending new password...");
+
     setIsLoading(true);
     const token = getCookie("token");
     if (typeof token !== "string") {
-      toast.error("Token is missing or invalid.");
+      toast.error("Token is missing or invalid.", {
+        style: {
+          fontWeight: "bold",
+        },
+      });
+      setIsLoading(false);
       return;
     }
 
     const requestData = { ...data, token };
 
     try {
-      const promise = passwordReset(requestData);
-
-      await toast.promise(
-        promise.then((response) => {
-          if (!response.status) {
-            throw new Error(response.message);
-          }
-          return response;
-        }),
-        {
-          loading: "Logging in...",
-          success: (response) => {
-            if (response.status) {
-              router.push("/login");
-            }
-            return response.message;
+      const response = await passwordReset(requestData);
+      if (response.status) {
+        toast.dismiss();
+        toast.success(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: (err) => err.message,
-        },
-        {
-          success: {
-            style: {
-              fontWeight: "bold",
-            },
+        });
+        router.push("/login");
+      } else {
+        toast.dismiss();
+        toast.error(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: {
-            style: {
-              fontWeight: "bold",
-            },
-          },
-        }
-      );
-
-      const response = await promise;
-      console.log(response);
+        });
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -200,7 +189,7 @@ export default function FormReset() {
         </form>
       </Form>
       <div className="text-center mt-7">
-        don`t have an account?{" "}
+        don&apos;t have an account?{" "}
         <Link href="/register" className="text-blue-700 font-bold">
           Register here
         </Link>

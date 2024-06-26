@@ -11,9 +11,19 @@ import { Labels } from "@/components/ui/labels";
 import Image from "next/image";
 import React, { FC, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { useStore } from "@/stores/buttonStore";
+import { usePriceStore } from "@/stores/priceStore";
 
 interface FlightBookingProps {
   flightId: string | null;
+}
+
+interface PriceDetails {
+  adults: number;
+  child: number;
+  babies: number;
+  tax: number;
 }
 
 const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
@@ -21,6 +31,19 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
   const [flightsById, setFlightsById] = useState<FlightById[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<PriceDetails | null>(null);
+
+  const setTotalPrice = usePriceStore((state) => state.setTotalPrice);
+
+  const showButton = useStore((state) => state.showButton);
+
+  const hargaKuris = 1500000;
+  const hargaDewasa = hargaKuris * data?.adults!;
+  const hargaAnak = hargaKuris * data?.child!;
+
+  const totalHarga = hargaDewasa + hargaAnak + 300000;
+
+  setTotalPrice(totalHarga);
 
   useEffect(() => {
     const fetchFlightsById = async () => {
@@ -56,6 +79,14 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
     fetchAirlinesData();
   }, []);
 
+  useEffect(() => {
+    const storedData = window.localStorage.getItem("bayik");
+    if (storedData) {
+      const parsedData: PriceDetails = JSON.parse(storedData);
+      setData(parsedData);
+    }
+  }, []);
+
   const getAirlineName = (planeId: string) => {
     const airline = airlines.find(
       (airline) => airline.id === planeId
@@ -71,7 +102,7 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
   };
 
   const renderSkeleton = () => (
-    <div className="w-full lg:w-2/5 px-3">
+    <div className="w-full lg:w-4/5 px-3">
       <div className="w-full p-5 mt-3 rounded-sm shadow-xl border border-black/20">
         <div>
           <Labels className="font-bold">Flight Details</Labels>
@@ -155,7 +186,7 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
   }
 
   return (
-    <div className="w-full lg:w-2/5 px-3">
+    <div className="w-full lg:w-4/5 px-3">
       <div className="w-full p-5 mt-3 rounded-sm shadow-xl border border-black/20">
         {flightsById.map((flight) => (
           <div key={flight.id}>
@@ -244,14 +275,28 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
 
             <div className="py-2">
               <Labels className="font-bold">Total Price</Labels>
-              <div className="flex mt-2">
-                <Labels>2 Adults</Labels>
-                <Labels className="ml-auto">IDR 9.550.000</Labels>
-              </div>
-              <div className="flex mt-2">
-                <Labels>1 Baby</Labels>
-                <Labels className="ml-auto">IDR 0</Labels>
-              </div>
+              {data?.adults !== undefined && data.adults > 0 && (
+                <div className="flex mt-2">
+                  <Labels>{data?.adults} Adults</Labels>
+                  <Labels className="ml-auto">
+                    IDR {hargaDewasa.toLocaleString()}
+                  </Labels>
+                </div>
+              )}
+              {data?.child !== undefined && data.child > 0 && (
+                <div className="flex mt-2">
+                  <Labels>{data?.child} Child</Labels>
+                  <Labels className="ml-auto">
+                    IDR {hargaAnak.toLocaleString()}
+                  </Labels>
+                </div>
+              )}
+              {data?.babies !== undefined && data.babies > 0 && (
+                <div className="flex mt-2">
+                  <Labels>{data?.babies} Baby</Labels>
+                  <Labels className="ml-auto">IDR 0</Labels>
+                </div>
+              )}
               <div className="flex mt-2">
                 <Labels>Tax</Labels>
                 <Labels className="ml-auto">IDR 300.000</Labels>
@@ -263,12 +308,17 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
             <div className="flex mt-3">
               <Labels className="font-bold text-lg">Total</Labels>
               <Labels className="ml-auto text-lg font-bold text-violet">
-                IDR 9.850.000
+                IDR {totalHarga.toLocaleString()}
               </Labels>
             </div>
           </div>
         ))}
       </div>
+      {showButton && (
+        <Button className="mt-4 bg-red-700 hover:bg-red-500 w-full">
+          proceed with payment
+        </Button>
+      )}
     </div>
   );
 };

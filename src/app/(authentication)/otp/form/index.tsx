@@ -35,9 +35,11 @@ import {
   ResendOtp,
 } from "./actions";
 import { deleteCookie } from "@/hooks/deleteCookie";
+import useToastStore from "@/stores/toastStore";
 
 export default function FormOtp() {
   const router = useRouter();
+  const showToast = useToastStore((state) => state.showToast);
   const [emailUser, setEmailUser] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
@@ -65,14 +67,12 @@ export default function FormOtp() {
         const token = getCookie("token") as string | undefined;
         if (token) {
           const data = await getUserEmail(token);
-          console.log(data.email);
           setEmailUser(data.email);
         } else {
           console.error("Token not found");
         }
         const phone = getCookie("phoneNumber") as string | undefined;
         if (phone) {
-          console.log(phone);
           setPhoneNumber(phone);
         }
       } catch (err) {
@@ -86,52 +86,37 @@ export default function FormOtp() {
   const handleSubmit = async (
     data: z.infer<typeof FormOtpSchema>
   ) => {
+    toast.loading("Sending Otp...");
     const token = getCookie("token");
     if (typeof token !== "string") {
-      toast.error("Token is missing or invalid.");
+      toast.error("Token is missing or invalid.", {
+        style: {
+          fontWeight: "bold",
+        },
+      });
       return;
     }
 
     const requestData = { ...data, token };
 
     try {
-      const promise = OtpData(requestData);
-
-      await toast.promise(
-        promise.then((response) => {
-          if (!response.status) {
-            throw new Error(response.message);
-          }
-          return response;
-        }),
-        {
-          loading: "Sending Otp...",
-          success: (response) => {
-            if (response.status) {
-              deleteCookie("phoneNumber");
-              router.push("/login");
-            }
-            return response.message;
+      const response = await OtpData(requestData);
+      if (response.status) {
+        toast.dismiss();
+        toast.success(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: (err) => err.message,
-        },
-        {
-          success: {
-            duration: 10000,
-            style: {
-              fontWeight: "bold",
-            },
+        });
+        deleteCookie("phoneNumber");
+        router.push("/login");
+      } else {
+        toast.error(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: {
-            style: {
-              fontWeight: "bold",
-            },
-          },
-        }
-      );
-
-      const response = await promise;
-      console.log(response);
+        });
+      }
     } catch (err) {
       console.error(err);
     }
@@ -140,50 +125,34 @@ export default function FormOtp() {
   const handleResendOtp = async () => {
     const token = getCookie("token");
     if (typeof token !== "string") {
-      toast.error("Token is missing or invalid.");
+      toast.error("Token is missing or invalid.", {
+        style: {
+          fontWeight: "bold",
+        },
+      });
       return;
     }
 
     const requestData = { token };
 
     try {
-      const promise = ResendOtp(requestData);
-
-      await toast.promise(
-        promise.then((response) => {
-          if (!response.status) {
-            throw new Error(response.message);
-          }
-          return response;
-        }),
-        {
-          loading: "Sending Otp...",
-          success: (response) => {
-            if (response.status) {
-              setTimer(60);
-              setCookie("token", response._token);
-            }
-            return response.message;
+      const response = await ResendOtp(requestData);
+      if (response.status) {
+        setCookie("token", response._token);
+        setTimer(60);
+        toast.success(response.message, {
+          duration: 10000,
+          style: {
+            fontWeight: "bold",
           },
-          error: (err) => err.message,
-        },
-        {
-          success: {
-            duration: 10000,
-            style: {
-              fontWeight: "bold",
-            },
+        });
+      } else {
+        toast.error(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: {
-            style: {
-              fontWeight: "bold",
-            },
-          },
-        }
-      );
-
-      const response = await promise;
-      console.log(response);
+        });
+      }
     } catch (err) {
       console.error(err);
     }
@@ -193,7 +162,11 @@ export default function FormOtp() {
     setLoading(true);
     const token = getCookie("token");
     if (typeof token !== "string") {
-      toast.error("Token is missing or invalid.");
+      toast.error("Token is missing or invalid.", {
+        style: {
+          fontWeight: "bold",
+        },
+      });
       setLoading(false);
       return;
     }
@@ -201,41 +174,20 @@ export default function FormOtp() {
     const requestData = { phoneNumber, token };
 
     try {
-      const promise = OtpWithSms(requestData);
-
-      await toast.promise(
-        promise.then((response) => {
-          if (!response.status) {
-            throw new Error(response.message);
-          }
-          return response;
-        }),
-        {
-          loading: "Sending Otp...",
-          success: (response) => {
-            if (response.status) {
-              setCookie("token", response._token);
-            }
-            return response.message;
+      const response = await OtpWithSms(requestData);
+      if (response.status) {
+        toast.success(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: (err) => err.message,
-        },
-        {
-          success: {
-            style: {
-              fontWeight: "bold",
-            },
+        });
+      } else {
+        toast.error(response.message, {
+          style: {
+            fontWeight: "bold",
           },
-          error: {
-            style: {
-              fontWeight: "bold",
-            },
-          },
-        }
-      );
-
-      const response = await promise;
-      console.log(response);
+        });
+      }
     } catch (err) {
       console.error(err);
     } finally {
