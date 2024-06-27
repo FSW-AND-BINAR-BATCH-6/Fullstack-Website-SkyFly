@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { Seat } from "./useSeatSelection";
 
 export type Props = {
@@ -9,6 +10,7 @@ export type Props = {
     e: React.ChangeEvent<HTMLInputElement>,
     seat: Seat
   ) => void;
+  seatLoading: boolean;
 };
 
 const renderSeats = (
@@ -56,7 +58,37 @@ const SeatComponent: React.FC<Props> = ({
   isDisabled,
   seatLabels,
   handleSeatChange,
+  seatLoading,
 }) => {
+  if (seatLoading) {
+    return (
+      <div className="gap-8 mt-3 mx-auto flex flex-col lg:flex-row">
+        <div className="grid grid-cols-3 gap-4 w-full lg:w-auto">
+          <span className="text-center">A</span>
+          <span className="text-center">B</span>
+          <span className="text-center">C</span>
+          {[...Array(30)].map((_, idx) => (
+            <Skeleton
+              key={`A-${idx}`}
+              className="h-10 w-10 mx-auto"
+            />
+          ))}
+        </div>
+        <div className="grid grid-cols-3 gap-4 w-full lg:w-auto">
+          <span className="text-center">D</span>
+          <span className="text-center">E</span>
+          <span className="text-center">F</span>
+          {[...Array(30)].map((_, idx) => (
+            <Skeleton
+              key={`D-${idx}`}
+              className="h-10 w-10 mx-auto"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="gap-8 mt-3 mx-auto flex flex-col lg:flex-row">
       <div className="grid grid-cols-3 gap-4 w-full lg:w-[10rem]">

@@ -7,11 +7,21 @@ export default function Timer() {
   const [timer, setTimer] = useState<number>(() => {
     if (typeof window !== "undefined") {
       const savedTimer = window.localStorage.getItem("timer");
-      return savedTimer ? Number(savedTimer) : 900; // Set to 900 seconds (15 minutes) if not found
+      return savedTimer ? Number(savedTimer) : 60;
     }
-    return 900; // Default value if window is not defined
+    return 60;
   });
-  const [pathname, setPathname] = useState<string | null>(null); // Initialize as string | null
+  const [pathname, setPathname] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedTimer = window.localStorage.getItem("timer");
+      if (savedTimer && Number(savedTimer) <= 0) {
+        setTimer(60);
+        window.localStorage.setItem("timer", "60");
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (timer > 0) {
@@ -30,19 +40,17 @@ export default function Timer() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // Check if window is available
-      setPathname(window.location.pathname); // Set pathname from window.location
+      setPathname(window.location.pathname);
     }
   }, []);
 
   if (pathname === null) {
-    // Render null or a placeholder while pathname is not set
     return null;
   }
 
   const bgColor = pathname.includes("/complete")
     ? "bg-green-700"
-    : "bg-red-700"; // Corrected class name to bg-red-700
+    : "bg-red-700";
 
   const minutes = Math.floor(timer / 60);
   const seconds = timer % 60;

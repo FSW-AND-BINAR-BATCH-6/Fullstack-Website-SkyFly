@@ -26,6 +26,7 @@ export const useSeatSelection = () => {
   const [seatClass, setSeatClass] = useState<string | null>(null);
   const [flightId, setFlightId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [seatLoading, setSeatLoading] = useState<boolean>(true);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [bookCheck, setBookCheck] = useState<boolean>(false);
   const [passengCheck, setPassengCheck] = useState<boolean>(false);
@@ -41,17 +42,21 @@ export const useSeatSelection = () => {
     passengerCounts.babies;
 
   useEffect(() => {
+    setSeatLoading(true);
     const fetchSeats = async () => {
       const flightId = getCookie("bookingDetails");
       if (typeof flightId !== "string") {
         toast.error("Flight ID is missing or invalid.");
+        setSeatLoading(false);
         return;
       }
       try {
         const data: any = await seatByFlightId(flightId);
         setSeats(data);
+        setSeatLoading(false);
       } catch (err) {
         console.log(err);
+        setSeatLoading(false);
       }
     };
 
@@ -125,6 +130,7 @@ export const useSeatSelection = () => {
     passengCheck,
     isLoading,
     isDisabled,
+    seatLoading,
     setIsLoading,
     setIsDisabled,
     setBookCheck,

@@ -25,6 +25,7 @@ import SeatClass from "./components/SeatClass";
 import { StateFormFindFlights } from "./components/StateFormFindFlights";
 import CommandDialogComponents from "./components/CommandDialogComponents";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -63,6 +64,8 @@ export default function FormFindFlights() {
     setBabies,
   } = StateFormFindFlights({ setValue, clearErrors });
 
+  const [loading, setLoading] = React.useState(false);
+
   const [seats, setSeats] = React.useState([
     {
       label: "Economy",
@@ -75,7 +78,7 @@ export default function FormFindFlights() {
       icon: <TicketSlash className="w-5 h-5 mr-4" />,
     },
     {
-      label: "First Class",
+      label: "First",
       price: "IDR 87.620.000",
       icon: <TicketPercent className="w-5 h-5 mr-4" />,
     },
@@ -117,6 +120,8 @@ export default function FormFindFlights() {
   };
 
   const onSubmit = (data: FormData) => {
+    setLoading(true);
+    toast.loading("find flights...");
     const passengerDescriptions = [
       `${adults} adults`,
       `${child} children`,
@@ -128,7 +133,27 @@ export default function FormFindFlights() {
       passengerDescriptions,
     };
 
-    router.push("/findflights");
+    const totalPassengers = adults + child + babies;
+    const queryParams = {
+      totalPassengers: totalPassengers.toString(),
+      departureDate: data.departureDate,
+      returnDate: data.returnDate || "",
+      from: data.from,
+      to: data.to,
+      seatClass: data.seatClass,
+    };
+
+    const filteredQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([_, value]) => value !== "")
+    );
+    const searchParams = new URLSearchParams(
+      filteredQueryParams
+    ).toString();
+    // console.log("Form Data:", dataWithPassengers);
+    toast.dismiss();
+    setLoading(false);
+
+    router.push(`/findflights?${searchParams}`);
   };
 
   return (
@@ -137,7 +162,7 @@ export default function FormFindFlights() {
         <div className="mx-4 my-5 sm:mx-10">
           <Labels className="font-bold text-lg">
             Choose special flight schedules on
-            <span className="text-violet ml-1">Tiketku!</span>
+            <span className="text-violet ml-1">SkyFly!</span>
           </Labels>
         </div>
 
@@ -240,10 +265,11 @@ export default function FormFindFlights() {
           id="findFlights"
           name="findFlights"
           type="submit"
+          disabled={loading}
           onSubmit={handleSubmit(onSubmit)}
           className="rounded-t-none w-full"
         >
-          Find Flights
+          {loading ? "Loading..." : "Find Flights"}
         </Button>
       </form>
     </>

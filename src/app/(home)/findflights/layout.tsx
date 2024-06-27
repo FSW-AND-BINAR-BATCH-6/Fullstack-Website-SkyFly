@@ -8,6 +8,8 @@ import {
   DollarSign,
   Heart,
 } from "lucide-react";
+import ButtonReset from "../components/ButtonReset";
+import Link from "next/link";
 
 export default function FindFlightsLayout({
   children,
@@ -25,14 +27,14 @@ export default function FindFlightsLayout({
       <div className="w-full md:w-4/5 mx-auto mb-7 px-4">
         <div className="flex flex-col md:flex-row items-center md:items-start sm:gap-4">
           <div className="w-full md:w-4/5 bg-primaryPurple rounded-xl p-3 flex items-center text-white shadow-lg mb-3 md:mb-0">
-            <ArrowLeftIcon className="w-5 h-5 cursor-pointer" />
+            <Link href="/">
+              <ArrowLeftIcon className="w-5 h-5 cursor-pointer" />
+            </Link>
             <Labels className="ml-5 font-bold text-center md:text-left">
               JKT &#187; MLB - 2 Passengers - Economy
             </Labels>
           </div>
-          <Button className="w-full md:w-1/5 bg-greens rounded-xl p-6 flex items-center justify-center text-white">
-            <Labels className="font-bold">Reset Filters</Labels>
-          </Button>
+          <ButtonReset />
         </div>
       </div>
 

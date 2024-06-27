@@ -4,6 +4,7 @@ import axios from "axios";
 
 export interface PaymentData {
   token: string;
+  flightId: string;
   orderer: {
     familyName: string;
     phoneNumber: string;
@@ -20,6 +21,11 @@ export interface PaymentData {
     passport: string;
     issuingCountry: string;
   }[];
+}
+
+export interface statusTransaction {
+  transactionId: string;
+  token: string;
 }
 
 export const paymentGopay = async (data: PaymentData) => {
@@ -52,7 +58,7 @@ export const paymentGopay = async (data: PaymentData) => {
 export const paymentBank = async (data: PaymentData) => {
   try {
     const response = await axios.post(
-      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/bank?flightId=clxrh0w7u0011okfp4c4a0jni&adult=1&child=0&baby=0`,
+      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/bank?flightId=${data.flightId}`,
       data,
       {
         headers: {
@@ -100,5 +106,21 @@ export const paymentCreditCard = async (data: PaymentData) => {
         message: "An unexpected error occurred",
       };
     }
+  }
+};
+
+export const statusTransaction = async (data: statusTransaction) => {
+  try {
+    const response = await axios.get(
+      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/status/${data.transactionId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
   }
 };

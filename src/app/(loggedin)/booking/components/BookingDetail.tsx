@@ -13,6 +13,7 @@ import { usePriceStore } from "@/stores/priceStore";
 import { Seat, useSeatSelection } from "./useSeatSelection";
 import SeatComponent from "./Seats";
 import FlightBooking from "./FlightBooking";
+import { Switch } from "@/components/ui/switch";
 
 interface PassengerDetailsProps {
   index: number;
@@ -54,6 +55,7 @@ const BookingDetail = () => {
     passengCheck,
     isLoading,
     isDisabled,
+    seatLoading,
     setIsLoading,
     setIsDisabled,
     setBookCheck,
@@ -324,7 +326,7 @@ const BookingDetail = () => {
                     id="fullName"
                     name="fullName"
                     type="text"
-                    placeholder="Enter your Full Name"
+                    placeholder="Harry"
                     autoComplete="off"
                     disabled={isDisabled}
                     onChange={(e) =>
@@ -336,6 +338,7 @@ const BookingDetail = () => {
                       {errors["fullName"]}
                     </p>
                   )}
+
                   <Label className="font-bold" htmlFor="familyName">
                     Family Name
                   </Label>
@@ -343,18 +346,13 @@ const BookingDetail = () => {
                     id="familyName"
                     name="familyName"
                     type="text"
-                    placeholder="Enter your Family Name"
+                    placeholder="Potter"
                     autoComplete="off"
                     disabled={isDisabled}
                     onChange={(e) =>
                       handleChange("familyName", e.target.value)
                     }
                   />
-                  {errors["familyName"] && (
-                    <p className="error text-xs ps-1 text-red-700">
-                      {errors["familyName"]}
-                    </p>
-                  )}
                   <Label className="font-bold" htmlFor="phoneNumber">
                     Phone Number
                   </Label>
@@ -362,7 +360,7 @@ const BookingDetail = () => {
                     id="phoneNumber"
                     name="phoneNumber"
                     type="number"
-                    placeholder="Enter your Phone Number"
+                    placeholder="089756420173"
                     autoComplete="off"
                     disabled={isDisabled}
                     onChange={(e) =>
@@ -381,7 +379,7 @@ const BookingDetail = () => {
                     id="email"
                     name="email"
                     type="email"
-                    placeholder="Enter your Email"
+                    placeholder="Johndoe@gmail.com"
                     autoComplete="off"
                     disabled={isDisabled}
                     onChange={(e) =>
@@ -426,6 +424,7 @@ const BookingDetail = () => {
                   seatLabels={seatLabels}
                   handleSeatChange={handleSeatChange}
                   isDisabled={isDisabled}
+                  seatLoading={seatLoading}
                 />
               </div>
 
@@ -468,7 +467,7 @@ const PassengerDetails: React.FC<PassengerDetailsProps> = ({
       <Input
         type="text"
         name={`title-${index}`}
-        placeholder="Enter your title"
+        placeholder="Mr."
         autoComplete="off"
         disabled={isDisabled}
         onChange={(e) => onChange(`title-${index}`, e.target.value)}
@@ -484,7 +483,7 @@ const PassengerDetails: React.FC<PassengerDetailsProps> = ({
       <Input
         type="text"
         name={`fullName-${index}`}
-        placeholder="Enter your first name"
+        placeholder="Harry"
         autoComplete="off"
         disabled={isDisabled}
         onChange={(e) =>
@@ -502,7 +501,7 @@ const PassengerDetails: React.FC<PassengerDetailsProps> = ({
       <Input
         type="text"
         name={`familyName-${index}`}
-        placeholder="Enter your last name"
+        placeholder="Potter"
         autoComplete="off"
         disabled={isDisabled}
       />
@@ -512,7 +511,7 @@ const PassengerDetails: React.FC<PassengerDetailsProps> = ({
       <Input
         type="date"
         name={`dob-${index}`}
-        placeholder="Enter your date of birth"
+        placeholder="dd/mm/yyyy"
         autoComplete="off"
         className="block w-full cursor-pointer"
         disabled={isDisabled}
@@ -529,7 +528,7 @@ const PassengerDetails: React.FC<PassengerDetailsProps> = ({
       <Input
         type="text"
         name={`citizenship-${index}`}
-        placeholder="Enter your citizenship"
+        placeholder="Indonesia"
         autoComplete="off"
         disabled={isDisabled}
         onChange={(e) =>
@@ -547,7 +546,7 @@ const PassengerDetails: React.FC<PassengerDetailsProps> = ({
       <Input
         type="text"
         name={`passport-${index}`}
-        placeholder="Enter your ID card / passport"
+        placeholder="A 1234567"
         autoComplete="off"
         disabled={isDisabled}
         onChange={(e) =>
@@ -568,7 +567,7 @@ const PassengerDetails: React.FC<PassengerDetailsProps> = ({
       <Input
         type="text"
         name={`issuingCountry-${index}`}
-        placeholder="Enter your issuing country"
+        placeholder="Indonesia"
         autoComplete="off"
         disabled={isDisabled}
         onChange={(e) =>
@@ -589,7 +588,7 @@ const PassengerDetails: React.FC<PassengerDetailsProps> = ({
       <Input
         type="date"
         name={`validityPeriod-${index}`}
-        placeholder="Enter your passport expiry"
+        placeholder="dd/mm/yyyy"
         autoComplete="off"
         className="block w-full cursor-pointer"
         disabled={isDisabled}

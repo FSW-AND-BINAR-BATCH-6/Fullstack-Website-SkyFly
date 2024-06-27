@@ -20,7 +20,7 @@ export default function AuthLayout({
         <section className="grow-0 hidden xl:block h-screen shadow">
           <Link href={"/"}>
             <Image
-              src={"/assets/bg-auth.svg"}
+              src={"/assets/bg-auth1.svg"}
               alt="logo"
               width={200}
               height={200}

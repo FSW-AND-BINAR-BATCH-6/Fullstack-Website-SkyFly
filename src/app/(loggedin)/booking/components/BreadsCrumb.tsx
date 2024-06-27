@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/breadcrumb";
 
 export default function BreadcrumbSection() {
-  const router = useRouter();
   const pathname = usePathname();
 
   const getClassNames = (path: string) => {
@@ -30,30 +29,33 @@ export default function BreadcrumbSection() {
         <Breadcrumb>
           <BreadcrumbList className="flex flex-wrap justify-center lg:justify-start">
             <BreadcrumbItem>
-              <BreadcrumbLink
-                href="/booking"
-                className={getClassNames("/booking")}
+              <span
+                className={`cursor-default ${getClassNames(
+                  "/booking"
+                )}`}
               >
                 Personal details
-              </BreadcrumbLink>
+              </span>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink
-                href="/payment"
-                className={getClassNames("/payment")}
+              <span
+                className={`cursor-default ${getClassNames(
+                  "/payment"
+                )}`}
               >
                 Payment
-              </BreadcrumbLink>
+              </span>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink
-                href="/complete"
-                className={getClassNames("/complete")}
+              <span
+                className={`cursor-default ${getClassNames(
+                  "/complete"
+                )}`}
               >
                 Completed
-              </BreadcrumbLink>
+              </span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
