@@ -95,9 +95,13 @@ export interface Response {
   totalItems: number;
   pagination: Pagination;
   data: Data[];
+  date: string;
+  transactions: Transaction[];
 }
 
-export const getTransaction = async (token: string): Promise<Response[]> => {
+export const getTransaction = async (
+  token: string
+): Promise<Response[]> => {
   try {
     const response = await axios.get(
       `https://backend-skyfly-c1.vercel.app/api/v1/transactions?limit=5000`,

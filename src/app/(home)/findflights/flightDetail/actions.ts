@@ -34,7 +34,9 @@ export interface Flight {
   departureTime: null | string;
   duration: null | string;
   arrivalTime: null | string;
-  classInfo: [{ seatClass: string | null; seatPrice: string | number }];
+  classInfo: [
+    { seatClass: string | null; seatPrice: string | number }
+  ];
 }
 
 export interface Transit {
@@ -63,7 +65,9 @@ export interface FlightData {
   returnFlights: Flight[];
 }
 
-export const getFlights = async (query: string): Promise<Flight[]> => {
+export const getFlights = async (
+  query: string
+): Promise<Flight[]> => {
   try {
     const response = await axios.get(
       `https://backend-skyfly-c1.vercel.app/api/v1/flights?${query}`
@@ -77,7 +81,9 @@ export const getFlights = async (query: string): Promise<Flight[]> => {
   }
 };
 
-export const getRoundTrip = async (query: string): Promise<Flight[]> => {
+export const getRoundTrip = async (
+  query: string
+): Promise<FlightData> => {
   try {
     const response = await axios.get(
       `https://backend-skyfly-c1.vercel.app/api/v1/flights?${query}`
@@ -90,7 +96,8 @@ export const getRoundTrip = async (query: string): Promise<Flight[]> => {
       for (const returnData of response.data.returnFlights) {
         if (
           returnData.planeId == flightData.planeId &&
-          returnData.departureAirport == flightData.destinationAirport &&
+          returnData.departureAirport ==
+            flightData.destinationAirport &&
           returnData.destinationAirport == flightData.departureAirport
         ) {
           // console.log("test")
@@ -109,7 +116,9 @@ export const getRoundTrip = async (query: string): Promise<Flight[]> => {
   }
 };
 
-export const getFlightById = async (id: string): Promise<FlightById> => {
+export const getFlightById = async (
+  id: string
+): Promise<FlightById> => {
   try {
     const response = await axios.get(
       `https://backend-skyfly-c1.vercel.app/api/v1/flights/${id}`
@@ -132,6 +141,22 @@ export const getAirlines = async (): Promise<Airline[]> => {
 
     const airlines = response.data.data;
     return airlines;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+export const pagination = async (
+  query: string
+): Promise<Flight[]> => {
+  try {
+    const response = await axios.get(
+      `https://backend-skyfly-c1.vercel.app/api/v1/flights?${query}`
+    );
+
+    const flights = response.data;
+    return flights;
   } catch (err) {
     console.log(err);
     throw err;

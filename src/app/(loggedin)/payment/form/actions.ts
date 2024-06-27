@@ -4,6 +4,7 @@ import axios from "axios";
 
 export interface PaymentData {
   token: string;
+  flightId: string;
   orderer: {
     familyName: string;
     phoneNumber: string;
@@ -57,7 +58,7 @@ export const paymentGopay = async (data: PaymentData) => {
 export const paymentBank = async (data: PaymentData) => {
   try {
     const response = await axios.post(
-      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/bank?flightId=clxrh0w7u0011okfp4c4a0jni&adult=1&child=0&baby=0`,
+      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/bank?flightId=${data.flightId}`,
       data,
       {
         headers: {

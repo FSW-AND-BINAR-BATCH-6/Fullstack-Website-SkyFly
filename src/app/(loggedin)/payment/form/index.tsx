@@ -22,7 +22,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -55,6 +55,7 @@ const creditCardSchema = z.object({
 
 interface PaymentData {
   token: string;
+  flightId: string;
   orderer: {
     familyName: string;
     phoneNumber: string;
@@ -133,7 +134,9 @@ const PaymentPage = () => {
     }
   }, []);
 
-  const fetchStatus = async () => {
+  useEffect;
+
+  const fetchStatus = useCallback(async () => {
     const token = getCookie("token");
     if (typeof token !== "string") {
       toast.error("Token is missing or invalid.", {
@@ -154,14 +157,14 @@ const PaymentPage = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [transactionId]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (isPolling) {
         fetchStatus();
       }
-    }, 8000);
+    }, 5000);
 
     const timeoutId = setTimeout(() => {
       setIsPolling(false);
@@ -172,7 +175,7 @@ const PaymentPage = () => {
       clearInterval(intervalId);
       clearTimeout(timeoutId);
     };
-  }, [transactionId, isPolling]);
+  }, [transactionId, isPolling, fetchStatus]);
 
   useEffect(() => {
     if (transactionStatus === "settlement") {
@@ -251,8 +254,14 @@ const PaymentPage = () => {
       return;
     }
 
+    const flightId = getCookie("bookingDetails");
+    if (typeof flightId !== "string") {
+      toast.error("Flight ID is missing or invalid.");
+      return;
+    }
+
     if (data) {
-      const requestData = { ...data, token, bank };
+      const requestData = { ...data, token, bank, flightId };
       console.log(requestData);
 
       try {
