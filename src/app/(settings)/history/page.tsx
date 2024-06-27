@@ -92,6 +92,12 @@ export default function HistoryPage() {
     };
   };
 
+  const scrollTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
   return (
     <>
       <div className="w-4/5 mx-auto py-7">
@@ -125,7 +131,7 @@ export default function HistoryPage() {
                     <div>
                       <Labels className="font-bold">{transaction.date}</Labels>
                     </div>
-                    {transaction.transactions.map(
+                    {transaction.transactions.slice().reverse().map(
                       (transactionDetail: any, transactionIndex: number) => (
                         <div
                           key={transactionIndex}
@@ -137,7 +143,7 @@ export default function HistoryPage() {
                           {checkStatus(transactionDetail.status)}
                           {transactionDetail.Transaction_Detail.map(
                             (flightData: any, flightIndex: number) => (
-                              <div key={flightIndex} className="flex flex-col gap-3 sm:gap-0 sm:flex-row justify-between items-center mt-3">
+                              <div key={flightIndex} className="flex flex-col gap-3 sm:gap-0 sm:flex-row justify-between items-center mt-3" onClick={scrollTop}>
                                 <div className="flex flex-row mt-3">
                                   <div>
                                     <Image
@@ -208,7 +214,7 @@ export default function HistoryPage() {
                               <Labels className="font-bold">
                                 Booking Code:
                               </Labels>
-                              <Labels className="mt-1">6723y2GHK</Labels>
+                              <Labels className="mt-1">{transactionDetail.booking.code}</Labels>
                             </div>
                             <div className="flex flex-col sm:ml-auto">
                               <Labels className="font-bold">Class:</Labels>
@@ -216,7 +222,7 @@ export default function HistoryPage() {
                             </div>
                             <div className="flex flex-col sm:ml-auto">
                               <Labels className="font-bold text-violet">
-                                IDR 9.850.000
+                                {formatPrice(transactionDetail.totalPrice)}
                               </Labels>
                             </div>
                           </div>
@@ -231,6 +237,9 @@ export default function HistoryPage() {
                 <div className="grow-0 w-full p-5 mt-3 rounded-sm shadow-xl border border-black/20">
                   <div>
                     <Labels className="font-bold">Flight Details</Labels>
+                  </div>
+                  <div>
+                    <Labels className="font-bold">Booking Code: {transaction.transactions[transactionIndex].booking.code}</Labels>
                   </div>
                   <div className="flex mt-3">
                     <Labels className="font-bold">

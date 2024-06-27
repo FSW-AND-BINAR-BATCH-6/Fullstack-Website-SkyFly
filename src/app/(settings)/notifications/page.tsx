@@ -10,14 +10,15 @@ import { useEffect, useState } from "react";
 import { getNotifications, Notifications } from "./actions";
 
 export default function NotificationPage() {
-  const [notifications, setNotifications] = React.useState<Notifications[]>([]);
-  
+  const [notifications, setNotifications] = useState<Notifications[]>([]);
+  const [readNotifications, setReadNotifications] = useState<string[]>([]);
+
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     const options = { day: 'numeric', month: 'long' } as const;
     return date.toLocaleDateString('en-US', options);
   };
-  
+
   useEffect(() => {
     const getToken = async () => {
       try {
@@ -30,8 +31,20 @@ export default function NotificationPage() {
         return [];
       }
     };
+
+    const savedReadNotifications = JSON.parse(localStorage.getItem("readNotifications") || "[]");
+    setReadNotifications(savedReadNotifications);
+
     getToken();
   }, []);
+
+  const handleNotificationClick = (notificationId: string) => {
+    if (!readNotifications.includes(notificationId)) {
+      const updatedReadNotifications = [...readNotifications, notificationId];
+      setReadNotifications(updatedReadNotifications);
+      localStorage.setItem("readNotifications", JSON.stringify(updatedReadNotifications));
+    }
+  };
 
   return (
     <>
@@ -60,7 +73,11 @@ export default function NotificationPage() {
       <div className="w-full px-5 md:w-4/5 mx-auto mt-5">
         {Array.isArray(notifications) && notifications.length > 0 ? (
           notifications.map((notification) => (
-            <div className="w-full md:w-4/5 mt-4 mb-4 p-5 gap-3 flex flex-row rounded-sm shadow-xl border border-black/20">
+            <div
+              key={notification.id}
+              className="w-full md:w-4/5 mt-4 mb-4 p-5 gap-3 flex flex-row rounded-sm shadow-xl border border-black/20"
+              onClick={() => handleNotificationClick(notification.id)}
+            >
               <div className="flex-shrink-0 md:mb-0 md:mr-4">
                 <Image
                   src="/assets/bell.svg"
@@ -77,7 +94,9 @@ export default function NotificationPage() {
                   </div>
                   <div className="mt-2 md:mt-0 ml-auto flex flex-row">
                     <Labels className="text-gray-500">{formatDate(notification.date)}, {notification.time}</Labels>
-                    <div className="w-3 h-3 rounded-full ml-2 bg-green-500"></div>
+                    {!readNotifications.includes(notification.id) && (
+                      <div className="w-3 h-3 rounded-full ml-2 bg-green-500"></div>
+                    )}
                   </div>
                 </div>
                 <div className="my-1">
