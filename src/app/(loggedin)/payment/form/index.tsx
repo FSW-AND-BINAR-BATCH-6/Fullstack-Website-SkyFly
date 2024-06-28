@@ -126,7 +126,7 @@ const PaymentPage = () => {
     if (data) {
       try {
         const parsedData = JSON.parse(data);
-        console.log(parsedData);
+        // console.log(parsedData);
         setData(parsedData);
       } catch (error) {
         console.error("Failed to parse booking data", error);
@@ -196,7 +196,7 @@ const PaymentPage = () => {
     data
   ) => {
     setCreditCardData(data);
-    console.log(data);
+    // console.log(data);
     setCreditCardDisabled(true);
     setGopayDisabled(true);
     setBankDisabled(true);
@@ -262,7 +262,7 @@ const PaymentPage = () => {
 
     if (data) {
       const requestData = { ...data, token, bank, flightId };
-      console.log(requestData);
+      // console.log(requestData);
 
       try {
         const response = await paymentBank(requestData);
@@ -313,7 +313,7 @@ const PaymentPage = () => {
     if (data && creditCardData) {
       const requestData = { ...data, token, ...creditCardData };
 
-      console.log(requestData);
+      // console.log(requestData);
 
       try {
         const response = await paymentCreditCard(requestData);

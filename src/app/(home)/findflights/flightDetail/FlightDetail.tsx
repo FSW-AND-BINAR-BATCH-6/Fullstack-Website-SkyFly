@@ -84,8 +84,8 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({
         } else {
           const { derpartureFlights, returnFlights } =
             await getRoundTrip(filterQuery);
-          console.log(derpartureFlights);
-          console.log(returnFlights);
+          // console.log(derpartureFlights);
+          // console.log(returnFlights);
           setFlights(derpartureFlights);
           setReturnFlights(returnFlights);
         }

@@ -102,7 +102,7 @@ export default function FormFindFlights() {
   const handleSaveSeatClass = () => {
     if (selectedIndex !== null) {
       const selectedSeat = seats[selectedIndex];
-      console.log("Selected Seat:", selectedSeat.label);
+      // console.log("Selected Seat:", selectedSeat.label);
       localStorage.setItem("seatClass", selectedSeat.label);
       setValue("seatClass", selectedSeat.label);
       clearErrors("seatClass");
@@ -121,7 +121,6 @@ export default function FormFindFlights() {
 
   const onSubmit = (data: FormData) => {
     setLoading(true);
-    toast.loading("find flights...");
     const passengerDescriptions = [
       `${adults} adults`,
       `${child} children`,
@@ -150,7 +149,7 @@ export default function FormFindFlights() {
       filteredQueryParams
     ).toString();
     // console.log("Form Data:", dataWithPassengers);
-    toast.dismiss();
+    toast.success("Find Flights Success!");
     setLoading(false);
 
     router.push(`/findflights?${searchParams}`);
