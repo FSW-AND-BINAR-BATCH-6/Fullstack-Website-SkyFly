@@ -25,7 +25,7 @@ const Discount: FC<DiscountProps> = ({
   const fetchFlights = useCallback(async () => {
     try {
       const response = await getFlights(currentPage);
-      console.log(response);
+      // console.log(response);
       setData(response.data);
       setCurrentPage(response.pagination.currentPage);
       setFilteredData(response.data);

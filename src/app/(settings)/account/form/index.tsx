@@ -51,7 +51,7 @@ export default function FormAccount() {
   }, [form]);
 
   const onSubmit = async (data: z.infer<typeof accountSchema>) => {
-    console.log(data);
+    // console.log(data);
   };
 
   return (

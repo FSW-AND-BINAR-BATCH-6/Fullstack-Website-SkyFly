@@ -28,7 +28,7 @@ export const CostumeAction = (
               if (onSuccess) {
                 onSuccess(response);
               }
-              console.log(response.message);
+              // console.log(response.message);
               return response.message;
             } else {
               throw new Error(response.message);
