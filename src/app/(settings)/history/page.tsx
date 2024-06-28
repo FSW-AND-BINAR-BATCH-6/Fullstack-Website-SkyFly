@@ -12,11 +12,12 @@ import {
   Flight,
   Transaction,
   TransactionDetail,
+  Data
 } from "./actions";
 
 export default function HistoryPage() {
-  const [transactionHistory, setTransactionHistory] = useState<Response[]>([]);
-  const [transactionIndex, setTransactionIndex] = useState<Number>(0);
+  const [transactionHistory, setTransactionHistory] = useState<Data[]>([]);
+  const [transactionIndex, setTransactionIndex] = useState<number>(0);
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
