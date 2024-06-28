@@ -24,10 +24,13 @@ import Passengers from "./components/Passengers";
 import SeatClass from "./components/SeatClass";
 import { StateFormFindFlights } from "./components/StateFormFindFlights";
 import CommandDialogComponents from "./components/CommandDialogComponents";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function FormFindFlights() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -61,6 +64,8 @@ export default function FormFindFlights() {
     setBabies,
   } = StateFormFindFlights({ setValue, clearErrors });
 
+  const [loading, setLoading] = React.useState(false);
+
   const [seats, setSeats] = React.useState([
     {
       label: "Economy",
@@ -73,7 +78,7 @@ export default function FormFindFlights() {
       icon: <TicketSlash className="w-5 h-5 mr-4" />,
     },
     {
-      label: "First Class",
+      label: "First",
       price: "IDR 87.620.000",
       icon: <TicketPercent className="w-5 h-5 mr-4" />,
     },
@@ -97,6 +102,8 @@ export default function FormFindFlights() {
   const handleSaveSeatClass = () => {
     if (selectedIndex !== null) {
       const selectedSeat = seats[selectedIndex];
+      // console.log("Selected Seat:", selectedSeat.label);
+      localStorage.setItem("seatClass", selectedSeat.label);
       setValue("seatClass", selectedSeat.label);
       clearErrors("seatClass");
       setOpenSeatClass(false);
@@ -105,12 +112,15 @@ export default function FormFindFlights() {
 
   const handleSavePassengers = () => {
     const totalPassengers = adults + child + babies;
-    setValue("passengers", `${totalPassengers} People`);
+    const data = { adults, child, babies };
+    setValue("passengers", `${totalPassengers}`);
     clearErrors("passengers");
+    localStorage.setItem("bayik", JSON.stringify(data));
     setOpenPassengers(false);
   };
 
   const onSubmit = (data: FormData) => {
+    setLoading(true);
     const passengerDescriptions = [
       `${adults} adults`,
       `${child} children`,
@@ -122,24 +132,42 @@ export default function FormFindFlights() {
       passengerDescriptions,
     };
 
-    console.log("Form Data:", dataWithPassengers);
+    const totalPassengers = adults + child + babies;
+    const queryParams = {
+      totalPassengers: totalPassengers.toString(),
+      departureDate: data.departureDate,
+      returnDate: data.returnDate || "",
+      from: data.from,
+      to: data.to,
+      seatClass: data.seatClass,
+    };
 
-    window.location.href = "/findflights";
+    const filteredQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([_, value]) => value !== "")
+    );
+    const searchParams = new URLSearchParams(
+      filteredQueryParams
+    ).toString();
+    // console.log("Form Data:", dataWithPassengers);
+    toast.success("Find Flights Success!");
+    setLoading(false);
+
+    router.push(`/findflights?${searchParams}`);
   };
 
   return (
     <>
       <form id="form" name="form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="mx-10 my-5">
+        <div className="mx-4 my-5 sm:mx-10">
           <Labels className="font-bold text-lg">
             Choose special flight schedules on
-            <span className="text-violet ml-1">Tiketku!</span>
+            <span className="text-violet ml-1">SkyFly!</span>
           </Labels>
         </div>
 
-        <div className="mx-10">
-          <div className="flex">
-            <div className="flex w-1/2 justify-center">
+        <div className="mx-4 sm:mx-10">
+          <div className="flex flex-col sm:flex-row">
+            <div className="flex w-full sm:w-1/2 justify-center mb-4 sm:mb-0">
               <InputFrom
                 register={register}
                 errors={errors}
@@ -155,7 +183,7 @@ export default function FormFindFlights() {
               />
             </div>
 
-            <div className="flex w-1/2 justify-center">
+            <div className="flex w-full sm:w-1/2 justify-center">
               <InputTo
                 register={register}
                 errors={errors}
@@ -173,14 +201,14 @@ export default function FormFindFlights() {
           </div>
         </div>
 
-        <div className="mx-10 mt-10 mb-10">
-          <div className="flex">
-            <div className="flex w-1/2 justify-center">
-              <div className="flex items-center">
+        <div className="mx-4 mt-6 mb-6 sm:mx-10 sm:mt-10 sm:mb-10">
+          <div className="flex flex-col sm:flex-row">
+            <div className="flex flex-col sm:flex-row w-full sm:w-1/2 justify-center mb-4 sm:mb-0">
+              <div className="flex items-center justify-center w-full sm:w-auto">
                 <CalendarDaysIcon size={24} />
                 <Labels className="ml-3">Date</Labels>
               </div>
-              <div className="flex">
+              <div className="flex flex-col sm:flex-row">
                 <DepartureDate
                   register={register}
                   errors={errors}
@@ -198,10 +226,12 @@ export default function FormFindFlights() {
               </div>
             </div>
 
-            <div className="flex w-1/2 justify-center">
-              <div className="flex items-center">
+            <div className="flex flex-col sm:flex-row w-full sm:w-1/2 justify-center">
+              <div className="flex items-center justify-center w-full sm:w-auto sm:mb-0">
                 <Users size={24} />
                 <Labels className="ml-3">For</Labels>
+              </div>
+              <div className="flex flex-col sm:flex-row">
                 <Passengers
                   register={register}
                   errors={errors}
@@ -234,10 +264,11 @@ export default function FormFindFlights() {
           id="findFlights"
           name="findFlights"
           type="submit"
+          disabled={loading}
           onSubmit={handleSubmit(onSubmit)}
           className="rounded-t-none w-full"
         >
-          Find Flights
+          {loading ? "Loading..." : "Find Flights"}
         </Button>
       </form>
     </>

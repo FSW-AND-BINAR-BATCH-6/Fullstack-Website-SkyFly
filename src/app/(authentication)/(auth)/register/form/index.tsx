@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -15,13 +16,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { Labels } from "@/components/ui/labels";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
 import { registerUser } from "./actions";
+import toast from "react-hot-toast";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { Box } from "@/components/ui/box";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
+import useToastStore from "@/stores/toastStore";
 
 export default function FormRegister() {
   const router = useRouter();
+  const showToast = useToastStore((state) => state.showToast);
+  const [passwordVisibility, setPasswordVisibility] =
+    React.useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,21 +40,44 @@ export default function FormRegister() {
     },
   });
 
-  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+  const handleRegister = async (data: z.infer<typeof formSchema>) => {
+    toast.loading("Registering...");
+
     try {
       const response = await registerUser(data);
-      setCookie("token", response._token, { maxAge: 60 * 60 * 24 }); // expires 1 day
-      router.push("/");
-    } catch (error) {
-      console.error("Login failed:", error);
+      if (response.status) {
+        setCookie("token", response._token, {
+          maxAge: 60 * 60 * 24,
+        });
+        setCookie("phoneNumber", data.phoneNumber, {
+          maxAge: 60 * 60,
+        });
+        toast.dismiss();
+        toast.success(response.message, {
+          duration: 10000,
+          style: {
+            fontWeight: "bold",
+          },
+        });
+        router.push("/otp");
+      } else {
+        toast.dismiss();
+        toast.error(response.message, {
+          style: {
+            fontWeight: "bold",
+          },
+        });
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
   return (
-    <div className="w-[48%]">
+    <div className="w-[90%] sm:w-[48%]">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(handleSubmit)}
+          onSubmit={form.handleSubmit(handleRegister)}
           className="space-y-1"
         >
           <h1 className="text-[1.5rem] font-bold">Register</h1>
@@ -107,11 +138,11 @@ export default function FormRegister() {
                   Phone Number
                 </FormLabel>
                 <FormControl>
-                  <Input
+                  <PhoneInput
                     id="phoneNumber"
-                    type="number"
-                    placeholder="0875 7436 1473"
                     autoComplete="off"
+                    defaultCountry="ID"
+                    placeholder="875 7436 1473"
                     {...field}
                     className={
                       form.formState.errors.phoneNumber
@@ -130,34 +161,46 @@ export default function FormRegister() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel htmlFor="password">Password</FormLabel>
-                <Labels className="float-end">
-                  <Link
-                    href="/passwordreset"
-                    className="text-blue-700"
-                  >
-                    Forgot Password?
-                  </Link>
-                </Labels>
                 <FormControl>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="********"
-                    {...field}
-                    className={
-                      form.formState.errors.password
-                        ? "border-red-700"
-                        : ""
-                    }
-                  />
+                  <Box className="relative">
+                    <Input
+                      id="password"
+                      {...field}
+                      type={passwordVisibility ? "text" : "password"}
+                      autoComplete="on"
+                      placeholder="********"
+                      className={`pr-12 ${
+                        form.formState.errors.password &&
+                        "border-red-700"
+                      }`}
+                      style={{ marginBottom: "1rem" }}
+                    />
+                    <Box
+                      className="absolute inset-y-0 right-0 flex cursor-pointer items-center p-3 text-muted-foreground"
+                      onClick={() =>
+                        setPasswordVisibility(!passwordVisibility)
+                      }
+                    >
+                      {React.createElement(
+                        passwordVisibility ? EyeOffIcon : EyeIcon,
+                        {
+                          className: "h-6 w-6",
+                        }
+                      )}
+                    </Box>
+                  </Box>
                 </FormControl>
-                <FormMessage />
+                <FormMessage style={{ marginTop: "-1rem" }} />
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="w-full">
-            Submit
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+            className="w-full disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {form.formState.isSubmitting ? "Loading..." : "Submit"}
           </Button>
         </form>
       </Form>
