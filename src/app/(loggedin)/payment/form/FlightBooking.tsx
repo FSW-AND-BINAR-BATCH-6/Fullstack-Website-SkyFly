@@ -30,7 +30,7 @@ const FlightBooking: FC<FlightBookingProps> = ({}) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log(flightsById);
+  // console.log(flightsById);
 
   useEffect(() => {
     const bookingDetails = getCookie("bookingDetails");

@@ -200,7 +200,7 @@ export default function FormOtp() {
       <nav className="border-b border-black/20 p-5">
         <div className="flex items-center justify-between">
           <Image
-            src={"/assets/logo.svg"}
+            src={"/assets/skyfly.svg"}
             alt="logo"
             width={100}
             height={100}

@@ -34,7 +34,7 @@ const CommandDialogComponents: FC<CommandDialogComponentsProps> = ({
     const fetchCities = async () => {
       try {
         const data = await getAirports();
-        console.log(data);
+        // console.log(data);
         setCities(data);
       } catch (err) {
         setError("Failed to fetch cities");

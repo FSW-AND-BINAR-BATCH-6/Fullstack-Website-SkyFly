@@ -22,7 +22,7 @@ export default function SettingsLayout({
             <div className="flex items-center justify-between sm:ml-10">
               <Link href={"/"}>
                 <Image
-                  src={"/assets/logo.svg"}
+                  src={"/assets/skyfly.svg"}
                   alt="logo"
                   width={100}
                   height={100}
