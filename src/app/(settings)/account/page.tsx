@@ -50,7 +50,9 @@ export default function AccountPage() {
               />
             </div>
             <div>
-              <Labels className="ml-3">Edit Profile</Labels>
+              <Labels className="ml-3 cursor-pointer">
+                Edit Profile
+              </Labels>
             </div>
           </div>
 
