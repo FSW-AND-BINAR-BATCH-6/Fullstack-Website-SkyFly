@@ -49,15 +49,19 @@ export interface FlightById {
   id: string;
   planeId: string;
   departureDate: string;
+  departureTime: string;
   code: string;
   departureAirport: Airport;
   transit: null | string;
   arrivalDate: string;
+  arrivalTime: string;
   destinationAirport: Airport;
   capacity: number;
   discount: null | number;
   price: number;
   facilities: null | string;
+  classInfo: any;
+  seatClass: object | null;
 }
 
 export interface FlightData {

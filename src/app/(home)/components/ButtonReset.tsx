@@ -1,9 +1,6 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Labels } from "@/components/ui/labels";
 import React, { FC, useCallback, useState } from "react";
-import { getFlightsReset } from "./actions";
 import toast from "react-hot-toast";
 
 interface ButtonResetProps {}
@@ -14,18 +11,33 @@ const ButtonReset: FC<ButtonResetProps> = ({}) => {
   const resetFilter = useCallback(async () => {
     setLoading(true);
     try {
-      setLoading(true);
       const url = new URL(window.location.href);
-      url.search = "";
+      const fromParam = url.searchParams.get("from");
+      const toParam = url.searchParams.get("to");
+      const totalPassengers = url.searchParams.get("totalPassengers");
+      const seatClass = url.searchParams.get("seatClass");
+      const params = new URLSearchParams();
+      if (fromParam !== null) {
+        params.append("from", fromParam);
+      }
+      if (toParam !== null) {
+        params.append("to", toParam);
+      }
+      if (totalPassengers !== null) {
+        params.append("totalPassengers", totalPassengers);
+      }
+      if (seatClass !== null) {
+        params.append("seatClass", seatClass);
+      }
+      url.search = params.toString();
       window.history.replaceState({}, "", url.toString());
 
-      await getFlightsReset();
       window.location.reload();
+
       toast.success("Filters Reset Successfully");
-      setLoading(false);
     } catch (err) {
       console.error("Failed to reset filters", err);
-      setLoading(false);
+      toast.error("Failed to reset filters");
     } finally {
       setLoading(false);
     }
