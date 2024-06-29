@@ -101,7 +101,7 @@ export interface Response {
 
 export const getTransaction = async (
   token: string
-): Promise<Response[]> => {
+): Promise<Data[]> => {
   try {
     const response = await axios.get(
       `https://backend-skyfly-c1.vercel.app/api/v1/transactions?limit=5000`,
