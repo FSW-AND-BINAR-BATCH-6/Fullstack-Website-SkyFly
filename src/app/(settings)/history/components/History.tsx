@@ -11,14 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
-import {
-  getTransaction,
-  Response,
-  Flight,
-  Transaction,
-  TransactionDetail,
-  Data,
-} from "../actions";
+import { getTransaction, TransactionDetail, Data } from "../actions";
 
 export default function HistoryPage() {
   const [transactionHistory, setTransactionHistory] = useState<
