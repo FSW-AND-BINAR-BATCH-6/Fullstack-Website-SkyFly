@@ -25,6 +25,7 @@ import SeatClass from "./components/SeatClass";
 import { StateFormFindFlights } from "./components/StateFormFindFlights";
 import CommandDialogComponents from "./components/CommandDialogComponents";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -63,6 +64,8 @@ export default function FormFindFlights() {
     setBabies,
   } = StateFormFindFlights({ setValue, clearErrors });
 
+  const [loading, setLoading] = React.useState(false);
+
   const [seats, setSeats] = React.useState([
     {
       label: "Economy",
@@ -99,7 +102,7 @@ export default function FormFindFlights() {
   const handleSaveSeatClass = () => {
     if (selectedIndex !== null) {
       const selectedSeat = seats[selectedIndex];
-      console.log("Selected Seat:", selectedSeat.label);
+      // console.log("Selected Seat:", selectedSeat.label);
       localStorage.setItem("seatClass", selectedSeat.label);
       setValue("seatClass", selectedSeat.label);
       clearErrors("seatClass");
@@ -117,6 +120,7 @@ export default function FormFindFlights() {
   };
 
   const onSubmit = (data: FormData) => {
+    setLoading(true);
     const passengerDescriptions = [
       `${adults} adults`,
       `${child} children`,
@@ -144,7 +148,9 @@ export default function FormFindFlights() {
     const searchParams = new URLSearchParams(
       filteredQueryParams
     ).toString();
-    console.log("Form Data:", dataWithPassengers);
+    // console.log("Form Data:", dataWithPassengers);
+    toast.success("Find Flights Success!");
+    setLoading(false);
 
     router.push(`/findflights?${searchParams}`);
   };
@@ -155,7 +161,7 @@ export default function FormFindFlights() {
         <div className="mx-4 my-5 sm:mx-10">
           <Labels className="font-bold text-lg">
             Choose special flight schedules on
-            <span className="text-violet ml-1">Tiketku!</span>
+            <span className="text-violet ml-1">SkyFly!</span>
           </Labels>
         </div>
 
@@ -258,10 +264,11 @@ export default function FormFindFlights() {
           id="findFlights"
           name="findFlights"
           type="submit"
+          disabled={loading}
           onSubmit={handleSubmit(onSubmit)}
           className="rounded-t-none w-full"
         >
-          Find Flights
+          {loading ? "Loading..." : "Find Flights"}
         </Button>
       </form>
     </>

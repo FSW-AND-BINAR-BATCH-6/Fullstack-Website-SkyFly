@@ -20,7 +20,7 @@ export default function LoggedinLayout({
           <div className="flex items-center justify-center md:justify-between mb-4 md:mb-0">
             <Link href={"/"}>
               <Image
-                src={"/assets/logo.svg"}
+                src={"/assets/skyfly.svg"}
                 alt="logo"
                 width={100}
                 height={100}

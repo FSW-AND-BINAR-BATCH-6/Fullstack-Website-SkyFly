@@ -276,7 +276,7 @@ const BookingDetail = () => {
       return;
     }
 
-    console.log("Form submitted:", data);
+    // console.log("Form submitted:", data);
     localStorage.setItem("DataUsers", JSON.stringify(data));
     toast.success("Form submitted successfully.");
 
