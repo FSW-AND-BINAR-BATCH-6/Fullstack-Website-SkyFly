@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Labels } from "@/components/ui/labels";
@@ -7,13 +6,16 @@ import { getCookie } from "cookies-next";
 import { ArrowLeftIcon, ArrowUpDown, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getNotifications, Notifications } from "../actions";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function NotificationPage() {
-  const [notifications, setNotifications] = React.useState<
-    Notifications[]
+  const [notifications, setNotifications] = useState<Notifications[]>(
+    []
+  );
+  const [readNotifications, setReadNotifications] = useState<
+    string[]
   >([]);
 
   const formatDate = (dateString: string): string => {
@@ -34,8 +36,28 @@ export default function NotificationPage() {
         return [];
       }
     };
+
+    const savedReadNotifications = JSON.parse(
+      localStorage.getItem("readNotifications") || "[]"
+    );
+    setReadNotifications(savedReadNotifications);
+
     getToken();
   }, []);
+
+  const handleNotificationClick = (notificationId: string) => {
+    if (!readNotifications.includes(notificationId)) {
+      const updatedReadNotifications = [
+        ...readNotifications,
+        notificationId,
+      ];
+      setReadNotifications(updatedReadNotifications);
+      localStorage.setItem(
+        "readNotifications",
+        JSON.stringify(updatedReadNotifications)
+      );
+    }
+  };
 
   return (
     <>
@@ -66,7 +88,8 @@ export default function NotificationPage() {
           notifications.map((notification) => (
             <div
               key={notification.id}
-              className="w-full md:w-4/5 mt-4 mb-4 p-5 gap-3 flex flex-row rounded-sm shadow-xl border border-black/20"
+              className="w-full md:w-4/5 mt-4 mb-4 p-5 gap-3 flex flex-row rounded-sm shadow-xl border border-black/20 cursor-pointer"
+              onClick={() => handleNotificationClick(notification.id)}
             >
               <div className="flex-shrink-0 md:mb-0 md:mr-4">
                 <Image
@@ -89,7 +112,9 @@ export default function NotificationPage() {
                       {formatDate(notification.date)},{" "}
                       {notification.time}
                     </Labels>
-                    <div className="w-3 h-3 rounded-full ml-2 bg-green-500"></div>
+                    {!readNotifications.includes(notification.id) && (
+                      <div className="w-3 h-3 rounded-full ml-2 bg-green-500"></div>
+                    )}
                   </div>
                 </div>
                 <div className="my-1">
