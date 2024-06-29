@@ -69,17 +69,14 @@ export default function FormFindFlights() {
   const [seats, setSeats] = React.useState([
     {
       label: "Economy",
-      price: "IDR 4.950.000",
       icon: <Ticket className="w-5 h-5 mr-4" />,
     },
     {
       label: "Business",
-      price: "IDR 29.220.000",
       icon: <TicketSlash className="w-5 h-5 mr-4" />,
     },
     {
       label: "First",
-      price: "IDR 87.620.000",
       icon: <TicketPercent className="w-5 h-5 mr-4" />,
     },
   ]);
