@@ -143,7 +143,10 @@ export default function HistoryPage() {
         {Array.isArray(transactionHistory) &&
         transactionHistory.length > 0 ? (
           transactionHistory.map((transaction, index) => (
-            <div className="flex flex-col md:flex-row items-start flex-wrap">
+            <div
+              key={index}
+              className="flex flex-col md:flex-row items-start flex-wrap"
+            >
               <div className="grow-0 w-full md:w-3/5 p-3">
                 <div className="flex flex-col">
                   <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20">
@@ -414,7 +417,7 @@ export default function HistoryPage() {
                           calculatePassengerDetails(data);
                         if (passangerData.passengerCount.adult > 0) {
                           return (
-                            <div className="flex mt-2">
+                            <div key={data.id} className="flex mt-2">
                               <Labels>
                                 {passangerData.passengerCount.adult}{" "}
                                 Adults
@@ -431,7 +434,7 @@ export default function HistoryPage() {
                           passangerData.passengerCount.children > 0
                         ) {
                           return (
-                            <div className="flex mt-2">
+                            <div key={data.id} className="flex mt-2">
                               <Labels>
                                 {
                                   passangerData.passengerCount
@@ -449,7 +452,7 @@ export default function HistoryPage() {
                         }
                         if (passangerData.passengerCount.baby > 0) {
                           return (
-                            <div className="flex mt-2">
+                            <div key={data.id} className="flex mt-2">
                               <Labels>
                                 {passangerData.passengerCount.baby}{" "}
                                 Baby
