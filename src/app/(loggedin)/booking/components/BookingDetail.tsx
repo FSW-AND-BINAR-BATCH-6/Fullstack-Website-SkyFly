@@ -160,9 +160,9 @@ const BookingDetail = () => {
   ) => {
     if (e.target.checked) {
       if (selectedSeats.length < totalPassengers) {
-        const newLabel = `P${selectedSeats.length + 1}`;
+        // const newLabel = `P${selectedSeats.length + 1}`;
         setSelectedSeats([...selectedSeats, seat]);
-        setSeatLabels({ ...seatLabels, [seat.id]: newLabel });
+        // setSeatLabels({ ...seatLabels, [seat.id]: newLabel });
         if (selectedSeats.length + 1 === totalPassengers) {
           setErrors((prevErrors) => {
             const newErrors = { ...prevErrors };
