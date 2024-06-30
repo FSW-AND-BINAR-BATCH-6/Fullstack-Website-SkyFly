@@ -23,7 +23,7 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import { Box } from "@/components/ui/box";
 import { EyeOffIcon, EyeIcon } from "lucide-react";
-import { createElement, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import useToastStore from "@/stores/toastStore";
 
 export default function FormLogin() {

@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { format, addDays, isSameDay } from "date-fns";
+import clsx from "clsx";
 
 export default function FindFlightsLayout({
   children,
@@ -51,7 +52,9 @@ export default function FindFlightsLayout({
           !responseData.data ||
           !Array.isArray(responseData.data)
         ) {
-          throw new Error("Airport data is not in the expected format");
+          throw new Error(
+            "Airport data is not in the expected format"
+          );
         }
 
         const fromAirport = responseData.data.find(
@@ -93,19 +96,24 @@ export default function FindFlightsLayout({
   }, [departureDateParam]);
 
   const handleDateSelect = (selectedDate: Date) => {
-    const query = new URLSearchParams(searchParams as unknown as URLSearchParams);
-    query.set("departureDate", selectedDate.toISOString().split("T")[0]);
+    const query = new URLSearchParams(
+      searchParams as unknown as URLSearchParams
+    );
+    query.set(
+      "departureDate",
+      selectedDate.toISOString().split("T")[0]
+    );
     router.replace(`/findflights?${query.toString()}`);
   };
 
   const handlePrevDate = () => {
-    const newDate = addDays(departureDate, -7); 
+    const newDate = addDays(departureDate, -7);
     setDepartureDate(newDate);
     handleDateSelect(newDate);
   };
 
   const handleNextDate = () => {
-    const newDate = addDays(departureDate, 7); 
+    const newDate = addDays(departureDate, 7);
     setDepartureDate(newDate);
     handleDateSelect(newDate);
   };
@@ -118,15 +126,32 @@ export default function FindFlightsLayout({
       const isActive = isSameDay(date, departureDate);
 
       return (
-        <div key={i} className="flex justify-center w-full md:w-32 mb-3 md:mb-0">
+        <div
+          key={i}
+          className="flex justify-center w-full md:w-32 mb-3 md:mb-0"
+        >
           <Button
-            className={`flex flex-col text-xs py-6 bg-inherit text-black shadow-inherit hover:shadow-xl border-b-2 md:border-b-0 md:border-r-2 border-gray-300 ${isActive ? 'bg-primaryPurple text-white' : ''}`}
+            className={clsx(
+              `focus:ring-0 flex flex-col text-xs py-6 bg-inherit text-black shadow-inherit hover:shadow-xl border-b-2 md:border-b-0 md:border-r-2 border-gray-300 ${
+                isActive ? "bg-primaryPurple text-white" : ""
+              }`
+            )}
             onClick={() => handleDateSelect(date)}
           >
-            <Labels className={`font-bold mb-1 cursor-pointer text-center md:text-left ${isActive ? 'text-white' : ''}`}>
+            <Labels
+              className={`font-bold mb-1 cursor-pointer text-center md:text-left ${
+                isActive ? "text-white" : ""
+              }`}
+            >
               {dayName}
             </Labels>
-            <span className={`text-center md:text-left ${isActive ? 'text-white' : ''}`}>{formattedDate}</span>
+            <span
+              className={`text-center md:text-left ${
+                isActive ? "text-white" : ""
+              }`}
+            >
+              {formattedDate}
+            </span>
           </Button>
         </div>
       );
@@ -150,8 +175,8 @@ export default function FindFlightsLayout({
               <ArrowLeftIcon className="w-5 h-5 cursor-pointer text-white" />
             </Link>
             <Labels className="ml-5 font-bold text-center md:text-left">
-              {fromCity} {fromCode} &#187; {toCity} {toCode} - {totalPassengers}{" "}
-              Passengers - {seatClass} Class
+              {fromCity} {fromCode} &#187; {toCity} {toCode} -{" "}
+              {totalPassengers} Passengers - {seatClass} Class
             </Labels>
           </div>
           <ButtonReset />
@@ -191,7 +216,9 @@ export default function FindFlightsLayout({
         <section className="w-full lg:grow-0 lg:w-auto h-auto lg:h-screen ps-0 lg:ps-32 pe-0 lg:pe-14 mb-5 lg:mb-0">
           <div className="border border-gray-300 shadow-xl p-5 w-full lg:w-56 rounded-xl mb-5 lg:mb-0">
             <div>
-              <Labels className="cursor-pointer font-bold">Filter</Labels>
+              <Labels className="cursor-pointer font-bold">
+                Filter
+              </Labels>
             </div>
 
             <div className="pt-5 flex items-center">
@@ -223,7 +250,9 @@ export default function FindFlightsLayout({
             </div>
           </div>
         </section>
-        <section className="w-full lg:grow lg:pe-32">{children}</section>
+        <section className="w-full lg:grow lg:pe-32">
+          {children}
+        </section>
       </section>
     </>
   );
