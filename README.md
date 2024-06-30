@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Binar Final Project - Skyfly
 
-## Getting Started
+<div align="center" width="100%">
+    <img width="100%" height="100%" src="./public/assets/skyfly.jpeg" alt="Design Spread" title="Design Spread"> 
+</div>
+<br>
 
-First, run the development server:
+### Team C-1 Skyfly!
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Skyfly API allows you to get the needed resources to make Skyfly application run seamlessly. Some of this service is using authentication to access each service. You need to login first to access the service.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Overview
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+SkyFly is an online flight ticket booking application designed to provide a seamless and user-friendly experience for booking flights. This project uses ExpressJs as the backend framework and Postgres as the database, managed through Prisma ORM. The application supports various functionalities essential for an efficient flight booking system.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# Data Team C1
 
-## Learn More
+|                   |                                                                                                                                             | **LinkedIn**                                                                 | **Github**                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------- |
+| **FSW**           | _Reinanda Faris_                                                                                                                            | [LinkedIn](https://www.linkedin.com/in/reinanda-faris/)                      | [Github](https://github.com/Reinandafaris)    |
+|                   | _Viery Nugroho_                                                                                                                             | [LinkedIn](https://www.linkedin.com/in/viery-nugroho)                        | [Github](https://github.com/vierynugroho)     |
+|                   | _Andhika Rizky Aulia_                                                                                                                       | [LinkedIn](https://www.linkedin.com/in/andhika-rizky/)                       | [Github](https://github.com/ndikrp)           |
+|                   | _Ananda Ias Falah_                                                                                                                          | [LinkedIn](https://www.linkedin.com/in/falahsuryagemilang/)                  | [Github](https://github.com/falahsg)          |
+|                   | _Naufal Ady Saputro_                                                                                                                        | [LinkedIn](https://www.linkedin.com/in/naufal-ady-saputro-71050b24b/)        | [Github](https://github.com/naufaladysaputro) |
+|                   | _Rizki Mauludin Yoga P._                                                                                                                    | [LinkedIn](https://www.linkedin.com/in/riski-mauludin-yoga-8718602b0/)       | [Github](https://github.com/RMYP)             |
+|                   | _Rafi Husein Bagaskara_                                                                                                                     | [LinkedIn](https://www.linkedin.com/in/rafi-husein-257a76291)                | [Github](https://github.com/raisenbk)         |
+|                   | _Lowis Armando Hutabarat_                                                                                                                   | [LinkedIn](www.linkedin.com/in/lowis-armando-hutabarat-80b7612b3)            | [Github](https://github.com/LowisHutabarat)   |
+|                   |                                                                                                                                             |
+| **AND**           | _Komang Yuda Saputra_                                                                                                                       | [LinkedIn](https://www.linkedin.com/in/komang-yuda-saputra-abb21b291/)       | [Github](https://github.com/YudaSaputraa)     |
+|                   | _Ihsan Widagdo_                                                                                                                             | [LinkedIn](https://www.linkedin.com/in/ihsan-widagdo/)                       | [Github](https://github.com/dagdo03)          |
+|                   | _Bella Febriany Nawangsari_                                                                                                                 | [LinkedIn](https://www.linkedin.com/in/bella-febriany-nawangsari-4642a3291/) | [Github](https://github.com/bellafebrianyn)   |
+|                   | _Mochammad Yusuf Pratama_                                                                                                                   |                                                                              |                                               |
+|                   |                                                                                                                                             |
+| **Project Title** | _SKY-FLY_                                                                                                                                   |
+|                   |                                                                                                                                             |
+| **Note**          | _Binar KM6_                                                                                                                                 |
+|                   | [Trello Team C1 Binar KM6](https://trello.com/c/2XzOhXim/60-c1-binar-km6-fsw-x-and)                                                         |
+|                   | [Daily Stand-Up Team C1 Binar KM6](https://docs.google.com/spreadsheets/d/1aCpje7mQnG5uhmBOh9sEThQKYgatLdNpPoSoQK6VUvk/edit#gid=1785037003) |
+|                   | [Deployed API](https://backend-skyfly-c1.vercel.app/api-docs/)                                                                              |
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+---
