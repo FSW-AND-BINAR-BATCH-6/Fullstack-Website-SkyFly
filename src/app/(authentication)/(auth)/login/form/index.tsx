@@ -126,15 +126,26 @@ export default function FormLogin() {
 
     if (token) {
       // Menampilkan token di console
-      console.log("Login successful with token:", token);
+      // console.log("Login successful with token:", token);
 
       // Anda dapat menyimpan token di local storage atau state manajemen seperti Redux
-      localStorage.setItem("authToken", token);
+      // localStorage.setItem("authToken", token);
+      setCookie("token", token, {
+        maxAge: 60 * 60 * 24,
+      });
+      setCookie(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        "eyJpZCI6ImNseGVsd3lpMDAwMHVod2ljZWRocGluZ3MiLCJuYW1lIjoiRmFyaXMiL",
+        {
+          maxAge: 60 * 60 * 24,
+        }
+      );
 
       // Hapus parameter token dari URL untuk membersihkan tampilan
       const cleanedUrl =
         window.location.origin + window.location.pathname;
       window.history.replaceState(null, "", cleanedUrl);
+      router.push("/");
     }
   }, [router]);
 
