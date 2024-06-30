@@ -99,9 +99,27 @@ export interface Response {
   transactions: Transaction[];
 }
 
-export const getTransaction = async (
-  token: string
-): Promise<Data[]> => {
+export interface StatusTransaction {
+  transaction_status: string;
+  payment_status: string;
+  transaction_id: string;
+  order_id: string;
+  merchant_id: string;
+  currency: string;
+  gross_amount: string;
+  payment_type: string;
+  transaction_time: string;
+  expiry_time: string;
+  signature_key: string;
+  va_numbers: VirtualAccount[];
+}
+
+export interface VirtualAccount {
+  bank: string;
+  va_number: string;
+}
+
+export const getTransaction = async (token: string): Promise<Data[]> => {
   try {
     const response = await axios.get(
       `https://backend-skyfly-c1.vercel.app/api/v1/transactions?limit=5000`,
@@ -115,5 +133,53 @@ export const getTransaction = async (
   } catch (error) {
     console.error("Error fetching notifications:", error);
     return [];
+  }
+};
+
+export const cancelPayment = async (token: string, orderId: string) => {
+  try {
+    const response = await axios.post(
+      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/cancel/${orderId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+  }
+};
+
+export const handleContinuePayment = async (token: string, orderId: string) => {
+  try {
+    const response = await axios.get(
+      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/status/${orderId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.data.va_numbers;
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+  }
+};
+
+export const PrintTicket = async (token: string, orderId: string) => {
+  try {
+    const response = await axios.get(
+      `https://backend-skyfly-c1.vercel.app/api/v1/tickets/generate?ticketTransactionId=${orderId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
   }
 };
