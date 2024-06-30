@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { forgotPassword, loginUser } from "./actions";
 import Link from "next/link";
 import { Labels } from "@/components/ui/labels";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { setCookie } from "cookies-next";
 import toast from "react-hot-toast";
 import Image from "next/image";
@@ -27,6 +27,8 @@ import { createElement, useEffect, useState } from "react";
 import useToastStore from "@/stores/toastStore";
 
 export default function FormLogin() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const router = useRouter();
   const showToast = useToastStore((state) => state.showToast);
@@ -37,6 +39,24 @@ export default function FormLogin() {
       password: "",
     },
   });
+
+  console.log("token");
+
+  useEffect(() => {
+    if (token) {
+      setCookie("token", token, {
+        maxAge: 60 * 60 * 24,
+      });
+      setCookie(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        "eyJpZCI6ImNseGVsd3lpMDAwMHVod2ljZWRocGluZ3MiLCJuYW1lIjoiRmFyaXMiL",
+        {
+          maxAge: 60 * 60 * 24,
+        }
+      );
+      // router.push("/");
+    }
+  }, [token, router]);
 
   const handleLogin = async (data: z.infer<typeof formSchema>) => {
     toast.loading("Logging in...");
