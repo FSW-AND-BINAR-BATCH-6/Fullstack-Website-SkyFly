@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Labels } from "@/components/ui/labels";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { accountSchema } from "./validation";
+import { accountSchema, passwordSchema } from "./validation";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -15,19 +15,26 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useEffect } from "react";
-import { editProfile, getUserName } from "./actions";
+import { createElement, useEffect, useState } from "react";
+import { getUserName, passwordReset } from "./actions";
 import { getCookie } from "cookies-next";
-import { PhoneInput } from "@/components/ui/phone-input";
 import toast from "react-hot-toast";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Box } from "@/components/ui/box";
 
-export default function FormAccount({ isEdit }: { isEdit: boolean }) {
-  const form = useForm<z.infer<typeof accountSchema>>({
-    resolver: zodResolver(accountSchema),
+export default function ResetPassword({
+  isEdit,
+}: {
+  isEdit: boolean;
+}) {
+  const [passwordVisibility, setPasswordVisibility] = useState(false);
+  const [confirmPasswordVisibility, setConfirmPasswordVisibility] =
+    useState(false);
+  const form = useForm<z.infer<typeof passwordSchema>>({
+    resolver: zodResolver(passwordSchema),
     defaultValues: {
-      name: "",
-      familyName: "",
-      phoneNumber: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -37,10 +44,8 @@ export default function FormAccount({ isEdit }: { isEdit: boolean }) {
         const token = getCookie("token") as string | undefined;
         if (token) {
           const data = await getUserName(token);
-          form.setValue("name", data.name);
-          form.setValue("familyName", data.familyName);
-          form.setValue("phoneNumber", data.phoneNumber);
-          form.setValue("email", data.email);
+          form.setValue("password", data.password);
+          form.setValue("confirmPassword", data.confirmPassword);
         } else {
           console.error("Token not found");
         }
@@ -52,7 +57,7 @@ export default function FormAccount({ isEdit }: { isEdit: boolean }) {
     getName();
   }, [form]);
 
-  const onSubmit = async (data: z.infer<typeof accountSchema>) => {
+  const onSubmit = async (data: z.infer<typeof passwordSchema>) => {
     // console.log(data);
     const token = getCookie("token");
     if (typeof token !== "string") {
@@ -67,16 +72,16 @@ export default function FormAccount({ isEdit }: { isEdit: boolean }) {
     const requestData = { ...data, token };
 
     try {
-      const response = await editProfile(requestData);
+      const response = await passwordReset(requestData);
       // console.log(response);
       if (response.status) {
-        toast.success(response.message, {
+        toast.success("Password updated successfully.", {
           style: {
             fontWeight: "bold",
           },
         });
       } else {
-        toast.error(response.message, {
+        toast.error("Password update failed.", {
           style: {
             fontWeight: "bold",
           },
@@ -101,59 +106,125 @@ export default function FormAccount({ isEdit }: { isEdit: boolean }) {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-1"
           >
-            <FormField
+            {/* <FormField
               control={form.control}
-              name="name"
+              name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="name">Full Name</FormLabel>
+                  <FormLabel htmlFor="password">Password</FormLabel>
                   <FormControl>
                     <Input
-                      id="name"
+                      id="password"
                       type="text"
                       placeholder="Harry"
                       autoComplete="off"
                       disabled={!isEdit}
                       {...field}
                       className={
-                        form.formState.errors.name
+                        form.formState.errors.password
                           ? "border-red-700"
                           : ""
                       }
                     />
                   </FormControl>
                   <FormMessage style={{ marginTop: "1px" }} />
+                </FormItem>
+              )}
+            /> */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="password">
+                    Enter New Password
+                  </FormLabel>
+                  <FormControl>
+                    <Box className="relative">
+                      <Input
+                        id="password"
+                        {...field}
+                        type={
+                          passwordVisibility ? "text" : "password"
+                        }
+                        autoComplete="on"
+                        placeholder="********"
+                        className={`pr-12 ${
+                          form.formState.errors.password &&
+                          "border-red-700"
+                        }`}
+                      />
+                      <Box
+                        className="absolute inset-y-0 right-0 flex cursor-pointer items-center p-3 text-muted-foreground"
+                        onClick={() =>
+                          setPasswordVisibility(!passwordVisibility)
+                        }
+                      >
+                        {createElement(
+                          passwordVisibility ? EyeOffIcon : EyeIcon,
+                          {
+                            className: "h-6 w-6",
+                          }
+                        )}
+                      </Box>
+                    </Box>
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="familyName"
+              name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="familyName">
-                    Family Name
+                  <FormLabel htmlFor="confirmPassword">
+                    Repeat New Password
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      id="familyName"
-                      type="text"
-                      placeholder="Potter"
-                      autoComplete="off"
-                      disabled={!isEdit}
-                      {...field}
-                      className={
-                        form.formState.errors.familyName
-                          ? "border-red-700"
-                          : ""
-                      }
-                    />
+                    <Box className="relative">
+                      <Input
+                        id="confirmPassword"
+                        {...field}
+                        type={
+                          confirmPasswordVisibility
+                            ? "text"
+                            : "password"
+                        }
+                        autoComplete="on"
+                        placeholder="********"
+                        className={`pr-12 ${
+                          form.formState.errors.confirmPassword &&
+                          "border-red-700"
+                        }`}
+                        style={{ marginBottom: "7px" }}
+                      />
+                      <Box
+                        className="absolute inset-y-0 right-0 flex cursor-pointer items-center p-3 text-muted-foreground"
+                        onClick={() =>
+                          setConfirmPasswordVisibility(
+                            !confirmPasswordVisibility
+                          )
+                        }
+                      >
+                        {createElement(
+                          confirmPasswordVisibility
+                            ? EyeOffIcon
+                            : EyeIcon,
+                          {
+                            className: "h-6 w-6",
+                          }
+                        )}
+                      </Box>
+                    </Box>
                   </FormControl>
-                  <FormMessage style={{ marginTop: "1px" }} />
+                  <FormMessage
+                    style={{ marginBottom: "7px", marginTop: "1px" }}
+                  />
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="phoneNumber"
               render={({ field }) => (
@@ -207,7 +278,7 @@ export default function FormAccount({ isEdit }: { isEdit: boolean }) {
                   />
                 </FormItem>
               )}
-            />
+            /> */}
             {isEdit && (
               <Button type="submit" className="w-full">
                 Save Changes

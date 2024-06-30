@@ -199,13 +199,7 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
             </div>
             <div className="flex mt-3">
               <Labels className="font-bold">
-                {new Date(flight.departureDate).toLocaleTimeString(
-                  [],
-                  {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }
-                )}
+                {flight.departureTime} WIB
               </Labels>
               <Labels className="font-bold ml-auto text-violet">
                 Departure
@@ -231,7 +225,7 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
               <div className="flex flex-col ps-2">
                 <div>
                   <Labels className="mt-3 font-bold">
-                    {getAirlineName(flight.planeId)} - Economy
+                    {getAirlineName(flight.planeId)} - {flight.classInfo[0].seatClass}
                   </Labels>
                   <Labels className="flex flex-col font-bold">
                     {getAirlineCode(flight.planeId)} - 203
@@ -255,13 +249,7 @@ const FlightBooking: FC<FlightBookingProps> = ({ flightId }) => {
             <div className="py-2">
               <div className="flex mt-3">
                 <Labels className="font-bold">
-                  {new Date(flight.arrivalDate).toLocaleTimeString(
-                    [],
-                    {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }
-                  )}
+                  {flight.arrivalTime} WIB
                 </Labels>
                 <Labels className="font-bold ml-auto text-violet">
                   Arrivals
