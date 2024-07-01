@@ -196,7 +196,7 @@ const PaymentPage = () => {
     data
   ) => {
     setCreditCardData(data);
-    // console.log(data);
+    console.log(data);
     setCreditCardDisabled(true);
     setGopayDisabled(true);
     setBankDisabled(true);

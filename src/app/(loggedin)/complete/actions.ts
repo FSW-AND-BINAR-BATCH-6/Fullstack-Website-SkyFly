@@ -5,12 +5,11 @@ import axios from "axios";
 export const showTicket = async () => {
   try {
     const response = await axios.get(
-      "https://backend-skyfly-c1.vercel.app/api/v1/tickets/generate",
+      "https://backend-skyfly-c1.vercel.app/api/v1/tickets/generate?ticketTransactionId=cly1df3210002vwkyov1wx3i6",
       {
         headers: {
-          Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFjZDFkZjVkLWI2ZGYtNGJmZi04MTFlLTBiMDdjZDViYzA4NyIsIm5hbWUiOiJ5dWdpIiwiZW1haWwiOiJ5dWdpQGdtYWlsLmNvbSIsInBob25lTnVtYmVyIjoiKzYyODk1MTQzNDI2NjUiLCJyb2xlIjoiQlVZRVIiLCJpYXQiOjE3MTg5NjQxOTksImV4cCI6MTcxOTA1MDU5OX0.60M65tL4BEqpCaBpIun3aDJYHvVpdA8BAQTdR8nNaXo`,
+          Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExMDUzMzcxODg2NjQ4ODAzOTI3OCIsIm5hbWUiOiJSZWluYW5kYSBGYXJpcyIsImVtYWlsIjoicmF5bmFuZGFmYXJpc0BnbWFpbC5jb20iLCJwaG9uZU51bWJlciI6bnVsbCwicm9sZSI6IkJVWUVSIiwiaWF0IjoxNzE5NzYzMTQ1LCJleHAiOjE3MTk4NDk1NDV9.DLdsxtoauUSG9ddBZG9OsQkaMYquaz3wjIGMxAqxYsM`,
         },
-        responseType: "document", // Ensure the response is treated as a document
       }
     );
     return response.data;
