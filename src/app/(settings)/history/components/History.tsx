@@ -407,8 +407,8 @@ export default function HistoryPage() {
           {Array.isArray(transactionHistory) &&
           transactionHistory.length > 0 ? (
             transactionHistory.map((transaction, index) => (
-        <div className="flex flex-col md:flex-row items-start flex-wrap">
-              <div className="grow-0 w-full md:w-3/5 p-3" key={index}>
+        <div className="flex flex-col md:flex-row items-start flex-wrap" key={index}>
+              <div className="grow-0 w-full md:w-3/5 p-3">
                 <div className="flex flex-col">
                   <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20">
                     <div>
