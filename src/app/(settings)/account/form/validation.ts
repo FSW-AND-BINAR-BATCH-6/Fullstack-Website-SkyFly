@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const accountSchema = z.object({
-  fullname: z
+  name: z
     .string()
     .min(3, { message: "Name must be at least 3 characters" }),
   familyName: z
@@ -11,6 +11,18 @@ export const accountSchema = z.object({
   phoneNumber: z
     .string()
     .min(10, { message: "Invalid phone number" })
-    .max(13, { message: "Invalid phone number" }),
-  email: z.string().email({ message: "Invalid email address" }),
+    .max(14, { message: "Invalid phone number" }),
+  email: z.string(),
 });
+
+export const passwordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });

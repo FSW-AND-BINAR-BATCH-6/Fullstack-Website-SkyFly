@@ -54,3 +54,16 @@ export const forgotPassword = async (data: ForgotPassword) => {
     }
   }
 };
+
+export const loginUserWithGoogle = () => {
+  try {
+    const response = axios.get(
+      "https://backend-skyfly-c1.vercel.app/api/v1/auth/google"
+    );
+
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
