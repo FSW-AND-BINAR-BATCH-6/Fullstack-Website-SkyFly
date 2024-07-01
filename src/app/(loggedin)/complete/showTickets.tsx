@@ -12,11 +12,7 @@ const ShowTicket: FC<ShowTicketProps> = ({}) => {
   const handleShowTicket = async () => {
     try {
       const data = await showTicket();
-      if (typeof data === "string") {
-        setTicketHtml(data);
-      } else {
-        console.error(data.message);
-      }
+      // console.log(data);
     } catch (err) {
       console.log(err);
     }
