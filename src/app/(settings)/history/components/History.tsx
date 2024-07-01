@@ -22,6 +22,7 @@ export default function HistoryPage() {
   const [transactionIndex, setTransactionIndex] = useState<number>(0);
   const [transationStatus, setTrasactionStatus] = useState<string | undefined>(undefined);
   const [vaNumber, setVaNumber] = useState<string>();
+  const [tickets, setTickets] = useState()
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -118,8 +119,8 @@ export default function HistoryPage() {
     try {
       const token = getCookie("token") as string | undefined;
       if (token) {
-        await PrintTicket(token, orderId);
-        setTrasactionStatus("true");
+        const data = await PrintTicket(token, orderId);
+        setTickets(data)
       }
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -139,7 +140,7 @@ export default function HistoryPage() {
     }
   };
 
-  const printOrCancelButton = (status: string, orderId: string) => {
+  const printOrCancelButton = (status: string, orderId: string, transactionId: string) => {
     if (status == "pending") {
       return (
         <>
@@ -159,12 +160,25 @@ export default function HistoryPage() {
       );
     } else if (status == "settlement" || status == "capture") {
       return (
-        <Button className="w-full" onClick={() => handlePrintTicket(orderId)}>
+        <Button className="w-full" onClick={() => handlePrintTicket(transactionId)}>
           Print Ticket
         </Button>
       );
     }
   };
+
+  const openInNewTab = (htmlContent: string) => {
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  };
+
+  
+  useEffect(() => {
+    if (tickets) {
+      openInNewTab(tickets);
+    }
+  }, [tickets]);
 
   const scrollTop = () => {
     window.scrollTo({
@@ -482,7 +496,8 @@ export default function HistoryPage() {
                   <div className="mt-5 flex justify-center space-x-4">
                     {printOrCancelButton(
                       transaction.transactions[transactionIndex].status,
-                      transaction.transactions[transactionIndex].orderId
+                      transaction.transactions[transactionIndex].orderId,
+                      transaction.transactions[transactionIndex].id
                     )}
                   </div>
                   {vaNumber && (

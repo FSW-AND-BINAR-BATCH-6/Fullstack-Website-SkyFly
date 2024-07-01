@@ -169,16 +169,18 @@ export const handleContinuePayment = async (token: string, orderId: string) => {
   }
 };
 
-export const PrintTicket = async (token: string, orderId: string) => {
+export const PrintTicket = async (token: string, transactionId: string) => {
   try {
     const response = await axios.get(
-      `https://backend-skyfly-c1.vercel.app/api/v1/tickets/generate?ticketTransactionId=${orderId}`,
+      `https://backend-skyfly-c1.vercel.app/api/v1/tickets/generate?ticketTransactionId=${transactionId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
+
+    return response.data
   } catch (error) {
     console.error("Error fetching notifications:", error);
   }
