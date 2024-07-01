@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
 import {
   getTransaction,
-  Response,
+  Transaction,
   PrintTicket,
   VirtualAccount,
   TransactionDetail,
@@ -20,9 +20,13 @@ import {
 export default function HistoryPage() {
   const [transactionHistory, setTransactionHistory] = useState<Data[]>([]);
   const [transactionIndex, setTransactionIndex] = useState<number>(0);
-  const [transationStatus, setTrasactionStatus] = useState<string | undefined>(undefined);
+  const [transactionDetailCard, setTransactionDetailCard] =
+    useState<Transaction>();
+  const [transationStatus, setTrasactionStatus] = useState<string | undefined>(
+    undefined
+  );
   const [vaNumber, setVaNumber] = useState<string>();
-  const [tickets, setTickets] = useState()
+  const [tickets, setTickets] = useState();
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -120,7 +124,7 @@ export default function HistoryPage() {
       const token = getCookie("token") as string | undefined;
       if (token) {
         const data = await PrintTicket(token, orderId);
-        setTickets(data)
+        setTickets(data);
       }
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -140,7 +144,11 @@ export default function HistoryPage() {
     }
   };
 
-  const printOrCancelButton = (status: string, orderId: string, transactionId: string) => {
+  const printOrCancelButton = (
+    status: string,
+    orderId: string,
+    transactionId: string
+  ) => {
     if (status == "pending") {
       return (
         <>
@@ -160,7 +168,10 @@ export default function HistoryPage() {
       );
     } else if (status == "settlement" || status == "capture") {
       return (
-        <Button className="w-full" onClick={() => handlePrintTicket(transactionId)}>
+        <Button
+          className="w-full"
+          onClick={() => handlePrintTicket(transactionId)}
+        >
           Print Ticket
         </Button>
       );
@@ -168,12 +179,11 @@ export default function HistoryPage() {
   };
 
   const openInNewTab = (htmlContent: string) => {
-    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const blob = new Blob([htmlContent], { type: "text/html" });
     const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
+    window.open(url, "_blank");
   };
 
-  
   useEffect(() => {
     if (tickets) {
       openInNewTab(tickets);
@@ -186,6 +196,189 @@ export default function HistoryPage() {
       behavior: "smooth",
     });
   };
+
+  const handleBookingDetail = (transaction: Transaction) => {
+    setTransactionDetailCard(transaction);
+    console.log(transactionDetailCard);
+  };
+
+  const bookingDetailCard = (transactionDetailCard: Transaction) => {
+   return (
+      <div className="w-full md:w-2/5 px-3">
+        <div className="grow-0 w-full p-5 mt-3 rounded-sm shadow-xl border border-black/20">
+          <div>
+            <Labels className="font-bold">Flight Details</Labels>
+          </div>
+          <div>
+            <Labels className="font-bold">
+              Booking Code: {transactionDetailCard.booking.code}
+            </Labels>
+          </div>
+          <div className="flex mt-3">
+            <Labels className="font-bold">
+              {
+                transactionDetailCard.Transaction_Detail[0].flight
+                  .departure.time
+              }
+            </Labels>
+            <Labels className="font-bold ml-auto text-violet">
+              Departure
+            </Labels>
+          </div>
+          <Labels>
+            {formatDate(
+              transactionDetailCard.Transaction_Detail[0].flight.departure
+                .date
+            )}
+          </Labels>
+          <Labels className="flex flex-col">
+            {
+              transactionDetailCard.Transaction_Detail[0].flight
+                .departureAirport.name
+            }
+          </Labels>
+          <hr className="mt-3 border border-black/20" />
+          <div className="flex my-2">
+            <div className="flex items-center justify-center">
+              <Image
+                src="/assets/leaf.svg"
+                alt="logo"
+                width={50}
+                height={50}
+                className="w-7 h-7"
+              />
+            </div>
+            <div className="flex flex-col ps-2">
+              <div>
+                <Labels className="mt-3 font-bold">
+                  {
+                    transactionDetailCard.Transaction_Detail[0].flight
+                      .airline.name
+                  }{" "}
+                  -{" "}
+                  {transactionDetailCard.Transaction_Detail[0].seat.type}
+                </Labels>
+                <Labels className="flex flex-col font-bold">
+                  JT - 203
+                </Labels>
+              </div>
+              <div className="mt-5">
+                <Labels className="font-bold">Information:</Labels>
+                <Labels className="flex flex-col">Baggage 20 kg</Labels>
+                <Labels>Cabin baggage 7 kg</Labels>
+                <Labels className="flex flex-col">
+                  In Flight Entertainment
+                </Labels>
+              </div>
+            </div>
+          </div>
+          <hr className="mt-3 border border-black/20" />
+          <div className="py-2">
+            <div className="flex mt-3">
+              <Labels className="font-bold">
+                {
+                  transactionDetailCard.Transaction_Detail[0].flight
+                    .arrival.time
+                }
+              </Labels>
+              <Labels className="font-bold ml-auto text-violet">
+                Arrivals
+              </Labels>
+            </div>
+            <div>
+              <Labels>
+                {formatDate(
+                  transactionDetailCard.Transaction_Detail[0].flight
+                    .arrival.date
+                )}
+              </Labels>
+              <Labels className="flex flex-col">
+                {
+                  transactionDetailCard.Transaction_Detail[0].flight
+                    .destinationAirport.name
+                }
+              </Labels>
+            </div>
+          </div>
+          <hr className="mt-3 border border-black/20" />
+          <div className="py-2">
+            <Labels className="font-bold">Total Price</Labels>
+            {transactionDetailCard.Transaction_Detail.map(
+              (data: TransactionDetail) => {
+                const passangerData = calculatePassengerDetails(data);
+                return (
+                  <React.Fragment key={data.id}>
+                    {passangerData.passengerCount.adult > 0 && (
+                      <div className="flex mt-2" key={`${data.id}-adult`}>
+                        <Labels>
+                          {passangerData.passengerCount.adult} Adults
+                        </Labels>
+                        <Labels className="ml-auto">
+                          {formatPrice(passangerData.totalPrice.adult)}
+                        </Labels>
+                      </div>
+                    )}
+                    {passangerData.passengerCount.children > 0 && (
+                      <div
+                        className="flex mt-2"
+                        key={`${data.id}-children`}
+                      >
+                        <Labels>
+                          {passangerData.passengerCount.children} Children
+                        </Labels>
+                        <Labels className="ml-auto">
+                          {formatPrice(passangerData.totalPrice.children)}
+                        </Labels>
+                      </div>
+                    )}
+                    {passangerData.passengerCount.baby > 0 && (
+                      <div className="flex mt-2" key={`${data.id}-baby`}>
+                        <Labels>
+                          {passangerData.passengerCount.baby} Baby
+                        </Labels>
+                        <Labels className="ml-auto">
+                          {formatPrice(passangerData.totalPrice.baby)}
+                        </Labels>
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              }
+            )}
+
+            <div className="flex mt-2">
+              <Labels>Tax</Labels>
+              <Labels className="ml-auto">
+                {formatPrice(transactionDetailCard.tax)}
+              </Labels>
+            </div>
+          </div>
+          <hr className="mt-3 border border-black/20" />
+          <div className="flex mt-3">
+            <Labels className="font-bold text-lg">Total</Labels>
+            <Labels className="ml-auto text-lg font-bold text-violet">
+              {formatPrice(transactionDetailCard.totalPrice)}
+            </Labels>
+          </div>
+          <div className="mt-5 flex justify-center space-x-4">
+            {printOrCancelButton(
+              transactionDetailCard.status,
+              transactionDetailCard.orderId,
+              transactionDetailCard.id
+            )}
+          </div>
+          {vaNumber && (
+            <div className="flex flex-col justify-center items-center mt-5">
+              <Labels className="font-bold">
+                Virtual Account Number
+              </Labels>
+              <Labels className="mt-2">{vaNumber}</Labels>
+            </div>
+          )}
+        </div>
+      </div>
+   )
+  }
 
   return (
     <>
@@ -211,10 +404,11 @@ export default function HistoryPage() {
       </div>
       <hr className="border-black/20" />
       <div className="w-full md:w-4/5 mx-auto mt-3 pb-20">
-        {Array.isArray(transactionHistory) && transactionHistory.length > 0 ? (
-          transactionHistory.map((transaction, index) => (
-            <div className="flex flex-col md:flex-row items-start flex-wrap" key={index}>
-              <div className="grow-0 w-full md:w-3/5 p-3">
+          {Array.isArray(transactionHistory) &&
+          transactionHistory.length > 0 ? (
+            transactionHistory.map((transaction, index) => (
+        <div className="flex flex-col md:flex-row items-start flex-wrap">
+              <div className="grow-0 w-full md:w-3/5 p-3" key={index}>
                 <div className="flex flex-col">
                   <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20">
                     <div>
@@ -227,6 +421,7 @@ export default function HistoryPage() {
                           className="mt-3 p-5 border border-black/20 rounded-sm"
                           onClick={() => {
                             handleSelectedTransactionHistory(transactionIndex);
+                            handleBookingDetail(transactionDetail);
                             scrollTop();
                           }}
                         >
@@ -327,217 +522,36 @@ export default function HistoryPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="w-full md:w-2/5 px-3">
-                <div className="grow-0 w-full p-5 mt-3 rounded-sm shadow-xl border border-black/20">
-                  <div>
-                    <Labels className="font-bold">Flight Details</Labels>
-                  </div>
-                  <div>
-                    <Labels className="font-bold">
-                      Booking Code:{" "}
-                      {transaction.transactions[transactionIndex].booking.code}
-                    </Labels>
-                  </div>
-                  <div className="flex mt-3">
-                    <Labels className="font-bold">
-                      {
-                        transaction.transactions[transactionIndex]
-                          .Transaction_Detail[0].flight.departure.time
-                      }
-                    </Labels>
-                    <Labels className="font-bold ml-auto text-violet">
-                      Departure
-                    </Labels>
-                  </div>
-                  <Labels>
-                    {formatDate(
-                      transaction.transactions[transactionIndex]
-                        .Transaction_Detail[0].flight.departure.date
-                    )}
+              {transactionDetailCard && index == 0 ? bookingDetailCard(transactionDetailCard) : ""}
+            </div>
+            ))
+          ) : (
+            <div className="w-full sm:w-4/5 mx-auto">
+              <div className="px-5 sm:px-10 pt-10 pb-20 flex flex-col items-center justify-center">
+                <Image
+                  src="/assets/payment-complete.svg"
+                  alt="logo"
+                  width={300}
+                  height={300}
+                  className="w-40 h-40 sm:w-50 sm:h-50 bg-cover"
+                />
+                <div className="mt-5 text-center">
+                  <Labels className="font-bold text-lg text-violet">
+                    Oops! Order history is empty!
                   </Labels>
-                  <Labels className="flex flex-col">
-                    {
-                      transaction.transactions[transactionIndex]
-                        .Transaction_Detail[0].flight.departureAirport.name
-                    }
+                  <Labels className="flex flex-col font-bold mt-1">
+                    You have not made a flight booking
                   </Labels>
-                  <hr className="mt-3 border border-black/20" />
-                  <div className="flex my-2">
-                    <div className="flex items-center justify-center">
-                      <Image
-                        src="/assets/leaf.svg"
-                        alt="logo"
-                        width={50}
-                        height={50}
-                        className="w-7 h-7"
-                      />
-                    </div>
-                    <div className="flex flex-col ps-2">
-                      <div>
-                        <Labels className="mt-3 font-bold">
-                          {
-                            transaction.transactions[transactionIndex]
-                              .Transaction_Detail[0].flight.airline.name
-                          }{" "}
-                          -{" "}
-                          {
-                            transaction.transactions[transactionIndex]
-                              .Transaction_Detail[0].seat.type
-                          }
-                        </Labels>
-                        <Labels className="flex flex-col font-bold">
-                          JT - 203
-                        </Labels>
-                      </div>
-                      <div className="mt-5">
-                        <Labels className="font-bold">Information:</Labels>
-                        <Labels className="flex flex-col">Baggage 20 kg</Labels>
-                        <Labels>Cabin baggage 7 kg</Labels>
-                        <Labels className="flex flex-col">
-                          In Flight Entertainment
-                        </Labels>
-                      </div>
-                    </div>
-                  </div>
-                  <hr className="mt-3 border border-black/20" />
-                  <div className="py-2">
-                    <div className="flex mt-3">
-                      <Labels className="font-bold">
-                        {
-                          transaction.transactions[transactionIndex]
-                            .Transaction_Detail[0].flight.arrival.time
-                        }
-                      </Labels>
-                      <Labels className="font-bold ml-auto text-violet">
-                        Arrivals
-                      </Labels>
-                    </div>
-                    <div>
-                      <Labels>
-                        {formatDate(
-                          transaction.transactions[transactionIndex]
-                            .Transaction_Detail[0].flight.arrival.date
-                        )}
-                      </Labels>
-                      <Labels className="flex flex-col">
-                        {
-                          transaction.transactions[transactionIndex]
-                            .Transaction_Detail[0].flight.destinationAirport
-                            .name
-                        }
-                      </Labels>
-                    </div>
-                  </div>
-                  <hr className="mt-3 border border-black/20" />
-                  <div className="py-2">
-                    <Labels className="font-bold">Total Price</Labels>
-                    {transaction.transactions[
-                      transactionIndex
-                    ].Transaction_Detail.map((data: TransactionDetail) => {
-                      const passangerData = calculatePassengerDetails(data);
-                      return (
-                        <React.Fragment key={data.id}>
-                          {passangerData.passengerCount.adult > 0 && (
-                            <div className="flex mt-2" key={`${data.id}-adult`}>
-                              <Labels>
-                                {passangerData.passengerCount.adult} Adults
-                              </Labels>
-                              <Labels className="ml-auto">
-                                {formatPrice(passangerData.totalPrice.adult)}
-                              </Labels>
-                            </div>
-                          )}
-                          {passangerData.passengerCount.children > 0 && (
-                            <div
-                              className="flex mt-2"
-                              key={`${data.id}-children`}
-                            >
-                              <Labels>
-                                {passangerData.passengerCount.children} Children
-                              </Labels>
-                              <Labels className="ml-auto">
-                                {formatPrice(passangerData.totalPrice.children)}
-                              </Labels>
-                            </div>
-                          )}
-                          {passangerData.passengerCount.baby > 0 && (
-                            <div className="flex mt-2" key={`${data.id}-baby`}>
-                              <Labels>
-                                {passangerData.passengerCount.baby} Baby
-                              </Labels>
-                              <Labels className="ml-auto">
-                                {formatPrice(passangerData.totalPrice.baby)}
-                              </Labels>
-                            </div>
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
-
-                    <div className="flex mt-2">
-                      <Labels>Tax</Labels>
-                      <Labels className="ml-auto">
-                        {formatPrice(
-                          transaction.transactions[transactionIndex].tax
-                        )}
-                      </Labels>
-                    </div>
-                  </div>
-                  <hr className="mt-3 border border-black/20" />
-                  <div className="flex mt-3">
-                    <Labels className="font-bold text-lg">Total</Labels>
-                    <Labels className="ml-auto text-lg font-bold text-violet">
-                      {formatPrice(
-                        transaction.transactions[transactionIndex].totalPrice
-                      )}
-                    </Labels>
-                  </div>
-                  <div className="mt-5 flex justify-center space-x-4">
-                    {printOrCancelButton(
-                      transaction.transactions[transactionIndex].status,
-                      transaction.transactions[transactionIndex].orderId,
-                      transaction.transactions[transactionIndex].id
-                    )}
-                  </div>
-                  {vaNumber && (
-                    <div className="flex flex-col justify-center items-center mt-5">
-                      <Labels className="font-bold">
-                        Virtual Account Number
-                      </Labels>
-                      <Labels className="mt-2">{vaNumber}</Labels>
-                    </div>
-                  )}
+                </div>
+                <div className="mt-5 flex flex-col items-center">
+                  <Button className="mt-3 w-40 sm:w-60">
+                    Find Other Flights
+                  </Button>
                 </div>
               </div>
             </div>
-          ))
-        ) : (
-          <div className="w-full sm:w-4/5 mx-auto">
-            <div className="px-5 sm:px-10 pt-10 pb-20 flex flex-col items-center justify-center">
-              <Image
-                src="/assets/payment-complete.svg"
-                alt="logo"
-                width={300}
-                height={300}
-                className="w-40 h-40 sm:w-50 sm:h-50 bg-cover"
-              />
-              <div className="mt-5 text-center">
-                <Labels className="font-bold text-lg text-violet">
-                  Oops! Order history is empty!
-                </Labels>
-                <Labels className="flex flex-col font-bold mt-1">
-                  You have not made a flight booking
-                </Labels>
-              </div>
-              <div className="mt-5 flex flex-col items-center">
-                <Button className="mt-3 w-40 sm:w-60">
-                  Find Other Flights
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+          )}
+       
       </div>
     </>
   );
