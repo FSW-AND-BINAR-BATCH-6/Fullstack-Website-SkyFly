@@ -9,6 +9,17 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getNotifications, Notifications } from "../actions";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+
+type Checked = DropdownMenuCheckboxItemProps["checked"];
 
 export default function NotificationPage() {
   const [notifications, setNotifications] = useState<Notifications[]>(
@@ -17,6 +28,10 @@ export default function NotificationPage() {
   const [readNotifications, setReadNotifications] = useState<
     string[]
   >([]);
+  const [showStatusBar, setShowStatusBar] = useState<Checked>(true);
+  const [showActivityBar, setShowActivityBar] =
+    useState<Checked>(false);
+  const [showPanel, setShowPanel] = useState<Checked>(false);
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -71,10 +86,37 @@ export default function NotificationPage() {
             <Labels className="ml-5">Home Page</Labels>
           </div>
           <div className="">
-            <Button className="rounded-full bg-primaryPurple">
-              <ArrowUpDown className="w-5 h-5 mr-2" />
-              <Labels className="cursor-pointer">Filter</Labels>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="rounded-full bg-primaryPurple">
+                  <ArrowUpDown className="w-5 h-5 mr-2" />
+                  <Labels className="cursor-pointer">Filter</Labels>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 p-3 bg-red-700 text-white rounded-md">
+                <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuCheckboxItem
+                  checked={showStatusBar}
+                  onCheckedChange={setShowStatusBar}
+                >
+                  Status Bar
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={showActivityBar}
+                  onCheckedChange={setShowActivityBar}
+                  disabled
+                >
+                  Activity Bar
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={showPanel}
+                  onCheckedChange={setShowPanel}
+                >
+                  Panel
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="">
             <Search className="w-5 h-5 text-violet font-bold cursor-pointer" />
