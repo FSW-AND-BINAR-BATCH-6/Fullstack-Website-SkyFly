@@ -2,13 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Labels } from "@/components/ui/labels";
 import React, { FC, useCallback, useState } from "react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface ButtonResetProps {}
 
 const ButtonReset: FC<ButtonResetProps> = ({}) => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const resetFilter = useCallback(async () => {
+  const resetSort = useCallback(async () => {
     setLoading(true);
     try {
       const url = new URL(window.location.href);
@@ -16,41 +18,41 @@ const ButtonReset: FC<ButtonResetProps> = ({}) => {
       const toParam = url.searchParams.get("to");
       const totalPassengers = url.searchParams.get("totalPassengers");
       const seatClass = url.searchParams.get("seatClass");
-      const params = new URLSearchParams();
-      if (fromParam !== null) {
-        params.append("from", fromParam);
-      }
-      if (toParam !== null) {
-        params.append("to", toParam);
-      }
-      if (totalPassengers !== null) {
-        params.append("totalPassengers", totalPassengers);
-      }
-      if (seatClass !== null) {
-        params.append("seatClass", seatClass);
-      }
-      url.search = params.toString();
-      window.history.replaceState({}, "", url.toString());
+      const departureDate = url.searchParams.get("departureDate");
 
-      window.location.reload();
+      url.searchParams.delete("sort");
 
-      toast.success("Filters Reset Successfully");
+      const params: Record<string, string | null> = {
+        from: fromParam,
+        to: toParam,
+        totalPassengers,
+        seatClass,
+        departureDate,
+      };
+
+      const query = new URLSearchParams(
+        Object.entries(params).filter(([, value]) => value !== null) as [string, string][]
+      );
+
+      router.push(`${url.pathname}?${query.toString()}`);
+
+      toast.success("Sort filter removed successfully");
     } catch (err) {
-      console.error("Failed to reset filters", err);
-      toast.error("Failed to reset filters");
+      console.error("Failed to remove sort filter", err);
+      toast.error("Failed to remove sort filter");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
   return (
     <Button
-      onClick={resetFilter}
+      onClick={resetSort}
       disabled={loading}
       className="w-full md:w-1/5 bg-greens rounded-xl p-6 flex items-center justify-center text-white"
     >
       <Labels className="font-bold">
-        {loading ? "Loading..." : "Reset Filters"}
+        {loading ? "Loading..." : "Reset Sort Filter"}
       </Labels>
     </Button>
   );

@@ -40,6 +40,7 @@ interface FlightDetailProps {
     from?: string;
     to?: string;
     seatClass?: string;
+    sort?:string
   };
 }
 
@@ -63,6 +64,7 @@ export const FlightDetail: React.FC<FlightDetailProps> = ({
     departureDate: searchParams.departureDate,
     returnDate: searchParams.returnDate,
     seatClass: searchParams.seatClass,
+    sort: searchParams.sort
   };
 
   const filteredQueryParams = Object.fromEntries(
