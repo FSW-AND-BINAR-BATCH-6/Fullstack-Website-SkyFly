@@ -46,11 +46,8 @@ export default function FindFlightsLayout({
   const [toCode, setToCode] = useState("");
   const [loading, setLoading] = useState(true);
   const [departureDate, setDepartureDate] = useState(new Date());
-  //
+  
   const [selectedSort, setSelectedSort] = useState<string>("");
-  // const [showStatusBar, setShowStatusBar] = useState<Checked>(true);
-  // const [showActivityBar, setShowActivityBar] = useState<Checked>(false);
-  // const [showPanel, setShowPanel] = useState<Checked>(false);
 
   useEffect(() => {
     async function fetchAirportCodes() {
@@ -176,9 +173,9 @@ export default function FindFlightsLayout({
       Array.from(searchParams.entries())
     );
     currentQuery.set("sort", sortValue);
-
-    router.push(`http://localhost:3000/findflights?${currentQuery.toString()}`);
-  };
+    const currentDomain = window.location.origin;
+    router.push(`${currentDomain}/findflights?${currentQuery.toString()}`);
+    };
 
   return (
     <>
@@ -248,7 +245,7 @@ export default function FindFlightsLayout({
                       : "hover:bg-purple-600 hover:text-white"
                   }`}
                 >
-                  Harga - Termurah
+                  Price - Lowest
                 </button>
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />
@@ -264,7 +261,7 @@ export default function FindFlightsLayout({
                       : "hover:bg-purple-600 hover:text-white"
                   }`}
                 >
-                  Durasi - Terpendek
+                  Duration - Shortest
                 </button>
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />
@@ -280,7 +277,7 @@ export default function FindFlightsLayout({
                       : "hover:bg-purple-600 hover:text-white"
                   }`}
                 >
-                  Keberangkatan - Paling Awal
+                  Departure - Earliest
                 </button>
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />
@@ -296,7 +293,7 @@ export default function FindFlightsLayout({
                       : "hover:bg-purple-600 hover:text-white"
                   }`}
                 >
-                  Keberangkatan - Paling Akhir
+                  Departure - Latest
                 </button>
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />
@@ -312,7 +309,7 @@ export default function FindFlightsLayout({
                       : "hover:bg-purple-600 hover:text-white"
                   }`}
                 >
-                  Kedatangan - Paling Awal
+                  Arrival - Earliest
                 </button>
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />
@@ -328,7 +325,7 @@ export default function FindFlightsLayout({
                       : "hover:bg-purple-600 hover:text-white"
                   }`}
                 >
-                  Kedatangan - Paling Akhir
+                  Arrival - Latest
                 </button>
               </DropdownMenuCheckboxItem>
             </DropdownMenuContent>
