@@ -172,13 +172,13 @@ export default function FindFlightsLayout({
 
   const handleSortChange = (sortValue: string) => {
     setSelectedSort(sortValue);
-    const currentQuery = new URLSearchParams(Array.from(searchParams.entries()));
-    currentQuery.set('sort', sortValue);
-    
+    const currentQuery = new URLSearchParams(
+      Array.from(searchParams.entries())
+    );
+    currentQuery.set("sort", sortValue);
+
     router.push(`http://localhost:3000/findflights?${currentQuery.toString()}`);
   };
-
-
 
   return (
     <>
@@ -234,41 +234,102 @@ export default function FindFlightsLayout({
                 <Labels className="cursor-pointer">Filter</Labels>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 p-3 bg-red-700 text-white rounded-md">
+            <DropdownMenuContent className="w-[400px] h-[310px] bg-white rounded-lg p-4 border shadow-md">
               <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
                 checked={selectedSort === "lowest-price"}
                 onCheckedChange={() => handleSortChange("lowest-price")}
+                className="py-2"
               >
-                Price - Cheapest
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "lowest-price"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Harga - Termurah
+                </button>
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
                 checked={selectedSort === "shortest-duration"}
                 onCheckedChange={() => handleSortChange("shortest-duration")}
+                className="py-2"
               >
-                Duration - Shortest
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "shortest-duration"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Durasi - Terpendek
+                </button>
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={selectedSort === "earliest-departure"}
+                onCheckedChange={() => handleSortChange("earliest-departure")}
+                className="py-2"
+              >
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "earliest-departure"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Keberangkatan - Paling Awal
+                </button>
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
                 checked={selectedSort === "latest-departure"}
                 onCheckedChange={() => handleSortChange("latest-departure")}
+                className="py-2"
               >
-                Departure - Latest
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "latest-departure"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Keberangkatan - Paling Akhir
+                </button>
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
                 checked={selectedSort === "earliest-arrival"}
                 onCheckedChange={() => handleSortChange("earliest-arrival")}
+                className="py-2"
               >
-                Arrival - Earliest
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "earliest-arrival"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Kedatangan - Paling Awal
+                </button>
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
                 checked={selectedSort === "latest-arrival"}
                 onCheckedChange={() => handleSortChange("latest-arrival")}
+                className="py-2"
               >
-                Arrival - Latest
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "latest-arrival"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Kedatangan - Paling Akhir
+                </button>
               </DropdownMenuCheckboxItem>
             </DropdownMenuContent>
           </DropdownMenu>
