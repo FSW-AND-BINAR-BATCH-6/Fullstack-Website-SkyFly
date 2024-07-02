@@ -67,6 +67,17 @@ export default function HistoryPage() {
     getToken();
   }, [transationStatus]);
 
+  useEffect(() => {
+    if (vaNumber) {
+      window.open(
+        `https://simulator.sandbox.midtrans.com/bca/va/index`,
+        "_blank"
+      );
+    } else {
+      return;
+    }
+  }, [vaNumber]);
+  
   const checkStatus = (status: string) => {
     const data = (className: string, status: string) => {
       return (
