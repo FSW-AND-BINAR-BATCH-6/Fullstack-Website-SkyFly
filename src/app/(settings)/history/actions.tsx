@@ -180,8 +180,33 @@ export const PrintTicket = async (token: string, transactionId: string) => {
       }
     );
 
-    return response.data
+    return response.data;
   } catch (error) {
     console.error("Error fetching notifications:", error);
   }
+};
+
+export const combineTransactions = (data: Data[]): Data[] => {
+  return data.map(dataItem => {
+    const combinedTransactions = new Map<string, Transaction>();
+
+    dataItem.transactions.forEach(transaction => {
+      const { orderId } = transaction;
+
+      if (!combinedTransactions.has(orderId)) {
+        combinedTransactions.set(orderId, {
+          ...transaction,
+          Transaction_Detail: [...transaction.Transaction_Detail],
+        });
+      } else {
+        const existingTransaction = combinedTransactions.get(orderId)!;
+        existingTransaction.Transaction_Detail.push(...transaction.Transaction_Detail);
+      }
+    });
+
+    return {
+      ...dataItem,
+      transactions: Array.from(combinedTransactions.values()),
+    };
+  });
 };

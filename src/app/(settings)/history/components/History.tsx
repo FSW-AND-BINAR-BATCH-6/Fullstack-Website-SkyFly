@@ -1,12 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Labels } from "@/components/ui/labels";
-import {
-  ArrowLeftIcon,
-  ArrowUpDown,
-  MoveRight,
-  Search,
-} from "lucide-react";
+import { ArrowLeftIcon, ArrowUpDown, MoveRight, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -20,18 +15,17 @@ import {
   Data,
   cancelPayment,
   handleContinuePayment,
+  combineTransactions,
 } from "../actions";
 
 export default function HistoryPage() {
-  const [transactionHistory, setTransactionHistory] = useState<
-    Data[]
-  >([]);
+  const [transactionHistory, setTransactionHistory] = useState<Data[]>([]);
   const [transactionIndex, setTransactionIndex] = useState<number>(0);
   const [transactionDetailCard, setTransactionDetailCard] =
     useState<Transaction>();
-  const [transationStatus, setTrasactionStatus] = useState<
-    string | undefined
-  >(undefined);
+  const [transationStatus, setTrasactionStatus] = useState<string | undefined>(
+    undefined
+  );
   const [vaNumber, setVaNumber] = useState<string>();
   const [tickets, setTickets] = useState();
 
@@ -63,7 +57,8 @@ export default function HistoryPage() {
         const token = getCookie("token") as string | undefined;
         if (token) {
           const data = await getTransaction(token);
-          setTransactionHistory(data);
+          console.log(combineTransactions(data));
+          setTransactionHistory(combineTransactions(data));
         }
       } catch (error) {
         console.error("Error fetching transactions:", error);
@@ -72,59 +67,78 @@ export default function HistoryPage() {
     getToken();
   }, [transationStatus]);
 
+  useEffect(() => {
+    if (vaNumber) {
+      window.open(
+        `https://simulator.sandbox.midtrans.com/bca/va/index`,
+        "_blank"
+      );
+    } else {
+      return;
+    }
+  }, [vaNumber]);
+  
   const checkStatus = (status: string) => {
     const data = (className: string, status: string) => {
       return (
         <div className={className}>
-          <Labels className="flex items-center justify-center">
-            {status}
-          </Labels>
+          <Labels className="flex items-center justify-center">{status}</Labels>
         </div>
       );
     };
     if (status == "settlement" || status == "capture") {
-      return data(
-        "rounded-full bg-green-700 p-2 text-white w-16",
-        "Issued"
-      );
+      return data("rounded-full bg-green-700 p-2 text-white w-16", "Issued");
     }
     if (status == "expire" || status == "cancel") {
-      return data(
-        "rounded-full bg-red-700 p-2 text-white w-20",
-        "Cancelled"
-      );
+      return data("rounded-full bg-red-700 p-2 text-white w-20", "Cancelled");
     }
     if (status == "pending") {
-      return data(
-        "rounded-full bg-gray-600 p-2 text-white w-20",
-        "Pending"
-      );
+      return data("rounded-full bg-gray-600 p-2 text-white w-20", "Pending");
     }
   };
 
-  const calculatePassengerDetails = (
-    transactionDetails: TransactionDetail
-  ) => {
+  const calculatePassengerDetails = (transactionDetails: Transaction) => {
     const passengerCount = { adult: 0, children: 0, baby: 0 };
     const totalPrice = { adult: 0, children: 0, baby: 0, total: 0 };
-
-    if (transactionDetails.passengerCategory === "ADULT") {
-      passengerCount.adult++;
-      totalPrice.adult += transactionDetails.totalPrice;
-    } else if (transactionDetails.passengerCategory === "CHILD") {
-      passengerCount.children++;
-      totalPrice.children += transactionDetails.totalPrice;
-    } else if (transactionDetails.passengerCategory === "BABY") {
-      passengerCount.baby++;
-      totalPrice.baby += transactionDetails.totalPrice;
-    }
+  
+    transactionDetails.Transaction_Detail.forEach((data) => {
+      if (data.passengerCategory === "ADULT") {
+        passengerCount.adult++;
+        totalPrice.adult += data.totalPrice;
+      } else if (data.passengerCategory === "CHILD") {
+        passengerCount.children++;
+        totalPrice.children += data.totalPrice;
+      } else if (data.passengerCategory === "BABY") {
+        passengerCount.baby++;
+        totalPrice.baby += data.totalPrice;
+      }
+    });
     totalPrice.total += transactionDetails.totalPrice;
-
-    return {
-      passengerCount,
-      totalPrice,
-    };
+  
+    return (
+      <React.Fragment>
+        {passengerCount.adult > 0 && (
+          <div className="flex mt-2" key={`${transactionDetails.id}-adult`}>
+            <Labels>{passengerCount.adult} Adults</Labels>
+            <Labels className="ml-auto">{formatPrice(totalPrice.adult)}</Labels>
+          </div>
+        )}
+        {passengerCount.children > 0 && (
+          <div className="flex mt-2" key={`${transactionDetails.id}-children`}>
+            <Labels>{passengerCount.children} Children</Labels>
+            <Labels className="ml-auto">{formatPrice(totalPrice.children)}</Labels>
+          </div>
+        )}
+        {passengerCount.baby > 0 && (
+          <div className="flex mt-2" key={`${transactionDetails.id}-baby`}>
+            <Labels>{passengerCount.baby} Baby</Labels>
+            <Labels className="ml-auto">{formatPrice(totalPrice.baby)}</Labels>
+          </div>
+        )}
+      </React.Fragment>
+    );
   };
+  
 
   const handleCancelPayment = async (orderId: string) => {
     try {
@@ -156,9 +170,7 @@ export default function HistoryPage() {
       const token = getCookie("token") as string | undefined;
       if (token) {
         const response = await handleContinuePayment(token, orderId);
-        const vaNumber = response.map(
-          (data: VirtualAccount) => data.va_number
-        );
+        const vaNumber = response.map((data: VirtualAccount) => data.va_number);
         setVaNumber(vaNumber);
       }
     } catch (error) {
@@ -239,18 +251,15 @@ export default function HistoryPage() {
           <div className="flex mt-3">
             <Labels className="font-bold">
               {
-                transactionDetailCard.Transaction_Detail[0].flight
-                  .departure.time
+                transactionDetailCard.Transaction_Detail[0].flight.departure
+                  .time
               }
             </Labels>
-            <Labels className="font-bold ml-auto text-violet">
-              Departure
-            </Labels>
+            <Labels className="font-bold ml-auto text-violet">Departure</Labels>
           </div>
           <Labels>
             {formatDate(
-              transactionDetailCard.Transaction_Detail[0].flight
-                .departure.date
+              transactionDetailCard.Transaction_Detail[0].flight.departure.date
             )}
           </Labels>
           <Labels className="flex flex-col">
@@ -274,24 +283,16 @@ export default function HistoryPage() {
               <div>
                 <Labels className="mt-3 font-bold">
                   {
-                    transactionDetailCard.Transaction_Detail[0].flight
-                      .airline.name
+                    transactionDetailCard.Transaction_Detail[0].flight.airline
+                      .name
                   }{" "}
-                  -{" "}
-                  {
-                    transactionDetailCard.Transaction_Detail[0].seat
-                      .type
-                  }
+                  - {transactionDetailCard.Transaction_Detail[0].seat.type}
                 </Labels>
-                <Labels className="flex flex-col font-bold">
-                  JT - 203
-                </Labels>
+                <Labels className="flex flex-col font-bold">JT - 203</Labels>
               </div>
               <div className="mt-5">
                 <Labels className="font-bold">Information:</Labels>
-                <Labels className="flex flex-col">
-                  Baggage 20 kg
-                </Labels>
+                <Labels className="flex flex-col">Baggage 20 kg</Labels>
                 <Labels>Cabin baggage 7 kg</Labels>
                 <Labels className="flex flex-col">
                   In Flight Entertainment
@@ -304,8 +305,8 @@ export default function HistoryPage() {
             <div className="flex mt-3">
               <Labels className="font-bold">
                 {
-                  transactionDetailCard.Transaction_Detail[0].flight
-                    .arrival.time
+                  transactionDetailCard.Transaction_Detail[0].flight.arrival
+                    .time
                 }
               </Labels>
               <Labels className="font-bold ml-auto text-violet">
@@ -315,8 +316,8 @@ export default function HistoryPage() {
             <div>
               <Labels>
                 {formatDate(
-                  transactionDetailCard.Transaction_Detail[0].flight
-                    .arrival.date
+                  transactionDetailCard.Transaction_Detail[0].flight.arrival
+                    .date
                 )}
               </Labels>
               <Labels className="flex flex-col">
@@ -330,60 +331,7 @@ export default function HistoryPage() {
           <hr className="mt-3 border border-black/20" />
           <div className="py-2">
             <Labels className="font-bold">Total Price</Labels>
-            {transactionDetailCard.Transaction_Detail.map(
-              (data: TransactionDetail) => {
-                const passangerData = calculatePassengerDetails(data);
-                return (
-                  <React.Fragment key={data.id}>
-                    {passangerData.passengerCount.adult > 0 && (
-                      <div
-                        className="flex mt-2"
-                        key={`${data.id}-adult`}
-                      >
-                        <Labels>
-                          {passangerData.passengerCount.adult} Adults
-                        </Labels>
-                        <Labels className="ml-auto">
-                          {formatPrice(
-                            passangerData.totalPrice.adult
-                          )}
-                        </Labels>
-                      </div>
-                    )}
-                    {passangerData.passengerCount.children > 0 && (
-                      <div
-                        className="flex mt-2"
-                        key={`${data.id}-children`}
-                      >
-                        <Labels>
-                          {passangerData.passengerCount.children}{" "}
-                          Children
-                        </Labels>
-                        <Labels className="ml-auto">
-                          {formatPrice(
-                            passangerData.totalPrice.children
-                          )}
-                        </Labels>
-                      </div>
-                    )}
-                    {passangerData.passengerCount.baby > 0 && (
-                      <div
-                        className="flex mt-2"
-                        key={`${data.id}-baby`}
-                      >
-                        <Labels>
-                          {passangerData.passengerCount.baby} Baby
-                        </Labels>
-                        <Labels className="ml-auto">
-                          {formatPrice(passangerData.totalPrice.baby)}
-                        </Labels>
-                      </div>
-                    )}
-                  </React.Fragment>
-                );
-              }
-            )}
-
+              {calculatePassengerDetails(transactionDetailCard)}
             <div className="flex mt-2">
               <Labels>Tax</Labels>
               <Labels className="ml-auto">
@@ -407,9 +355,7 @@ export default function HistoryPage() {
           </div>
           {vaNumber && (
             <div className="flex flex-col justify-center items-center mt-5">
-              <Labels className="font-bold">
-                Virtual Account Number
-              </Labels>
+              <Labels className="font-bold">Virtual Account Number</Labels>
               <Labels className="mt-2">{vaNumber}</Labels>
             </div>
           )}
@@ -442,121 +388,111 @@ export default function HistoryPage() {
       </div>
       <hr className="border-black/20" />
       <div className="w-full md:w-4/5 mx-auto mt-3 pb-20">
-        {Array.isArray(transactionHistory) &&
-        transactionHistory.length > 0 ? (
+        {Array.isArray(transactionHistory) && transactionHistory.length > 0 ? (
           transactionHistory.map((transaction, index) => (
             <div
               key={index}
               className="flex flex-col md:flex-row items-start flex-wrap"
             >
-              <div className="grow-0 w-full md:w-3/5 p-3" key={index}>
+              <div className="grow-0 w-full md:w-3/5 p-3">
                 <div className="flex flex-col">
                   <div className="flex flex-col p-5 rounded-sm shadow-xl border border-black/20">
                     <div>
-                      <Labels className="font-bold">
-                        {transaction.date}
-                      </Labels>
+                      <Labels className="font-bold">{transaction.date}</Labels>
                     </div>
                     {transaction.transactions.map(
-                      (
-                        transactionDetail: any,
-                        transactionIndex: number
-                      ) => (
+                      (transactionDetail: any, transactionIndex: number) => (
                         <div
                           key={transactionIndex}
                           className="mt-3 p-5 border border-black/20 rounded-sm"
                           onClick={() => {
-                            handleSelectedTransactionHistory(
-                              transactionIndex
-                            );
+                            handleSelectedTransactionHistory(transactionIndex);
                             handleBookingDetail(transactionDetail);
                             scrollTop();
                           }}
                         >
                           {checkStatus(transactionDetail.status)}
-                          {transactionDetail.Transaction_Detail.map(
-                            (
-                              flightData: any,
-                              flightIndex: number
-                            ) => (
-                              <div
-                                key={flightIndex}
-                                className="flex flex-col gap-3 sm:gap-0 sm:flex-row justify-between items-center mt-3"
-                              >
-                                <div className="flex flex-row mt-3">
-                                  <div>
-                                    <Image
-                                      src="/assets/map.svg"
-                                      alt="logo"
-                                      width={50}
-                                      height={50}
-                                      className="w-5 h-5"
-                                    />
-                                  </div>
-                                  <div className="flex flex-col ml-2">
-                                    <Labels className="font-bold">
-                                      {
-                                        flightData.flight
-                                          .departureAirport.city
-                                      }
-                                    </Labels>
-                                    <Labels className="mt-1">
-                                      {formatDate(
-                                        flightData.flight.departure
-                                          .date
-                                      )}
-                                    </Labels>
-                                    <Labels className="mt-1">
-                                      {
-                                        flightData.flight.departure
-                                          .time
-                                      }
-                                    </Labels>
-                                  </div>
-                                </div>
-                                <div className="flex flex-col items-center justify-center mt-3 md:mt-0">
-                                  <Labels>
-                                    {flightData.flight.flightDuration}
-                                  </Labels>
-                                  <span className="flex items-center justify-center">
-                                    <hr className="w-36 border border-slate-400" />
-                                    <MoveRight className="w-5 h-5 ml-[-3px] text-slate-400" />
-                                  </span>
-                                </div>
-                                <div className="flex flex-row mt-3">
-                                  <div>
-                                    <Image
-                                      src="/assets/map.svg"
-                                      alt="logo"
-                                      width={50}
-                                      height={50}
-                                      className="w-5 h-5"
-                                    />
-                                  </div>
-                                  <div className="flex flex-col ml-2">
-                                    <Labels className="font-bold">
-                                      {
-                                        flightData.flight
-                                          .destinationAirport.city
-                                      }
-                                    </Labels>
-                                    <Labels className="mt-1">
-                                      {formatDate(
-                                        flightData.flight.departure
-                                          .date
-                                      )}
-                                    </Labels>
-                                    <Labels className="mt-1">
-                                      {
-                                        flightData.flight.departure
-                                          .time
-                                      }
-                                    </Labels>
-                                  </div>
-                                </div>
+                          {/* edit here */}
+                          <div
+                            key={0}
+                            className="flex flex-col gap-3 sm:gap-0 sm:flex-row justify-between items-center mt-3"
+                          >
+                            <div className="flex flex-row mt-3">
+                              <div>
+                                <Image
+                                  src="/assets/map.svg"
+                                  alt="logo"
+                                  width={50}
+                                  height={50}
+                                  className="w-5 h-5"
+                                />
                               </div>
-                            )
-                          )}
+                              <div className="flex flex-col ml-2">
+                                <Labels className="font-bold">
+                                  {
+                                    transactionDetail.Transaction_Detail[0]
+                                      .flight.departureAirport.city
+                                  }
+                                </Labels>
+                                <Labels className="mt-1">
+                                  {formatDate(
+                                    transactionDetail.Transaction_Detail[0]
+                                      .flight.departure.date
+                                  )}
+                                </Labels>
+                                <Labels className="mt-1">
+                                  {
+                                    transactionDetail.Transaction_Detail[0]
+                                      .flight.departure.time
+                                  }
+                                </Labels>
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-center justify-center mt-3 md:mt-0">
+                              <Labels>
+                                {
+                                  transactionDetail.Transaction_Detail[0].flight
+                                    .flightDuration
+                                }
+                              </Labels>
+                              <span className="flex items-center justify-center">
+                                <hr className="w-36 border border-slate-400" />
+                                <MoveRight className="w-5 h-5 ml-[-3px] text-slate-400" />
+                              </span>
+                            </div>
+                            <div className="flex flex-row mt-3">
+                              <div>
+                                <Image
+                                  src="/assets/map.svg"
+                                  alt="logo"
+                                  width={50}
+                                  height={50}
+                                  className="w-5 h-5"
+                                />
+                              </div>
+                              <div className="flex flex-col ml-2">
+                                <Labels className="font-bold">
+                                  {
+                                    transactionDetail.Transaction_Detail[0]
+                                      .flight.destinationAirport.city
+                                  }
+                                </Labels>
+                                <Labels className="mt-1">
+                                  {formatDate(
+                                    transactionDetail.Transaction_Detail[0]
+                                      .flight.departure.date
+                                  )}
+                                </Labels>
+                                <Labels className="mt-1">
+                                  {
+                                    transactionDetail.Transaction_Detail[0]
+                                      .flight.departure.time
+                                  }
+                                </Labels>
+                              </div>
+                            </div>
+                          </div>
+                          {/* End here */}
                           <hr className="mt-5 border border-black/20" />
 
                           <div className="mt-3 flex flex-col sm:flex-row gap-3 items-center justify-between">
@@ -569,18 +505,12 @@ export default function HistoryPage() {
                               </Labels>
                             </div>
                             <div className="flex flex-col sm:ml-auto">
-                              <Labels className="font-bold">
-                                Class:
-                              </Labels>
-                              <Labels className="mt-1">
-                                Economy
-                              </Labels>
+                              <Labels className="font-bold">Class:</Labels>
+                              <Labels className="mt-1">Economy</Labels>
                             </div>
                             <div className="flex flex-col sm:ml-auto">
                               <Labels className="font-bold text-violet">
-                                {formatPrice(
-                                  transactionDetail.totalPrice
-                                )}
+                                {formatPrice(transactionDetail.totalPrice)}
                               </Labels>
                             </div>
                           </div>

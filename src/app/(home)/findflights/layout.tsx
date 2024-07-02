@@ -14,9 +14,20 @@ import {
 import ButtonReset from "../components/ButtonReset";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { format, addDays, isSameDay } from "date-fns";
 import clsx from "clsx";
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+
+type Checked = DropdownMenuCheckboxItemProps["checked"];
 
 export default function FindFlightsLayout({
   children,
@@ -35,6 +46,11 @@ export default function FindFlightsLayout({
   const [toCode, setToCode] = useState("");
   const [loading, setLoading] = useState(true);
   const [departureDate, setDepartureDate] = useState(new Date());
+  //
+  const [selectedSort, setSelectedSort] = useState<string>("");
+  // const [showStatusBar, setShowStatusBar] = useState<Checked>(true);
+  // const [showActivityBar, setShowActivityBar] = useState<Checked>(false);
+  // const [showPanel, setShowPanel] = useState<Checked>(false);
 
   useEffect(() => {
     async function fetchAirportCodes() {
@@ -52,9 +68,7 @@ export default function FindFlightsLayout({
           !responseData.data ||
           !Array.isArray(responseData.data)
         ) {
-          throw new Error(
-            "Airport data is not in the expected format"
-          );
+          throw new Error("Airport data is not in the expected format");
         }
 
         const fromAirport = responseData.data.find(
@@ -99,10 +113,7 @@ export default function FindFlightsLayout({
     const query = new URLSearchParams(
       searchParams as unknown as URLSearchParams
     );
-    query.set(
-      "departureDate",
-      selectedDate.toISOString().split("T")[0]
-    );
+    query.set("departureDate", selectedDate.toISOString().split("T")[0]);
     router.replace(`/findflights?${query.toString()}`);
   };
 
@@ -156,8 +167,17 @@ export default function FindFlightsLayout({
         </div>
       );
     });
-
     return daysOfWeek;
+  };
+
+  const handleSortChange = (sortValue: string) => {
+    setSelectedSort(sortValue);
+    const currentQuery = new URLSearchParams(
+      Array.from(searchParams.entries())
+    );
+    currentQuery.set("sort", sortValue);
+
+    router.push(`http://localhost:3000/findflights?${currentQuery.toString()}`);
   };
 
   return (
@@ -175,8 +195,8 @@ export default function FindFlightsLayout({
               <ArrowLeftIcon className="w-5 h-5 cursor-pointer text-white" />
             </Link>
             <Labels className="ml-5 font-bold text-center md:text-left">
-              {fromCity} {fromCode} &#187; {toCity} {toCode} -{" "}
-              {totalPassengers} Passengers - {seatClass} Class
+              {fromCity} {fromCode} &#187; {toCity} {toCode} - {totalPassengers}{" "}
+              Passengers - {seatClass} Class
             </Labels>
           </div>
           <ButtonReset />
@@ -206,19 +226,121 @@ export default function FindFlightsLayout({
       <div className="w-full md:w-4/5 mx-auto border-t-2 border-gray-300 mt-5 px-4"></div>
 
       <div className="w-full md:w-4/5 mx-auto mt-5 flex items-center justify-end mb-7 px-4">
-        <Button className="rounded-full bg-primaryPurple flex items-center justify-center">
-          <ArrowUpDown className="w-5 h-5 mr-2" />
-          <Labels className="cursor-pointer">Filter</Labels>
-        </Button>
+        <div className="">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="rounded-full bg-primaryPurple">
+                <ArrowUpDown className="w-5 h-5 mr-2" />
+                <Labels className="cursor-pointer">Filter</Labels>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[400px] h-[310px] bg-white rounded-lg p-4 border shadow-md">
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={selectedSort === "lowest-price"}
+                onCheckedChange={() => handleSortChange("lowest-price")}
+                className="py-2"
+              >
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "lowest-price"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Harga - Termurah
+                </button>
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={selectedSort === "shortest-duration"}
+                onCheckedChange={() => handleSortChange("shortest-duration")}
+                className="py-2"
+              >
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "shortest-duration"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Durasi - Terpendek
+                </button>
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={selectedSort === "earliest-departure"}
+                onCheckedChange={() => handleSortChange("earliest-departure")}
+                className="py-2"
+              >
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "earliest-departure"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Keberangkatan - Paling Awal
+                </button>
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={selectedSort === "latest-departure"}
+                onCheckedChange={() => handleSortChange("latest-departure")}
+                className="py-2"
+              >
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "latest-departure"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Keberangkatan - Paling Akhir
+                </button>
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={selectedSort === "earliest-arrival"}
+                onCheckedChange={() => handleSortChange("earliest-arrival")}
+                className="py-2"
+              >
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "earliest-arrival"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Kedatangan - Paling Awal
+                </button>
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={selectedSort === "latest-arrival"}
+                onCheckedChange={() => handleSortChange("latest-arrival")}
+                className="py-2"
+              >
+                <button
+                  className={`w-full py-1 rounded-lg ps-1 text-left ${
+                    selectedSort === "latest-arrival"
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  Kedatangan - Paling Akhir
+                </button>
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <section className="flex flex-col lg:flex-row gap-5 pb-20 items-start flex-nowrap px-4">
         <section className="w-full lg:grow-0 lg:w-auto h-auto lg:h-screen ps-0 lg:ps-32 pe-0 lg:pe-14 mb-5 lg:mb-0">
           <div className="border border-gray-300 shadow-xl p-5 w-full lg:w-56 rounded-xl mb-5 lg:mb-0">
             <div>
-              <Labels className="cursor-pointer font-bold">
-                Filter
-              </Labels>
+              <Labels className="cursor-pointer font-bold">Filter</Labels>
             </div>
 
             <div className="pt-5 flex items-center">
@@ -250,9 +372,7 @@ export default function FindFlightsLayout({
             </div>
           </div>
         </section>
-        <section className="w-full lg:grow lg:pe-32">
-          {children}
-        </section>
+        <section className="w-full lg:grow lg:pe-32">{children}</section>
       </section>
     </>
   );
