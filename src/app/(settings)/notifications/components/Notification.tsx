@@ -79,13 +79,13 @@ export default function NotificationPage() {
       <div className="w-4/5 mx-auto py-7">
         <Labels className="font-bold text-xl">Notifications</Labels>
         <div className="mt-5 flex flex-row gap-3 items-center">
-          <div className="w-full sm:w-4/5 bg-primaryPurple rounded-xl pl-5 p-3 flex items-center text-white shadow-lg">
+          <div className="w-full bg-primaryPurple rounded-xl pl-5 p-3 flex items-center text-white shadow-lg">
             <Link href="/">
               <ArrowLeftIcon className="w-5 h-5 cursor-pointer" />
             </Link>
             <Labels className="ml-5">Home Page</Labels>
           </div>
-          <div className="">
+          {/* <div className="">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="rounded-full bg-primaryPurple">
@@ -120,7 +120,7 @@ export default function NotificationPage() {
           </div>
           <div className="">
             <Search className="w-5 h-5 text-violet font-bold cursor-pointer" />
-          </div>
+          </div> */}
         </div>
       </div>
       <hr className="border-black/20" />
