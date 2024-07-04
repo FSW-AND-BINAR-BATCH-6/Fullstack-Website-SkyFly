@@ -18,13 +18,15 @@ export default function IsLogin() {
     }
   }, []);
 
+  const handleBookingHistory = () => {
+    window.location.href = "/history";
+  };
+
   return loggedIn ? (
     <div className="w-full md:w-1/2 flex items-center justify-center md:justify-end md:mr-14 sm:mr-0">
       <div className="flex items-center">
-        <div>
-          <Link href={"/history"}>
-            <List className="w-5 h-5 mr-4 cursor-pointer" />
-          </Link>
+        <div onClick={handleBookingHistory}>
+          <List className="w-5 h-5 mr-4 cursor-pointer" />
         </div>
         <div>
           <Link href={"/notifications"}>
