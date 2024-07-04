@@ -1,6 +1,7 @@
 "use server";
 
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 export const seatByFlightId = async (id: string) => {
   try {
@@ -11,5 +12,15 @@ export const seatByFlightId = async (id: string) => {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+};
+
+export const getUserName = async (token: string): Promise<any> => {
+  try {
+    const decoded = jwtDecode(token);
+    return decoded;
+  } catch (err) {
+    console.error("Error decoding token:", err);
+    throw err;
   }
 };

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { CircleCheck } from "lucide-react";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "@/stores/buttonStore";
 import { usePriceStore } from "@/stores/priceStore";
 import { Seat, useSeatSelection } from "./useSeatSelection";
@@ -22,6 +22,7 @@ interface PassengerDetailsProps {
   isDisabled?: boolean;
   errors?: { [key: string]: string };
   onChange: (field: string, value: string) => void;
+  handleOnChange: (value: string) => void;
 }
 
 interface Passenger {
@@ -41,6 +42,18 @@ interface FormData {
   passengers: Passenger[];
   selectedSeats: Seat[];
 }
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getCookie } from "cookies-next";
+import { getUserName } from "./actions";
 
 const BookingDetail = () => {
   const {
@@ -68,8 +81,30 @@ const BookingDetail = () => {
   const totalPrice = usePriceStore((state) => state.totalPrice);
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [name, setName] = useState("");
+  const [familyName, setFamilyName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleChange = (field: string, value: string) => {
+    switch (field) {
+      case "fullName":
+        setName(value);
+        break;
+      case "familyName":
+        setFamilyName(value);
+        break;
+      case "phoneNumber":
+        setPhoneNumber(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      default:
+        break;
+    }
+
     setErrors((prevErrors) => {
       const newErrors = { ...prevErrors };
       delete newErrors[field];
@@ -199,6 +234,7 @@ const BookingDetail = () => {
           isDisabled={isDisabled}
           errors={errors}
           onChange={handleChange}
+          handleOnChange={handleOnChange}
         />
       );
     }
@@ -212,6 +248,7 @@ const BookingDetail = () => {
           isDisabled={isDisabled}
           errors={errors}
           onChange={handleChange}
+          handleOnChange={handleOnChange}
         />
       );
     }
@@ -225,12 +262,38 @@ const BookingDetail = () => {
           isDisabled={isDisabled}
           errors={errors}
           onChange={handleChange}
+          handleOnChange={handleOnChange}
         />
       );
     }
 
     return forms;
   };
+
+  useEffect(() => {
+    const getName = async () => {
+      try {
+        const token = getCookie("token") as string | undefined;
+        if (token) {
+          const data = await getUserName(token);
+          setName(data.name);
+          setFamilyName(data.familyName);
+          setPhoneNumber(data.phoneNumber);
+          setEmail(data.email);
+          // form.setValue("name", data.name);
+          // form.setValue("familyName", data.familyName);
+          // form.setValue("phoneNumber", data.phoneNumber);
+          // form.setValue("email", data.email);
+        } else {
+          console.error("Token not found");
+        }
+      } catch (err) {
+        console.error("Error fetching user name:", err);
+      }
+    };
+
+    getName();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -250,6 +313,7 @@ const BookingDetail = () => {
         const index = parseInt(indexStr, 10) - 1;
         if (!data.passengers[index]) {
           data.passengers[index] = {
+            title: selectedValue,
             type: getTypeByIndex(index + 1),
             seatId: selectedSeats[index]?.id.toString() || "",
             quantity: 1,
@@ -296,6 +360,11 @@ const BookingDetail = () => {
     return "Baby";
   };
 
+  const handleOnChange = (value: string) => {
+    setSelectedValue(value);
+    // console.log(`Selected: ${value}`);
+  };
+
   return (
     <div className="w-full lg:w-4/5 mx-auto mt-3 pb-20">
       <div className="flex flex-col md:flex-row items-start">
@@ -326,6 +395,7 @@ const BookingDetail = () => {
                     id="fullName"
                     name="fullName"
                     type="text"
+                    value={name}
                     placeholder="Harry"
                     autoComplete="off"
                     disabled={isDisabled}
@@ -346,6 +416,7 @@ const BookingDetail = () => {
                     id="familyName"
                     name="familyName"
                     type="text"
+                    value={familyName}
                     placeholder="Potter"
                     autoComplete="off"
                     disabled={isDisabled}
@@ -360,6 +431,7 @@ const BookingDetail = () => {
                     id="phoneNumber"
                     name="phoneNumber"
                     type="number"
+                    value={phoneNumber}
                     placeholder="089756420173"
                     autoComplete="off"
                     disabled={isDisabled}
@@ -379,6 +451,7 @@ const BookingDetail = () => {
                     id="email"
                     name="email"
                     type="email"
+                    value={email}
                     placeholder="Johndoe@gmail.com"
                     autoComplete="off"
                     disabled={isDisabled}
@@ -450,6 +523,7 @@ const PassengerDetails: React.FC<PassengerDetailsProps> = ({
   isDisabled,
   errors,
   onChange,
+  handleOnChange,
 }) => (
   <div className="">
     <div className="bg-black flex flex-row items-center rounded-t-xl mt-3 text-white p-3">
@@ -464,14 +538,30 @@ const PassengerDetails: React.FC<PassengerDetailsProps> = ({
       <Label htmlFor={`title-${index}`} className="font-bold">
         Title:
       </Label>
-      <Input
+      <Select
+        onValueChange={handleOnChange}
+        disabled={isDisabled}
+        name={`title-${index}`}
+      >
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select a title" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Titles</SelectLabel>
+            <SelectItem value="Mr.">Mr</SelectItem>
+            <SelectItem value="Mrs.">Mrs</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      {/* <Input
         type="text"
         name={`title-${index}`}
         placeholder="Mr."
         autoComplete="off"
         disabled={isDisabled}
         onChange={(e) => onChange(`title-${index}`, e.target.value)}
-      />
+      /> */}
       {errors && errors[`title-${index}`] && (
         <p className="error text-xs ps-1 text-red-700">
           {errors[`title-${index}`]}
