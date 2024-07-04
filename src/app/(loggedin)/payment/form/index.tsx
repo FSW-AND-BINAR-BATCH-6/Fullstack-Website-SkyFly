@@ -134,8 +134,6 @@ const PaymentPage = () => {
     }
   }, []);
 
-  useEffect;
-
   const fetchStatus = useCallback(async () => {
     const token = getCookie("token");
     if (typeof token !== "string") {
@@ -164,12 +162,12 @@ const PaymentPage = () => {
       if (isPolling) {
         fetchStatus();
       }
-    }, 5000);
+    }, 3000);
 
     const timeoutId = setTimeout(() => {
       setIsPolling(false);
       clearInterval(intervalId);
-    }, 30000);
+    }, 300000);
 
     return () => {
       clearInterval(intervalId);
@@ -178,7 +176,10 @@ const PaymentPage = () => {
   }, [transactionId, isPolling, fetchStatus]);
 
   useEffect(() => {
-    if (transactionStatus === "settlement" || transactionStatus === "capture") {
+    if (
+      transactionStatus === "settlement" ||
+      transactionStatus === "capture"
+    ) {
       toast.success("Transaction is settled!", {
         style: {
           fontWeight: "bold",
@@ -234,6 +235,14 @@ const PaymentPage = () => {
           });
           const url = response.data.action[0].url;
           setUrlBarcode(url);
+          setTransactionId(response.data.transaction_id);
+          setCheckoutDisabled(true);
+        } else {
+          toast.error(response.message, {
+            style: {
+              fontWeight: "bold",
+            },
+          });
         }
       } catch (error) {
         console.error(error);
@@ -323,8 +332,13 @@ const PaymentPage = () => {
     }
 
     if (data && creditCardData) {
-      const requestData = { ...data, token, ...creditCardData, flightId };
-      console.log(requestData)
+      const requestData = {
+        ...data,
+        token,
+        ...creditCardData,
+        flightId,
+      };
+      console.log(requestData);
 
       try {
         const response = await paymentCreditCard(requestData);
@@ -336,6 +350,7 @@ const PaymentPage = () => {
           });
           setTransactionId(response.data.transaction_id);
           setUrlCreditCard(response.data.redirect_url);
+          setCheckoutDisabled(true);
         } else {
           toast.error(response.message, {
             style: {
