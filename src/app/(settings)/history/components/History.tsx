@@ -77,7 +77,7 @@ export default function HistoryPage() {
       return;
     }
   }, [vaNumber]);
-  
+
   const checkStatus = (status: string) => {
     const data = (className: string, status: string) => {
       return (
@@ -100,7 +100,7 @@ export default function HistoryPage() {
   const calculatePassengerDetails = (transactionDetails: Transaction) => {
     const passengerCount = { adult: 0, children: 0, baby: 0 };
     const totalPrice = { adult: 0, children: 0, baby: 0, total: 0 };
-  
+
     transactionDetails.Transaction_Detail.forEach((data) => {
       if (data.passengerCategory === "ADULT") {
         passengerCount.adult++;
@@ -114,7 +114,7 @@ export default function HistoryPage() {
       }
     });
     totalPrice.total += transactionDetails.totalPrice;
-  
+
     return (
       <React.Fragment>
         {passengerCount.adult > 0 && (
@@ -126,7 +126,9 @@ export default function HistoryPage() {
         {passengerCount.children > 0 && (
           <div className="flex mt-2" key={`${transactionDetails.id}-children`}>
             <Labels>{passengerCount.children} Children</Labels>
-            <Labels className="ml-auto">{formatPrice(totalPrice.children)}</Labels>
+            <Labels className="ml-auto">
+              {formatPrice(totalPrice.children)}
+            </Labels>
           </div>
         )}
         {passengerCount.baby > 0 && (
@@ -138,7 +140,6 @@ export default function HistoryPage() {
       </React.Fragment>
     );
   };
-  
 
   const handleCancelPayment = async (orderId: string) => {
     try {
@@ -331,7 +332,7 @@ export default function HistoryPage() {
           <hr className="mt-3 border border-black/20" />
           <div className="py-2">
             <Labels className="font-bold">Total Price</Labels>
-              {calculatePassengerDetails(transactionDetailCard)}
+            {calculatePassengerDetails(transactionDetailCard)}
             <div className="flex mt-2">
               <Labels>Tax</Labels>
               <Labels className="ml-auto">
@@ -545,7 +546,7 @@ export default function HistoryPage() {
               </div>
               <div className="mt-5 flex flex-col items-center">
                 <Button className="mt-3 w-40 sm:w-60">
-                  Find Other Flights
+                  <Link href="/">Find Other Flights</Link>
                 </Button>
               </div>
             </div>

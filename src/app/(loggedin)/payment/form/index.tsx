@@ -50,7 +50,7 @@ const creditCardSchema = z.object({
     .max(16),
   card_exp_month: z.string().min(1).max(2),
   card_exp_year: z.string().length(4, "Year must be 4 digits").max(4),
-  card_cvv: z.string().length(4, "CVV must be 3 digits").max(4),
+  card_cvv: z.string().length(3, "CVV must be 3 digits").max(4),
 });
 
 interface PaymentData {
@@ -178,7 +178,7 @@ const PaymentPage = () => {
   }, [transactionId, isPolling, fetchStatus]);
 
   useEffect(() => {
-    if (transactionStatus === "settlement") {
+    if (transactionStatus === "settlement" || transactionStatus === "capture") {
       toast.success("Transaction is settled!", {
         style: {
           fontWeight: "bold",
@@ -310,10 +310,15 @@ const PaymentPage = () => {
       return;
     }
 
-    if (data && creditCardData) {
-      const requestData = { ...data, token, ...creditCardData };
+    const flightId = getCookie("bookingDetails");
+    if (typeof flightId !== "string") {
+      toast.error("Flight ID is missing or invalid.");
+      return;
+    }
 
-      // console.log(requestData);
+    if (data && creditCardData) {
+      const requestData = { ...data, token, ...creditCardData, flightId };
+      console.log(requestData)
 
       try {
         const response = await paymentCreditCard(requestData);
@@ -323,6 +328,7 @@ const PaymentPage = () => {
               fontWeight: "bold",
             },
           });
+          setTransactionId(response.data.transaction_id);
           setUrlCreditCard(response.data.redirect_url);
         } else {
           toast.error(response.message, {
@@ -604,7 +610,7 @@ const PaymentPage = () => {
                                         id="card_cvv"
                                         {...field}
                                         type="number"
-                                        placeholder="1234"
+                                        placeholder="123"
                                         maxLength={4}
                                       />
                                     </FormControl>
