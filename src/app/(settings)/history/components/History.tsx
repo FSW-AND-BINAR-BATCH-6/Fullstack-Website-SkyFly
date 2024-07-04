@@ -615,7 +615,7 @@ export default function HistoryPage() {
               </div>
               <div className="mt-5 flex flex-col items-center">
                 <Button className="mt-3 w-40 sm:w-60">
-                  Find Other Flights
+                  <Link href="/">Find Other Flights</Link>
                 </Button>
               </div>
             </div>
