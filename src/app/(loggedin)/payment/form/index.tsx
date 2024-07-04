@@ -196,7 +196,7 @@ const PaymentPage = () => {
     data
   ) => {
     setCreditCardData(data);
-    console.log(data);
+    // console.log(data);
     setCreditCardDisabled(true);
     setGopayDisabled(true);
     setBankDisabled(true);
@@ -215,8 +215,14 @@ const PaymentPage = () => {
       return;
     }
 
+    const flightId = getCookie("bookingDetails");
+    if (typeof flightId !== "string") {
+      toast.error("Flight ID is missing or invalid.");
+      return;
+    }
+
     if (data) {
-      const requestData = { ...data, token };
+      const requestData = { ...data, token, flightId };
 
       try {
         const response = await paymentGopay(requestData);

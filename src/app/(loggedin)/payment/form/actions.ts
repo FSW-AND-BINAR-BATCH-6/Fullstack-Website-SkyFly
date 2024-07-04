@@ -31,7 +31,7 @@ export interface statusTransaction {
 export const paymentGopay = async (data: PaymentData) => {
   try {
     const response = await axios.post(
-      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/gopay?flightId=clxrh0w7u0011okfp4c4a0jni&adult=1&child=0&baby=0`,
+      `https://backend-skyfly-c1.vercel.app/api/v1/transactions/gopay?flightId=${data.flightId}&adult=1&child=0&baby=0`,
       data,
       {
         headers: {
